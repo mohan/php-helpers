@@ -236,3 +236,10 @@ function post_create_post()
 	* `typecasts` change the type of value to specified type.
 
 
+
+## Notes
+
+* Use URL rewrite for nice looking URLs, if needed. `/page/1` -> `/?get=page&id=1`.
+	* Custom URL helpers will be needed based on your rewrites.
+
+
