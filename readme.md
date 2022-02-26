@@ -52,7 +52,7 @@ filter_permitted_params(
 	],
 	// COOKIE params with max_length
 	[
-		'flash' => 256
+		'auth_flash' => 256
 	],
 	// GET typecast
 	[
@@ -66,10 +66,16 @@ filter_set_flash();
 
 // Routes
 filter_routes(
-	// Get uri
-	[ 'new-post', 'posts' ],
-	// Post uri
-	[ 'create-post' ]
+	// Get uri, with required params from $_REQUEST
+	[
+		'new-post'	=> [],
+		'posts'		=> [],
+		'post'		=> ['id']
+	],
+	// Post uri, with required params from $_REQUEST
+	[
+		'create-post' => ['title', 'body']
+	]
 );
 
 
@@ -226,6 +232,7 @@ function post_create_post()
 	* Calls `get_$uri` or `get_$post_uri` action functions.
 	* If `$_GET['uri']` is empty, without `post_uri`, calls `get_root`
 	* If nothing matches, calls built-in `get_404`
+	* Checks if specified required params from $_REQUEST are present, if not calls `get_404`
 
 
 ### Permitted Params

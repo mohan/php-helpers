@@ -153,19 +153,19 @@ function tag($html, $attrs=[], $name='div', $closing=true)
 }
 
 
-function tag_table($headers, $data, $attrs=[])
+function tag_table($headers, $data, $attrs=[], $escape_values=true)
 {
 	foreach ($attrs as $key => $value) $attrs_str .= "$key='" . htmlentities($value) . "' ";
 
 	$out = "<table $attrs_str><thead>\n<tr>";
 	foreach ($headers as $key => $value) {
-		$out .= '<th>' . htmlentities($value) . '</th>';
+		$out .= '<th>' . ($escape_values ? htmlentities($value) : $value) . '</th>';
 	}
 	$out .= "</tr>\n</thead>\n<tbody>\n";
 	foreach ($data as $row_key => $row_value) {
 		$out .= "<tr>\n";
 		foreach ($row_value as $cell_key => $cell_value) {
-			$out .= '<td>' . htmlentities($cell_value) . "</td>\n";
+			$out .= '<td>' . ($escape_values ? htmlentities($cell_value) : $cell_value) . "</td>\n";
 		}
 		$out .= "</tr>\n";
 	}
@@ -299,24 +299,24 @@ function flash_set($html, $in_current_request=false)
 {
 	if($html) {
 		if($in_current_request) $_REQUEST['flash'] = $html;
-		else secure_cookie_set('flash', $html);
+		else secure_cookie_set('auth_flash', $html);
 	}
 }
 
 
 function flash_clear()
 {
-	cookie_delete('flash');
+	cookie_delete('auth_flash');
 }
 
 
 function filter_set_flash()
 {
-	$flash = secure_cookie_get('flash');
+	$flash = secure_cookie_get('auth_flash');
 
 	if($flash){
 		$_REQUEST['flash'] = $flash;
-		cookie_delete('flash');
+		cookie_delete('auth_flash');
 	}
 }
 
@@ -455,11 +455,19 @@ function filter_set_config($filepath)
 // Max action name 32 chars
 function filter_routes($get_action_names, $post_action_names)
 {
-	if( is_string($_GET['post_uri']) && in_array($_GET['post_uri'], $post_action_names)){
+	if( is_string($_GET['post_uri']) && array_key_exists($_GET['post_uri'], $post_action_names)){
+		if( array_intersect($post_action_names[$_GET['post_uri']], array_keys($_REQUEST)) != $post_action_names[$_GET['post_uri']]){
+			return get_404();
+		}
+
 		return call_user_func( 'post_' . preg_replace("/[^a-zA-Z0-9]/", '_', $_GET['post_uri']));
 	}
 
-	if( is_string($_GET['uri']) && in_array($_GET['uri'], $get_action_names)){
+	if( is_string($_GET['uri']) && array_key_exists($_GET['uri'], $get_action_names)){
+		if( array_intersect($get_action_names[$_GET['uri']], array_keys($_REQUEST)) != $get_action_names[$_GET['uri']]){
+			return get_404();
+		}
+
 		return call_user_func( 'get_' . preg_replace("/[^a-zA-Z0-9]/", '_', $_GET['uri']));
 	}
 
