@@ -1,26 +1,41 @@
 <?php
-// Peanuts
+// php-helpers
+// 23 functions for building a PHP application.
 // License: GPL
+// Status: Work in progress
 
 
 // 
 // Templates
 // 
 
-function render($template_name, $args=[], $html_container='index.php')
+function render($template_name, $args=[], $html_container='app/index.php')
 {
-	$template_path = './' . APP_NAME . '/templates/' . APP_TEMPLATE . '/';
+	if(isset($_REQUEST['TEMPLATE_HAS_RENDERED'])) trigger_error('Template has already rendered for this request.', E_USER_ERROR);
+	$_REQUEST['TEMPLATE_HAS_RENDERED'] = true;
+
+	$template_path = (defined('APP_DIR') ? APP_DIR : '.') . '/templates/' . (defined('APP_TEMPLATE') ? APP_TEMPLATE : '') . '/';
 	$uri = $_GET['uri'];
 
 	extract($args, EXTR_SKIP);
-	include $template_path . $html_container;
-	exit;
+
+	if(defined('RENDER_TO_STRING')) ob_start();
+
+	include $html_container ? $template_path . $html_container : $template_path . $template_name;
+
+	if(defined('RENDER_TO_STRING')) {
+		$out = ob_get_contents();
+		ob_end_clean();
+		return $out;
+	}
+
+	return true;
 }
 
 
 function render_partial($template_name, $args=[], $return=false)
 {
-	$template_path = './' . APP_NAME . '/templates/' . APP_TEMPLATE . '/';
+	$template_path = (defined('APP_DIR') ? APP_DIR : '.') . '/templates/' . (defined('APP_TEMPLATE') ? APP_TEMPLATE : '') . '/';
 	
 	extract($args, EXTR_SKIP);
 
@@ -51,7 +66,12 @@ function render_partial($template_name, $args=[], $return=false)
 
 function urlto_template_asset($uri)
 {
-	return CONFIG_ROOT_URL . APP_NAME . '/templates/' . APP_TEMPLATE . '/assets/' . $uri;
+	return CONFIG_ROOT_URL
+			. (defined('APP_NAME') ? APP_NAME : '')
+			. '/templates/'
+			. (defined('APP_TEMPLATE') ? APP_TEMPLATE : '')
+			. '/assets/'
+			. $uri;
 }
 
 
@@ -62,10 +82,14 @@ function urltoget($uri, $args=[], $arg_separator='&')
 	$hash = isset($args['__hash']) ? '#' . $args['__hash'] : '';
 	unset($args['__hash']);
 
-	$_args = ['uri' => $uri];
-	$args = array_merge($_args, $args);
+	if($uri) {
+		$_args = ['uri' => $uri];
+		$args = array_merge($_args, $args);
 
-	return CONFIG_ROOT_URL . '?' . http_build_query($args, '', $arg_separator) . $hash;
+		return CONFIG_ROOT_URL . '?' . http_build_query($args, '', $arg_separator) . $hash;
+	}
+
+	return CONFIG_ROOT_URL . $hash;
 }
 
 
@@ -73,7 +97,13 @@ function urltopost($uri, $args=[], $arg_separator='&')
 {
 	if(!$args) $args = [];
 	
-	$_args = ['post_uri' => $uri];
+	if($args['__method'] == 'patch' || $args['__method'] == 'delete'){
+		$_args = [$args['__method'] . '_uri' => $uri];
+	} else {
+		$_args = ['post_uri' => $uri];
+	}
+	if($args['__method']) unset($args['__method']);
+
 	$args = array_merge($_args, $args);
 
 	return CONFIG_ROOT_URL . '?' . http_build_query($args, '', $arg_separator);
@@ -82,16 +112,23 @@ function urltopost($uri, $args=[], $arg_separator='&')
 
 function redirectto($uri, $args=[])
 {
-	header('Location: ' . urltoget($uri, $args));
-	exit;
+	_header('Location: ' . urltoget($uri, $args));
+	return true;
 }
 
 
-function get_404()
+function get_404($message='')
 {
-	header("HTTP/1.1 404 Not Found");
-	render('404.php', ['__pagetitle'=>'404']);
+	_header("HTTP/1.1 404 Not Found");
+	return render('app/404.php', ['__pagetitle'=>'404', 'message' => $message], false);
 }
+
+
+
+
+
+
+
 
 
 
@@ -344,11 +381,13 @@ function filter_set_flash()
 
 function secure_cookie_set($name, $value)
 {
-	// <= 1/2 day; may expire at am/pm;
-	$authenticity = md5($name . '%' . $value . '%' . date('y-m-d-a') . '%' . SECURE_HASH);
+	if(!CONFIG_SECURE_HASH) return;
+	
+	// expires next day - 1hour; reset to keep it continuous;
+	$authenticity = _secure_cookie_authenticity_token($name, $value, time());
 
 	// Expires end of session/browser close
-	setcookie($name, "$value%$authenticity", 0, CONFIG_ROOT_URL, '', false, true);
+	_setcookie($name, "$value%$authenticity", 0, CONFIG_ROOT_URL, '', false, true);
 }
 
 
@@ -360,10 +399,16 @@ function secure_cookie_get($name)
 	$value = $parts[0];
 	$given_authenticity = $parts[1];
 
-	$authenticity = md5($name . '%' . $value . '%' . date('y-m-d-a') . '%' . SECURE_HASH);
+	$timestamp = time();
+	$authenticity = _secure_cookie_authenticity_token($name, $value, $timestamp);
 
-	// Todo: If it fails, check if it matches -6
-	if($given_authenticity != $authenticity) return false;
+	if($given_authenticity != $authenticity) {
+		// Check 23 hours before
+		$authenticity = _secure_cookie_authenticity_token($name, $value, $timestamp - (23 * 60 * 60));
+		if($given_authenticity != $authenticity) {
+			return false;
+		}
+	}
 
 	return $value;
 }
@@ -371,7 +416,15 @@ function secure_cookie_get($name)
 
 function cookie_delete($name)
 {
-	setcookie($name, '', time() - 3600);
+	_setcookie($name, '', time() - 3600);
+}
+
+
+function _secure_cookie_authenticity_token($name, $value, $timestamp)
+{
+	return md5(
+		$name . '%' . $value . '%' . date('y-m-d', $timestamp) . '%' . CONFIG_SECURE_HASH
+	);
 }
 
 
@@ -419,7 +472,6 @@ function __d($exit, ...$args)
 
 
 
-
 // 
 // Config file helpers
 //
@@ -453,29 +505,40 @@ function filter_set_config($filepath)
 
 // Map action names to functions and call current name
 // Max action name 32 chars
-function filter_routes($get_action_names, $post_action_names)
+function filter_routes($get_action_names, $post_action_names, $patch_action_names, $delete_action_names)
 {
-	if( is_string($_GET['post_uri']) && array_key_exists($_GET['post_uri'], $post_action_names)){
-		if( array_intersect($post_action_names[$_GET['post_uri']], array_keys($_REQUEST)) != $post_action_names[$_GET['post_uri']]){
-			return get_404();
-		}
+	if(defined('TEMPLATE_HAS_RENDERED')) return false;
 
-		return call_user_func( 'post_' . preg_replace("/[^a-zA-Z0-9]/", '_', $_GET['post_uri']));
-	}
-
-	if( is_string($_GET['uri']) && array_key_exists($_GET['uri'], $get_action_names)){
-		if( array_intersect($get_action_names[$_GET['uri']], array_keys($_REQUEST)) != $get_action_names[$_GET['uri']]){
-			return get_404();
-		}
-
-		return call_user_func( 'get_' . preg_replace("/[^a-zA-Z0-9]/", '_', $_GET['uri']));
-	}
-
-	if( !$_GET['uri'] ){
+	if($_GET['post_uri']){
+		if($_SERVER['REQUEST_METHOD'] != 'POST') return false;
+		return _filter_routes_method('post', 'post_uri', $post_action_names);
+	} else if($_GET['patch_uri']) {
+		if($_SERVER['REQUEST_METHOD'] != 'POST') return false;
+		return _filter_routes_method('patch', 'patch_uri', $patch_action_names);
+	} else if($_GET['delete_uri']) {
+		if($_SERVER['REQUEST_METHOD'] != 'POST') return false;
+		return _filter_routes_method('delete', 'delete_uri', $delete_action_names);
+	} else if($_GET['uri']) {
+		if($_SERVER['REQUEST_METHOD'] != 'GET') return false;
+		return _filter_routes_method('get', 'uri', $get_action_names);
+	} else if( !$_GET['uri'] ) {
+		if($_SERVER['REQUEST_METHOD'] != 'GET') return false;
 		return get_root();
 	}
 
-	return get_404();
+	return false;
+}
+function _filter_routes_method($method_name, $uri_param, $action_names)
+{
+	if( is_string($_GET[$uri_param]) && array_key_exists($_GET[$uri_param], $action_names)){
+		if( array_intersect($action_names[$_GET[$uri_param]], array_keys($_REQUEST)) != $action_names[$_GET[$uri_param]]){
+			return false;
+		}
+
+		return call_user_func( $method_name . '_' . preg_replace("/[^a-zA-Z0-9]/", '_', $_GET[$uri_param]) );
+	}
+
+	return false;
 }
 
 
@@ -501,12 +564,14 @@ function filter_routes($get_action_names, $post_action_names)
 // Ex: $get_param_names = [ 'param_name' => int_length ... ]
 function filter_permitted_params($get_param_names, $post_param_names, $cookie_param_names, $get_typecasts, $post_typecasts)
 {
-	_filter_permitted_params_names($_GET, $get_param_names);
-	_filter_permitted_params_names($_POST, $post_param_names);
-	_filter_permitted_params_names($_COOKIE, $cookie_param_names);
+	if(!_filter_permitted_params_names($_GET, $get_param_names)) return false;
+	if(!_filter_permitted_params_names($_POST, $post_param_names)) return false;
+	if(!_filter_permitted_params_names($_COOKIE, $cookie_param_names)) return false;
 
 	_filter_permitted_params_typecast($_GET, $get_typecasts);
 	_filter_permitted_params_typecast($_POST, $post_typecasts);
+
+	return true;
 }
 
 
@@ -516,13 +581,15 @@ function _filter_permitted_params_names($input, $permitted_arr)
 		if(!array_key_exists($key, $permitted_arr)) unset($input[$key]);
 		else if(isset($input[$key])){
 			if(is_int($permitted_arr[$key]) && strlen($input[$key]) > $permitted_arr[$key]) {
-				get_404();
+				return false;
 			}
 			else if(is_string($permitted_arr[$key]) && !preg_match($permitted_arr[$key], $input[$key])) {
-				get_404();
+				return false;
 			}
 		}
 	}
+
+	return true;
 }
 
 
@@ -535,5 +602,35 @@ function _filter_permitted_params_typecast($input, $typecast_def_arr)
 			case 'float': $input[$name] = floatval($input[$name]); break;
 			case 'bool': $input[$name] = boolval($input[$name]); break;
 		}
+	}
+}
+
+
+
+
+
+
+
+
+
+// 
+// Internal functions
+// 
+
+// 
+// Headers
+// Proxy for header, needed for test env
+// 
+if(!function_exists('_header')){
+	function _header($header)
+	{
+		header($header);
+	}
+}
+
+if(!function_exists('_setcookie')){
+	function _setcookie($name, $value="", $expires_or_options=0, $path="", $domain="", $secure=false, $httponly=false)
+	{
+		setcookie($name, $value, $expires_or_options, $path, $domain, $secure, $httponly);
 	}
 }

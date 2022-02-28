@@ -8,14 +8,14 @@ Status: Work in progress
 
 
 
-## It supports
+## It contains
 
-1. Templates
+1. Template rendering
 2. URL helpers
 3. HTML Tag helpers
 4. Markdown
 5. Shortcodes
-6. Flash messages
+6. Flash message
 7. Cookie with added authenticity
 8. Debug helper
 9. Config file helpers
@@ -28,81 +28,6 @@ Status: Work in progress
 * Please feel free to implement it yourself.
 
 
-Example application:
-
-```php
-require_once './helpers.php';
-
-define('APP_NAME', 'app');
-define('APP_TEMPLATE', 'default');
-
-// Templates are located in './' . APP_NAME . '/templates/' . APP_TEMPLATE . '/'
-
-filter_permitted_params(
-	// GET params with regex
-	[
-		'uri' => '/^[a-z0-9_-]+$/',
-		'post_uri' => '/^[a-z0-9_-]+$/',
-		'id' => '/^\d+$/'
-	],
-	// POST params with max_length
-	[
-		'title' => 1024,
-		'body' => 8192
-	],
-	// COOKIE params with max_length
-	[
-		'auth_flash' => 256
-	],
-	// GET typecast
-	[
-		'id' => 'int',
-	],
-	// POST typecast
-	[ ]
-);
-
-filter_set_flash();
-
-// Routes
-filter_routes(
-	// Get uri, with required params from $_REQUEST
-	[
-		'new-post'	=> [],
-		'posts'		=> [],
-		'post'		=> ['id']
-	],
-	// Post uri, with required params from $_REQUEST
-	[
-		'create-post' => ['title', 'body']
-	]
-);
-
-
-//
-// Actions (if needed, place in APP_NAME/actions.php)
-//
-
-function get_root()
-{
-	render('hello.php');
-}
-
-function get_new_post()
-{
-	render('new_post.php');
-}
-
-function get_posts()
-{
-	render('posts.php', ['posts' => $posts]);
-}
-
-function post_create_post()
-{
-	redirectto('posts');
-}
-```
 
 
 
@@ -111,18 +36,15 @@ function post_create_post()
 
 ### Templates
 
-1. render($template_name, $args=[], $html_container='index.php')
+1. render($template_name, $args=[], $html_container='app/index.php')
 	* Renders a PHP template with $args extracted as local variables.
-	* Templates are located in `'./' . APP_NAME . '/templates/' . APP_TEMPLATE . '/'`
+	* Templates are located in `templates/`
 	* `$template_name`, `$template_path`, `$uri` ($_GET['uri']), `$args` are additional local variables.
-	* Todo: Supports sub-templates. Override `default` template files in sub-template.
 	* `$html_container` is the container of the template.
-	* Exits after rendering
 
 2. render_partial($template_name, $args=[], $return=false)
-	* Renders a partial template
-	* All functionality of `render` exists here
-	* It does not exit
+	* Renders a partial template, for use within a template.
+	* All functionality of `render` exists here.
 	* `$return` can be used to get HTML instead of rendering directly.
 
 
