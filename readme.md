@@ -36,11 +36,10 @@ Status: Work in progress
 
 ### Templates
 
-1. render($template_name, $args=[], $html_container='app/index.php')
+1. render($template_name, $args=[], $layout='layouts/index.php')
 	* Renders a PHP template with $args extracted as local variables.
 	* Templates are located in `templates/`
 	* `$template_name`, `$template_path`, `$uri` ($_GET['uri']), `$args` are additional local variables.
-	* `$html_container` is the container of the template.
 
 2. render_partial($template_name, $args=[], $return=false)
 	* Renders a partial template, for use within a template.

@@ -9,7 +9,7 @@
 // Templates
 // 
 
-function render($template_name, $args=[], $html_container='app/index.php')
+function render($template_name, $args=[], $layout='layouts/index.php')
 {
 	if(isset($_REQUEST['TEMPLATE_HAS_RENDERED'])) trigger_error('Template has already rendered for this request.', E_USER_ERROR);
 	$_REQUEST['TEMPLATE_HAS_RENDERED'] = true;
@@ -21,7 +21,7 @@ function render($template_name, $args=[], $html_container='app/index.php')
 
 	if(defined('RENDER_TO_STRING')) ob_start();
 
-	include $html_container ? $template_path . $html_container : $template_path . $template_name;
+	include $layout ? $template_path . $layout : $template_path . $template_name;
 
 	if(defined('RENDER_TO_STRING')) {
 		$out = ob_get_contents();
@@ -120,7 +120,7 @@ function redirectto($uri, $args=[])
 function get_404($message='')
 {
 	_header("HTTP/1.1 404 Not Found");
-	return render('app/404.php', ['__pagetitle'=>'404', 'message' => $message], false);
+	return render('layouts/404.php', ['__pagetitle'=>'404', 'message' => $message], false);
 }
 
 
