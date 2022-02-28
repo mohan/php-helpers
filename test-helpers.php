@@ -4,7 +4,6 @@
 // License: GPL
 // Status: Work in progress
 
-
 if(PHP_SAPI != 'cli'){
 	header('HTTP/1.1 404 Not Found');
 	echo "404 Not Found";
@@ -89,15 +88,15 @@ function is_not_redirect($response)
 // 
 function do_get($uri_str, $cookies=[])
 {
-	$_REQUEST = [];
+	_clear_request();
 	$uri = parse_url($uri_str);
 	parse_str($uri['query'], $_GET);
-	$_COOKIE = $cookies;
 	$_SERVER['REQUEST_METHOD'] = 'GET';
+	_set_params($_COOKIE, $cookies);
+	_set_params($_REQUEST, $_GET);
 
 	$body = initialize();
 	$headers = _header();
-	_header('reset');
 
 	return ['url' => $uri_str, 'body' => $body, 'headers' => $headers];
 }
@@ -105,16 +104,47 @@ function do_get($uri_str, $cookies=[])
 
 function do_post($uri_str, $post_params=[], $cookies=[])
 {
-	$_REQUEST = [];
+	_clear_request();
 	$uri = parse_url($uri_str);
 	parse_str($uri['query'], $_GET);
-	$_COOKIE = $cookies;
 	$_SERVER['REQUEST_METHOD'] = 'POST';
-	$_POST = $post_params;
+	_set_params($_COOKIE, $cookies);
+	_set_params($_POST, $post_params);
+	_set_params($_REQUEST, $post_params);
+	_set_params($_REQUEST, $_GET);
 
 	$body = initialize();
 	$headers = _header();
-	_header('reset');
 
 	return ['url' => $uri_str, 'body' => $body, 'headers' => $headers];
+}
+
+
+
+// 
+// Internal
+// 
+function _clear_request()
+{
+	foreach ($_POST as $key => $value) {
+		unset($_POST[$key]);
+	}
+	foreach ($_GET as $key => $value) {
+		unset($_GET[$key]);
+	}
+	foreach ($_COOKIE as $key => $value) {
+		unset($_COOKIE[$key]);
+	}
+	foreach ($_REQUEST as $key => $value) {
+		unset($_REQUEST[$key]);
+	}
+	_header('reset');
+}
+
+
+function _set_params(&$input, $params)
+{
+	foreach ($params as $key => $value) {
+		$input[$key] = $value;
+	}
 }
