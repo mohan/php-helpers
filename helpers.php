@@ -236,7 +236,7 @@ function render_markdown($text, $shortcodes=false)
 		if(strlen(trim($line)) == 0) $line = "&nbsp;";
 		
 		// Shortcode
-		if($shortcodes && preg_match("/\[[a-z]+[^\]]*\][^(]/", $line)){
+		if($shortcodes && preg_match("/\[[a-z]+[^\]]*\][^(]?/", $line)){
 			$out .= process_shortcodes($line);
 		} else {
 			$out .= "<p>\n$line\n</p>\n";
@@ -268,7 +268,7 @@ function process_shortcodes($text)
 	// \[([a-z]+) = name
 	// ([^\]]*) = args_str
 	// [^\(] = Should not match markdown links
-	if(!preg_match_all("/\[([a-z]+)([^\]]*)\][^(]/", $text, $matches)) return $text;
+	if(!preg_match_all("/\[([a-z]+)([^\]]*)\][^(]?/", $text, $matches)) return $text;
 
 	$shortcodes_list = shortcodes_list();
 	$shortcodes_matches = [];
