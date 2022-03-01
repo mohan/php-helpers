@@ -13,16 +13,29 @@ if(PHP_SAPI != 'cli'){
 define('RENDER_TO_STRING', true);
 
 
-function _setcookie($name, $value="", $expires_or_options=0, $path="", $domain="", $secure=false, $httponly=false)
+function _setcookie($name="", $value="", $expires_or_options=0, $path="", $domain="", $secure=false, $httponly=false)
 {
-	// No setcookie in testenv
+	static $list = [];
+
+	if($name == '__reset') {
+		$list = [];
+		return;
+	}
+	if(!$name) {
+		if($list['flash']){
+			$list['flash'] = reset(explode('%', base64_decode($list['flash'])));
+		}
+
+		return $list;
+	}
+	$list[$name] = $value;
 }
 
 function _header($header=false)
 {
 	static $list = [];
 
-	if($header == 'reset') {
+	if($header == '__reset') {
 		$list = [];
 		return;
 	}
@@ -36,16 +49,25 @@ function _header($header=false)
 // 
 function call_tests($function_names)
 {
+	$functions_to_implement = [];
+
 	echo "\n\n" . str_repeat('-', 60) . "\n";
 	foreach ($function_names as $name) {
 		$test_name = "test_$name";
-		echo "\n# $test_name\n";
 		if(function_exists($test_name)) {
+			echo "\n# $test_name\n";
 			call_user_func($test_name);
 		} else {
-			echo "  > function $test_name() not found!\n";
+			$functions_to_implement[] = $test_name;
 		}
 	}
+	echo "\n" . str_repeat('-', 60) . "\n\n\n";
+	echo "✓ " . (sizeof($function_names) - sizeof($functions_to_implement)) . "/" . sizeof($function_names) . " tests passed.\n\n";
+
+	if(sizeof($functions_to_implement)){
+		echo sizeof($functions_to_implement) . " functions not implemented: " . join(', ', $functions_to_implement) . "\n";
+	}
+
 	echo "\n" . str_repeat('-', 60) . "\n\n\n";
 }
 
@@ -76,7 +98,10 @@ function is_not_redirect($response)
 	return true;
 }
 
-
+function is_flash($expected_message, $response)
+{
+	return $response['cookies']['flash'] == $expected_message;
+}
 
 
 
@@ -97,8 +122,9 @@ function do_get($uri_str, $cookies=[])
 
 	$body = initialize();
 	$headers = _header();
+	$cookies = _setcookie();
 
-	return ['url' => $uri_str, 'body' => $body, 'headers' => $headers];
+	return ['url' => $uri_str, 'body' => $body, 'headers' => $headers, 'cookies' => $cookies];
 }
 
 
@@ -115,8 +141,9 @@ function do_post($uri_str, $post_params=[], $cookies=[])
 
 	$body = initialize();
 	$headers = _header();
+	$cookies = _setcookie();
 
-	return ['url' => $uri_str, 'body' => $body, 'headers' => $headers];
+	return ['url' => $uri_str, 'body' => $body, 'headers' => $headers, 'cookies' => $cookies];
 }
 
 
@@ -138,7 +165,7 @@ function _clear_request()
 	foreach ($_REQUEST as $key => $value) {
 		unset($_REQUEST[$key]);
 	}
-	_header('reset');
+	_header('__reset');
 }
 
 

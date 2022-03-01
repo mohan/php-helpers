@@ -336,24 +336,24 @@ function flash_set($html, $in_current_request=false)
 {
 	if($html) {
 		if($in_current_request) $_REQUEST['flash'] = $html;
-		else secure_cookie_set('auth_flash', $html);
+		else secure_cookie_set('flash', $html);
 	}
 }
 
 
 function flash_clear()
 {
-	cookie_delete('auth_flash');
+	cookie_delete('flash');
 }
 
 
 function filter_set_flash()
 {
-	$flash = secure_cookie_get('auth_flash');
+	$flash = secure_cookie_get('flash');
 
 	if($flash){
 		$_REQUEST['flash'] = $flash;
-		cookie_delete('auth_flash');
+		cookie_delete('flash');
 	}
 }
 
@@ -387,7 +387,7 @@ function secure_cookie_set($name, $value)
 	$authenticity = _secure_cookie_authenticity_token($name, $value, time());
 
 	// Expires end of session/browser close
-	_setcookie($name, "$value%$authenticity", 0, CONFIG_ROOT_URL, '', false, true);
+	_setcookie($name, base64_encode("$value%$authenticity"), 0, CONFIG_ROOT_URL, '', false, true);
 }
 
 
@@ -395,7 +395,7 @@ function secure_cookie_get($name)
 {
 	if(!isset($_COOKIE[$name])) return false;
 
-	$parts = explode('%', $_COOKIE[$name]);
+	$parts = explode('%', base64_decode($_COOKIE[$name]));
 	$value = $parts[0];
 	$given_authenticity = $parts[1];
 
@@ -403,7 +403,7 @@ function secure_cookie_get($name)
 	$authenticity = _secure_cookie_authenticity_token($name, $value, $timestamp);
 
 	if($given_authenticity != $authenticity) {
-		// Check 23 hours before
+		// Check 23 hours before for continuation
 		$authenticity = _secure_cookie_authenticity_token($name, $value, $timestamp - (23 * 60 * 60));
 		if($given_authenticity != $authenticity) {
 			return false;
@@ -423,7 +423,7 @@ function cookie_delete($name)
 function _secure_cookie_authenticity_token($name, $value, $timestamp)
 {
 	return md5(
-		$name . '%' . $value . '%' . date('y-m-d', $timestamp) . '%' . CONFIG_SECURE_HASH
+		$name . '%' . $value . '%' . base64_encode($value) . '%' . date('y-m-d', $timestamp) . '%' . CONFIG_SECURE_HASH
 	);
 }
 
@@ -621,16 +621,16 @@ function _filter_permitted_params_typecast($input, $typecast_def_arr)
 // Headers
 // Proxy for header, needed for test env
 // 
-if(!function_exists('_header')){
+if(!defined('APP_ENV_IS_TEST')){
+
 	function _header($header)
 	{
 		header($header);
 	}
-}
 
-if(!function_exists('_setcookie')){
 	function _setcookie($name, $value="", $expires_or_options=0, $path="", $domain="", $secure=false, $httponly=false)
 	{
 		setcookie($name, $value, $expires_or_options, $path, $domain, $secure, $httponly);
 	}
+
 }
