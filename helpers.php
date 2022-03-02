@@ -190,7 +190,7 @@ function tag($html, $attrs=[], $name='div', $closing=true)
 }
 
 
-function tag_table($headers, $data, $attrs=[], $escape_values=true)
+function tag_table($headers, $data, $attrs=[], $cb=false)
 {
 	foreach ($attrs as $key => $value) $attrs_str .= "$key='" . htmlentities($value) . "' ";
 
@@ -199,10 +199,13 @@ function tag_table($headers, $data, $attrs=[], $escape_values=true)
 		$out .= '<th>' . ($escape_values ? htmlentities($value) : $value) . '</th>';
 	}
 	$out .= "</tr>\n</thead>\n<tbody>\n";
+
+	$header_keys = array_keys($headers);
 	foreach ($data as $row_key => $row_value) {
 		$out .= "<tr>\n";
-		foreach ($row_value as $cell_key => $cell_value) {
-			$out .= '<td>' . ($escape_values ? htmlentities($cell_value) : $cell_value) . "</td>\n";
+		foreach ($header_keys as $header_key) {
+			if($cb) $out .= '<td>' . call_user_func($cb, $row_value, $header_key, $row_key) . '</td>';
+			else $out .= '<td>' . htmlentities($row_value) . "</td>\n";
 		}
 		$out .= "</tr>\n";
 	}
@@ -452,7 +455,11 @@ function __d($exit, ...$args)
 {
 	echo "<pre style='width:94%;margin:1%;padding:2%;background:#fff;border:2px solid #aa0000;'>";
 	foreach($args as $arg) {
-		echo htmlentities(print_r($arg, true));
+		ob_start();
+		var_dump($arg);
+		$out = ob_get_contents();
+		ob_end_clean();
+		echo htmlentities($out);
 		echo "<hr/>";
 	}
 	echo "</pre>";
@@ -528,14 +535,21 @@ function filter_routes($get_action_names, $post_action_names, $patch_action_name
 
 	return false;
 }
-function _filter_routes_method($method_name, $uri_param, $action_names)
+
+function _filter_routes_method($method_name, $uri_param_key, $action_names)
 {
-	if( is_string($_GET[$uri_param]) && array_key_exists($_GET[$uri_param], $action_names)){
-		if( array_intersect($action_names[$_GET[$uri_param]], array_keys($_REQUEST)) != $action_names[$_GET[$uri_param]]){
+	// $_GET['uri'] / $_GET['post_uri'] / $_GET['patch_uri']
+	$uri_route = $_GET[$uri_param_key];
+
+	// Required params for action
+	$required_params = $action_names[$uri_route];
+
+	if( is_string($uri_route) && array_key_exists($uri_route, $action_names)){
+		if( array_intersect($required_params, array_keys($_REQUEST)) != $required_params){
 			return false;
 		}
 
-		return call_user_func( $method_name . '_' . preg_replace("/[^a-zA-Z0-9]/", '_', $_GET[$uri_param]) );
+		return call_user_func( $method_name . '_' . preg_replace("/[^a-zA-Z0-9]/", '_', $uri_route) );
 	}
 
 	return false;

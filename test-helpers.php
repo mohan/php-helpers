@@ -120,7 +120,7 @@ function do_get($uri_str, $cookies=[])
 	_set_params($_COOKIE, $cookies);
 	_set_params($_REQUEST, $_GET);
 
-	$body = initialize();
+	$body = defined('APP_NAME') ? call_user_func(APP_NAME . '_init') : init();
 	$headers = _header();
 	$cookies = _setcookie();
 
@@ -139,7 +139,7 @@ function do_post($uri_str, $post_params=[], $cookies=[])
 	_set_params($_REQUEST, $post_params);
 	_set_params($_REQUEST, $_GET);
 
-	$body = initialize();
+	$body = defined('APP_NAME') ? call_user_func(APP_NAME . '_init') : init();
 	$headers = _header();
 	$cookies = _setcookie();
 
@@ -166,6 +166,7 @@ function _clear_request()
 		unset($_REQUEST[$key]);
 	}
 	_header('__reset');
+	_setcookie('__reset');
 }
 
 
