@@ -64,14 +64,9 @@ function render_partial($template_name, $args=[], $return=false)
 // URL helpers
 // 
 
-function urlto_template_asset($uri)
+function urlto_public_dir($uri)
 {
-	return CONFIG_ROOT_URL
-			. (defined('APP_NAME') ? APP_NAME : '')
-			. '/templates/'
-			. (defined('APP_TEMPLATE') ? APP_TEMPLATE : '')
-			. '/assets/'
-			. $uri;
+	return CONFIG_ROOT_URL . $uri;
 }
 
 
@@ -117,10 +112,12 @@ function redirectto($uri, $args=[])
 }
 
 
-function get_404($message='')
-{
-	_header("HTTP/1.1 404 Not Found");
-	return render('layouts/404.php', ['__pagetitle'=>'404', 'message' => $message], false);
+if(!defined('CUSTOM_404_ACTION')){
+	function get_404($message='')
+	{
+		_header("HTTP/1.1 404 Not Found");
+		return render('layouts/404.php', ['__pagetitle'=>'404', 'message' => $message], false);
+	}
 }
 
 
@@ -205,7 +202,7 @@ function tag_table($headers, $data, $attrs=[], $cb=false)
 		$out .= "<tr>\n";
 		foreach ($header_keys as $header_key) {
 			if($cb) $out .= '<td>' . call_user_func($cb, $row_value, $header_key, $row_key) . '</td>';
-			else $out .= '<td>' . htmlentities($row_value) . "</td>\n";
+			else $out .= '<td>' . htmlentities($row_value[$header_key]) . "</td>\n";
 		}
 		$out .= "</tr>\n";
 	}

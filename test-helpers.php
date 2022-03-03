@@ -4,11 +4,42 @@
 // License: GPL
 // Status: Work in progress
 
-if(PHP_SAPI != 'cli'){
+if(PHP_SAPI != 'cli' && !defined('ENABLE_WEB_TEST_RESULTS_INTERFACE')) {
+	_test_page_not_found();
+}
+
+function _test_page_not_found()
+{
 	header('HTTP/1.1 404 Not Found');
 	echo "404 Not Found";
-	exit;
+	exit;	
 }
+
+function call_tests($function_names, $filename=APP_NAME){
+	if(defined('ENABLE_WEB_TEST_RESULTS_INTERFACE') && PHP_SAPI != 'cli'){
+		if($_SERVER['REMOTE_ADDR'] == '127.0.0.1'	&&
+			$_SERVER['SERVER_NAME'] == '127.0.0.1'	&&
+			$_SERVER['REQUEST_METHOD'] == 'GET'		&&
+			$_GET['token'] == "test-" . intval(time() / 10000)
+		){
+			echo "<style>body{background:#f9f9f9;margin:50px 0 900px 0;}pre{background:#fff;margin:20px auto;max-width:70%;border-radius:5px;border: 1px solid #ccc;padding: 20px 40px;font-size:1.15em;line-height:1.7em;}</style>";
+			echo "<pre>";
+			echo "<h1 style='border-bottom: 1px solid #ccc;padding-bottom:20px;'>" . basename($filename) . " tests</h1>";
+			_call_tests($function_names);
+			echo "</pre>";
+			// To stop url request
+			exit;
+		} else {
+			_test_page_not_found();
+		}
+	}
+
+	if(PHP_SAPI == 'cli') {
+		echo "Web test results interface token: token=" . intval(time() / 10000) . "\n";
+		_call_tests($function_names);
+	}
+}
+
 
 define('RENDER_TO_STRING', true);
 
@@ -47,11 +78,11 @@ function _header($header=false)
 // 
 // Test functions
 // 
-function call_tests($function_names)
+function _call_tests($function_names)
 {
 	$functions_to_implement = [];
 
-	echo "\n\n" . str_repeat('-', 60) . "\n";
+	echo "\n" . str_repeat('-', 60) . "\n";
 	foreach ($function_names as $name) {
 		$test_name = "test_$name";
 		if(function_exists($test_name)) {
