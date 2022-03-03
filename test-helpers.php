@@ -4,16 +4,13 @@
 // License: GPL
 // Status: Work in progress
 
+define('RENDER_TO_STRING', true);
+
+
 if(PHP_SAPI != 'cli' && !defined('ENABLE_WEB_TEST_RESULTS_INTERFACE')) {
 	_test_page_not_found();
 }
 
-function _test_page_not_found()
-{
-	header('HTTP/1.1 404 Not Found');
-	echo "404 Not Found";
-	exit;	
-}
 
 function call_tests($function_names, $filename=APP_NAME){
 	if(defined('ENABLE_WEB_TEST_RESULTS_INTERFACE') && PHP_SAPI != 'cli'){
@@ -41,68 +38,9 @@ function call_tests($function_names, $filename=APP_NAME){
 }
 
 
-define('RENDER_TO_STRING', true);
-
-
-function _setcookie($name="", $value="", $expires_or_options=0, $path="", $domain="", $secure=false, $httponly=false)
-{
-	static $list = [];
-
-	if($name == '__reset') {
-		$list = [];
-		return;
-	}
-	if(!$name) {
-		if($list['flash']){
-			$list['flash'] = reset(explode('%', base64_decode($list['flash'])));
-		}
-
-		return $list;
-	}
-	$list[$name] = $value;
-}
-
-function _header($header=false)
-{
-	static $list = [];
-
-	if($header == '__reset') {
-		$list = [];
-		return;
-	}
-	if(!$header) return $list;
-	$list[] = $header;
-}
-
-
 // 
 // Test functions
 // 
-function _call_tests($function_names)
-{
-	$functions_to_implement = [];
-
-	echo "\n" . str_repeat('-', 60) . "\n";
-	foreach ($function_names as $name) {
-		$test_name = "test_$name";
-		if(function_exists($test_name)) {
-			echo "\n# $test_name\n";
-			call_user_func($test_name);
-		} else {
-			$functions_to_implement[] = $test_name;
-		}
-	}
-	echo "\n" . str_repeat('-', 60) . "\n\n\n";
-	echo "✓ " . (sizeof($function_names) - sizeof($functions_to_implement)) . "/" . sizeof($function_names) . " tests passed.\n\n";
-
-	if(sizeof($functions_to_implement)){
-		echo sizeof($functions_to_implement) . " functions not implemented: " . join(', ', $functions_to_implement) . "\n";
-	}
-
-	echo "\n" . str_repeat('-', 60) . "\n\n\n";
-}
-
-
 function t($test_name, $result)
 {
 	if($result === false || $result == NULL || !$result) {
@@ -182,6 +120,36 @@ function do_post($uri_str, $post_params=[], $cookies=[])
 // 
 // Internal
 // 
+
+function _call_tests($function_names)
+{
+	$functions_to_implement = [];
+
+	$start_time = time();
+
+	echo "\n" . str_repeat('-', 60) . "\n";
+	foreach ($function_names as $name) {
+		$test_name = "test_$name";
+		if(function_exists($test_name)) {
+			echo "\n# $test_name\n";
+			call_user_func($test_name);
+		} else {
+			$functions_to_implement[] = $test_name;
+		}
+	}
+	echo "\n" . str_repeat('-', 60) . "\n\n";
+	echo "✓ " . (sizeof($function_names) - sizeof($functions_to_implement)) . "/" . sizeof($function_names) . " tests passed.\n\n";
+
+	if(sizeof($functions_to_implement)){
+		echo sizeof($functions_to_implement) . " functions not implemented: " . join(', ', $functions_to_implement) . "\n";
+	}
+
+	echo "Time taken: " . abs(time() - $start_time) . ' seconds';
+
+	echo "\n\n" . str_repeat('-', 60) . "\n\n\n";
+}
+
+
 function _clear_request()
 {
 	foreach ($_POST as $key => $value) {
@@ -206,4 +174,44 @@ function _set_params(&$input, $params)
 	foreach ($params as $key => $value) {
 		$input[$key] = $value;
 	}
+}
+
+function _test_page_not_found()
+{
+	header('HTTP/1.1 404 Not Found');
+	echo "404 Not Found";
+	exit;	
+}
+
+
+// Capture req/res headers
+
+function _setcookie($name="", $value="", $expires_or_options=0, $path="", $domain="", $secure=false, $httponly=false)
+{
+	static $list = [];
+
+	if($name == '__reset') {
+		$list = [];
+		return;
+	}
+	if(!$name) {
+		if($list['flash']){
+			$list['flash'] = reset(explode('%', base64_decode($list['flash'])));
+		}
+
+		return $list;
+	}
+	$list[$name] = $value;
+}
+
+function _header($header=false)
+{
+	static $list = [];
+
+	if($header == '__reset') {
+		$list = [];
+		return;
+	}
+	if(!$header) return $list;
+	$list[] = $header;
 }

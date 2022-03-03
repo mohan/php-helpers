@@ -15,7 +15,7 @@ function render($template_name, $args=[], $layout='layouts/index.php')
 	$_REQUEST['TEMPLATE_HAS_RENDERED'] = true;
 
 	$template_path = (defined('APP_DIR') ? APP_DIR : '.') . '/templates/' . (defined('APP_TEMPLATE') ? APP_TEMPLATE : '') . '/';
-	$uri = $_GET['uri'];
+	$uri = $_GET['uri']; // Only renders GET; redirect all other methods to get
 
 	extract($args, EXTR_SKIP);
 
@@ -403,8 +403,8 @@ function secure_cookie_get($name)
 	$authenticity = _secure_cookie_authenticity_token($name, $value, $timestamp);
 
 	if($given_authenticity != $authenticity) {
-		// Check 23 hours before for continuation
-		$authenticity = _secure_cookie_authenticity_token($name, $value, $timestamp - (23 * 60 * 60));
+		// Check 1 day before, for continuation;
+		$authenticity = _secure_cookie_authenticity_token($name, $value, $timestamp - (24 * 60 * 60));
 		if($given_authenticity != $authenticity) {
 			return false;
 		}
