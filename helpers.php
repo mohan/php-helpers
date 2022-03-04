@@ -448,7 +448,7 @@ function _secure_cookie_authenticity_token($name, $value, $timestamp)
 
 // Simple debug
 // Remember to remove all debugs
-function __d($exit, ...$args)
+function __d(...$args)
 {
 	echo "<pre style='width:94%;margin:1%;padding:2%;background:#fff;border:2px solid #aa0000;'>";
 	foreach($args as $arg) {
@@ -460,7 +460,13 @@ function __d($exit, ...$args)
 		echo "<hr/>";
 	}
 	echo "</pre>";
-	if($exit) exit;
+	
+}
+
+function __d_(...$args)
+{
+	__d_(...$args);
+	exit;
 }
 
 

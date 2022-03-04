@@ -12,7 +12,7 @@ if(PHP_SAPI != 'cli' && !defined('ENABLE_WEB_TEST_RESULTS_INTERFACE')) {
 }
 
 
-function call_tests($function_names, $filename=APP_NAME){
+function call_tests($function_names){
 	if(defined('ENABLE_WEB_TEST_RESULTS_INTERFACE') && PHP_SAPI != 'cli'){
 		if($_SERVER['REMOTE_ADDR'] == '127.0.0.1'	&&
 			$_SERVER['SERVER_NAME'] == '127.0.0.1'	&&
@@ -21,7 +21,6 @@ function call_tests($function_names, $filename=APP_NAME){
 		){
 			echo "<style>body{background:#f9f9f9;margin:50px 0 900px 0;}pre{background:#fff;margin:20px auto;max-width:70%;border-radius:5px;border: 1px solid #ccc;padding: 20px 40px;font-size:1.15em;line-height:1.7em;}</style>";
 			echo "<pre>";
-			echo "<h1 style='border-bottom: 1px solid #ccc;padding-bottom:20px;'>" . basename($filename) . " tests</h1>";
 			_call_tests($function_names);
 			echo "</pre>";
 			// To stop url request
