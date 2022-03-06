@@ -5,6 +5,214 @@
 // Status: Work in progress
 
 
+
+// 
+// Permitted Params
+// 
+
+
+// Permitted GET, POST, cookie params, with strlen check and typecasting
+// Ex: $get_param_names = [ 'param_name' => int_length ... ]
+function filter_permitted_params($get_param_names, $post_param_names, $cookie_param_names, $get_typecasts, $post_typecasts)
+{
+	$uri_param_key =  isset($_GET['post_uri']) ? 'post_uri' :
+						isset($_GET['patch_uri']) ? 'patch_uri' :
+						isset($_GET['delete_uri']) ? 'delete_uri' :
+						isset($_GET['uri']) ? 'uri' : false;
+
+	if(isset($_GET['uri']) && $uri_param_key === false) return false;
+
+	if(!_filter_permitted_params_names($_GET, $uri_param_key, $get_param_names)) return false;
+	if(!_filter_permitted_params_names($_POST, $uri_param_key, $post_param_names)) return false;
+	if(!_filter_permitted_params_names($_COOKIE, $uri_param_key, $cookie_param_names)) return false;
+
+	_filter_permitted_params_typecast($_GET, $get_typecasts);
+	_filter_permitted_params_typecast($_POST, $post_typecasts);
+
+	if(defined('__PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
+		_print_debug_request_args('Permitted $_GET params', $_GET);
+		_print_debug_request_args('List of all specified $_GET params that are permitted', $get_param_names);
+		
+		_print_debug_request_args('Permitted $_POST params', $_POST);
+		_print_debug_request_args('List of all specified $_POST params that are permitted', $post_param_names);
+
+		_print_debug_request_args('Permitted $_COOKIE params', $_COOKIE);
+		_print_debug_request_args('List of all specified $_COOKIE params that are permitted', $cookie_param_names);
+	}
+
+	return true;
+}
+
+
+function _filter_permitted_params_names(&$input, $uri_param_key, $permitted_arr)
+{
+	foreach ($input as $key => $value) {
+		if(!array_key_exists($key, $permitted_arr)) unset($input[$key]);
+		else if(isset($input[$key])){
+			if(is_int($permitted_arr[$key]) && strlen($input[$key]) > $permitted_arr[$key]) {
+				return false;
+			}
+			else if(is_string($permitted_arr[$key]) && !preg_match($permitted_arr[$key], $input[$key])) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+
+function _filter_permitted_params_typecast($input, $typecast_def_arr)
+{
+	foreach ($typecast_def_arr as $name => $type) {
+		if(isset($input[$name]) && is_string($input[$name]))
+		switch ($type) {
+			case 'int': $input[$name] = intval($input[$name]); break;
+			case 'float': $input[$name] = floatval($input[$name]); break;
+			case 'bool': $input[$name] = boolval($input[$name]); break;
+		}
+	}
+}
+
+
+
+// 
+// END Permitted Params
+// 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 
+// Router
+// 
+
+// Map action names to functions and call current name
+// Max action name 32 chars
+function filter_routes($get_action_names, $post_action_names, $patch_action_names, $delete_action_names)
+{
+	if(defined('TEMPLATE_HAS_RENDERED')) return false;
+
+	if(defined('__PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
+		_print_debug_request_args('List of GET actions with required params from [$_GET, $_REQUEST]', $get_action_names, ['URI', 'Value']);
+		_print_debug_request_args('List of POST actions with required params from [$_GET, $_POST, $_REQUEST]', $post_action_names, ['URI', 'Value']);
+		_print_debug_request_args('List of PATCH actions with required params from [$_GET, $_POST, $_REQUEST]', $patch_action_names, ['URI', 'Value']);
+		_print_debug_request_args('List of DELETE actions with required params from [$_GET, $_POST, $_REQUEST]', $delete_action_names, ['URI', 'Value']);
+		
+		_print_url_helpers($get_action_names, $post_action_names, $patch_action_names, $delete_action_names);
+	}
+
+	if( isset($_GET['post_uri']) ) {
+		if($_SERVER['REQUEST_METHOD'] != 'POST') return false;
+		return _filter_routes_method('post', 'post_uri', $post_action_names);
+	} else if( isset($_GET['patch_uri']) ) {
+		if($_SERVER['REQUEST_METHOD'] != 'POST') return false;
+		return _filter_routes_method('patch', 'patch_uri', $patch_action_names);
+	} else if( isset($_GET['delete_uri']) ) {
+		if($_SERVER['REQUEST_METHOD'] != 'POST') return false;
+		return _filter_routes_method('delete', 'delete_uri', $delete_action_names);
+	} else if( isset($_GET['uri']) ) {
+		if($_SERVER['REQUEST_METHOD'] != 'GET') return false;
+		return _filter_routes_method('get', 'uri', $get_action_names);
+	} else if( !isset($_GET['uri']) ) {
+		if($_SERVER['REQUEST_METHOD'] != 'GET') return false;
+		return get_root();
+	}
+
+	return false;
+}
+
+
+function _filter_routes_method($method_name, $uri_param_key, $action_names)
+{
+	if(defined('__PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
+		_print_debug_request_args('PHP Variables', [
+										"PHP_SAPI" => PHP_SAPI,
+										"\$_SERVER['DOCUMENT_ROOT']" => $_SERVER['DOCUMENT_ROOT'],
+										"\$_SERVER['SERVER_NAME']" => $_SERVER['SERVER_NAME'],
+										"\$_SERVER['REQUEST_METHOD']" => $_SERVER['REQUEST_METHOD'],
+										"\$_SERVER['REQUEST_URI']" => $_SERVER['REQUEST_URI']
+									]);
+	}
+
+	// $_GET['uri'] / $_GET['post_uri'] / $_GET['patch_uri']
+	$uri_route = $_GET[$uri_param_key];
+
+	// Required params for action
+	$required_params = $action_names[$uri_route];
+	$action_name = $method_name . '_' . preg_replace("/[^a-zA-Z0-9]/", '_', $uri_route);
+
+	if( is_string($uri_route) && array_key_exists($uri_route, $action_names)){
+		if($method_name == 'get'){
+			if( array_intersect($required_params[0], array_keys($_GET)) != $required_params[0]) return false;
+			if( array_intersect($required_params[1], array_keys($_REQUEST)) != $required_params[1]) return false;
+		} else {
+			if( array_intersect($required_params[0], array_keys($_GET)) != $required_params[0]) return false;
+			if( array_intersect($required_params[1], array_keys($_POST)) != $required_params[1]) return false;
+			if( array_intersect($required_params[2], array_keys($_REQUEST)) != $required_params[2]) return false;
+		}
+
+		if(defined('__PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
+			_print_debug_request_args('Current Route', [
+											'Internal HTTP method' => $method_name,
+											'Current URI Var' => '$_GET[\'' . $uri_param_key . '\']',
+											'Required params for action' => $required_params,
+											'Action function' => "function $action_name()",
+											'APP_ENV_IS_DEVELOPMENT' => (APP_ENV_IS_DEVELOPMENT ? 'true' : 'false') . "\nTODO: Disable in production and test env."
+										]);
+		}
+
+		return call_user_func( $action_name );
+	}
+
+	return false;
+}
+
+
+
+
+function redirectto($uri, $args=[])
+{
+	_header('Location: ' . urltoget($uri, $args));
+	return true;
+}
+
+
+if(!defined('CUSTOM_404_ACTION')){
+	function get_404($message='')
+	{
+		_header("HTTP/1.1 404 Not Found");
+		return render('layouts/404.php', ['__pagetitle'=>'404', 'message' => $message], false);
+	}
+}
+
+
+// 
+// END Router
+// 
+
+
+
+
+
+
+
+
+
+
+
+
+
 // 
 // Templates
 // 
@@ -15,7 +223,7 @@ function render($template_name, $args=[], $layout='layouts/index.php')
 	$_REQUEST['TEMPLATE_HAS_RENDERED'] = true;
 
 	$template_path = (defined('APP_DIR') ? APP_DIR : '.') . '/templates/' . (defined('APP_TEMPLATE') ? APP_TEMPLATE : '') . '/';
-	$uri = $_GET['uri']; // Only renders GET; redirect all other methods to get
+	$uri = isset($_GET['uri']) ? $_GET['uri'] : ''; // Only renders GET; redirect all other methods to get
 
 	extract($args, EXTR_SKIP);
 
@@ -49,6 +257,17 @@ function render_partial($template_name, $args=[], $return=false)
 		return $out;
 	}
 }
+
+
+// 
+// END Templates
+// 
+
+
+
+
+
+
 
 
 
@@ -92,12 +311,12 @@ function urltopost($uri, $args=[], $arg_separator='&')
 {
 	if(!$args) $args = [];
 	
-	if($args['__method'] == 'patch' || $args['__method'] == 'delete'){
+	if( isset($args['__method']) && ($args['__method'] == 'patch' || $args['__method'] == 'delete') ){
 		$_args = [$args['__method'] . '_uri' => $uri];
 	} else {
 		$_args = ['post_uri' => $uri];
 	}
-	if($args['__method']) unset($args['__method']);
+	if( isset($args['__method']) ) unset($args['__method']);
 
 	$args = array_merge($_args, $args);
 
@@ -105,20 +324,9 @@ function urltopost($uri, $args=[], $arg_separator='&')
 }
 
 
-function redirectto($uri, $args=[])
-{
-	_header('Location: ' . urltoget($uri, $args));
-	return true;
-}
-
-
-if(!defined('CUSTOM_404_ACTION')){
-	function get_404($message='')
-	{
-		_header("HTTP/1.1 404 Not Found");
-		return render('layouts/404.php', ['__pagetitle'=>'404', 'message' => $message], false);
-	}
-}
+// 
+// END URL helpers
+// 
 
 
 
@@ -171,15 +379,16 @@ function tag($html, $attrs=[], $name='div', $closing=true)
 {
 	if($name != 'input' && $name != 'textarea' && !$html) return;
 
-	foreach ($attrs as $key => $value) $attrs_str .= "$key='" . htmlentities($value) . "' ";
+	$attrs_str = '';
+	foreach ($attrs as $key => $value) $attrs_str .= " $key=\"" . htmlentities($value) . "\"";
 	
-	$out .= "<$name $attrs_str";
+	$out = "<$name$attrs_str";
 
 	if($name != 'input'){
 		$out .= ">" . htmlentities($html);
 		if($closing) $out .= "</$name>";
 	} else {
-		$out .= "value='" . htmlentities($html) . "'";
+		$out .= 'value="' . htmlentities($html) . '"';
 		$out .= " />";
 	}
 
@@ -189,11 +398,12 @@ function tag($html, $attrs=[], $name='div', $closing=true)
 
 function tag_table($headers, $data, $attrs=[], $cb=false)
 {
+	$attrs_str = '';
 	foreach ($attrs as $key => $value) $attrs_str .= "$key='" . htmlentities($value) . "' ";
 
 	$out = "<table $attrs_str><thead>\n<tr>";
 	foreach ($headers as $key => $value) {
-		$out .= '<th>' . ($escape_values ? htmlentities($value) : $value) . '</th>';
+		$out .= '<th>' . htmlentities($value) . '</th>';
 	}
 	$out .= "</tr>\n</thead>\n<tbody>\n";
 
@@ -222,13 +432,19 @@ function tag_table($headers, $data, $attrs=[], $cb=false)
 
 
 
+
+
+
+
+
+
 // 
 // Markdown
 // 
 
 function render_markdown($text, $shortcodes=false)
 {
-	$text = strip_tags($text);
+	$out = '';
 	
 	// Todo: Optimize, use substr.
 	$lines = explode("\n", $text);
@@ -239,7 +455,7 @@ function render_markdown($text, $shortcodes=false)
 		if($shortcodes && preg_match("/\[[a-z]+[^\]]*\][^(]?/", $line)){
 			$out .= process_shortcodes($line);
 		} else {
-			$out .= "<p>\n$line\n</p>\n";
+			$out .= "<p>\n" . htmlentities($line) . "\n</p>\n";
 		}
 	}
 
@@ -247,6 +463,10 @@ function render_markdown($text, $shortcodes=false)
 }
 
 
+
+// 
+// END Markdown
+// 
 
 
 
@@ -307,7 +527,9 @@ function process_shortcodes($text)
 
 
 
-
+// 
+// END Shortcodes
+// 
 
 
 
@@ -354,10 +576,15 @@ function filter_set_flash()
 	if($flash){
 		$_REQUEST['flash'] = $flash;
 		cookie_delete('flash');
+	} else {
+		$_REQUEST['flash'] = NULL;
 	}
 }
 
 
+// 
+// END Flash messages
+// 
 
 
 
@@ -428,46 +655,16 @@ function _secure_cookie_authenticity_token($name, $value, $timestamp)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // 
-// Debug helper
+// END Secure cookie
 // 
 
-// Simple debug
-// Remember to remove all debugs
-function __d(...$args)
-{
-	echo "<pre style='width:94%;margin:1%;padding:2%;background:#fff;border:2px solid #aa0000;'>";
-	foreach($args as $arg) {
-		ob_start();
-		var_dump($arg);
-		$out = ob_get_contents();
-		ob_end_clean();
-		echo htmlentities($out);
-		echo "<hr/>";
-	}
-	echo "</pre>";
-	
-}
 
-function __d_(...$args)
-{
-	__d_(...$args);
-	exit;
-}
+
+
+
+
+
 
 
 
@@ -498,65 +695,9 @@ function filter_set_config($filepath)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 // 
-// Router
-// 
-
-// Map action names to functions and call current name
-// Max action name 32 chars
-function filter_routes($get_action_names, $post_action_names, $patch_action_names, $delete_action_names)
-{
-	if(defined('TEMPLATE_HAS_RENDERED')) return false;
-
-	if($_GET['post_uri']){
-		if($_SERVER['REQUEST_METHOD'] != 'POST') return false;
-		return _filter_routes_method('post', 'post_uri', $post_action_names);
-	} else if($_GET['patch_uri']) {
-		if($_SERVER['REQUEST_METHOD'] != 'POST') return false;
-		return _filter_routes_method('patch', 'patch_uri', $patch_action_names);
-	} else if($_GET['delete_uri']) {
-		if($_SERVER['REQUEST_METHOD'] != 'POST') return false;
-		return _filter_routes_method('delete', 'delete_uri', $delete_action_names);
-	} else if($_GET['uri']) {
-		if($_SERVER['REQUEST_METHOD'] != 'GET') return false;
-		return _filter_routes_method('get', 'uri', $get_action_names);
-	} else if( !$_GET['uri'] ) {
-		if($_SERVER['REQUEST_METHOD'] != 'GET') return false;
-		return get_root();
-	}
-
-	return false;
-}
-
-function _filter_routes_method($method_name, $uri_param_key, $action_names)
-{
-	// $_GET['uri'] / $_GET['post_uri'] / $_GET['patch_uri']
-	$uri_route = $_GET[$uri_param_key];
-
-	// Required params for action
-	$required_params = $action_names[$uri_route];
-
-	if( is_string($uri_route) && array_key_exists($uri_route, $action_names)){
-		if( array_intersect($required_params, array_keys($_REQUEST)) != $required_params){
-			return false;
-		}
-
-		return call_user_func( $method_name . '_' . preg_replace("/[^a-zA-Z0-9]/", '_', $uri_route) );
-	}
-
-	return false;
-}
+// END Config file helpers
+//
 
 
 
@@ -572,55 +713,13 @@ function _filter_routes_method($method_name, $uri_param_key, $action_names)
 
 
 
-// 
-// Permitted Params
-// 
 
 
-// Permitted GET, POST, cookie params, with strlen check and typecasting
-// Ex: $get_param_names = [ 'param_name' => int_length ... ]
-function filter_permitted_params($get_param_names, $post_param_names, $cookie_param_names, $get_typecasts, $post_typecasts)
-{
-	if(!_filter_permitted_params_names($_GET, $get_param_names)) return false;
-	if(!_filter_permitted_params_names($_POST, $post_param_names)) return false;
-	if(!_filter_permitted_params_names($_COOKIE, $cookie_param_names)) return false;
-
-	_filter_permitted_params_typecast($_GET, $get_typecasts);
-	_filter_permitted_params_typecast($_POST, $post_typecasts);
-
-	return true;
-}
 
 
-function _filter_permitted_params_names($input, $permitted_arr)
-{
-	foreach ($input as $key => $value) {
-		if(!array_key_exists($key, $permitted_arr)) unset($input[$key]);
-		else if(isset($input[$key])){
-			if(is_int($permitted_arr[$key]) && strlen($input[$key]) > $permitted_arr[$key]) {
-				return false;
-			}
-			else if(is_string($permitted_arr[$key]) && !preg_match($permitted_arr[$key], $input[$key])) {
-				return false;
-			}
-		}
-	}
-
-	return true;
-}
 
 
-function _filter_permitted_params_typecast($input, $typecast_def_arr)
-{
-	foreach ($typecast_def_arr as $name => $type) {
-		if(is_string($input[$name]))
-		switch ($type) {
-			case 'int': $input[$name] = intval($input[$name]); break;
-			case 'float': $input[$name] = floatval($input[$name]); break;
-			case 'bool': $input[$name] = boolval($input[$name]); break;
-		}
-	}
-}
+
 
 
 
@@ -634,12 +733,20 @@ function _filter_permitted_params_typecast($input, $typecast_def_arr)
 // Internal functions
 // 
 
+// Fill null in arr, isset will not be needed
+function _array_fill_keys_with_null(&$arr, $keys)
+{
+	foreach ($keys as $key) {
+		if(!isset($arr[$key])) $arr[$key] = NULL;
+	}
+}
+
+
 // 
 // Headers
 // Proxy for header, needed for test env
 // 
-if(!defined('APP_ENV_IS_TEST')){
-
+if(!defined('CUSTOM_HEADER_HANDLERS')){
 	function _header($header)
 	{
 		header($header);
@@ -649,5 +756,10 @@ if(!defined('APP_ENV_IS_TEST')){
 	{
 		setcookie($name, $value, $expires_or_options, $path, $domain, $secure, $httponly);
 	}
-
 }
+
+
+
+// 
+// END Internal functions
+// 

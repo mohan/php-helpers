@@ -5,6 +5,7 @@
 // Status: Work in progress
 
 define('RENDER_TO_STRING', true);
+define('CUSTOM_HEADER_HANDLERS', true);
 
 
 if(PHP_SAPI != 'cli' && !defined('ENABLE_WEB_TEST_RESULTS_INTERFACE')) {
