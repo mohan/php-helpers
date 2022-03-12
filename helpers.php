@@ -30,14 +30,7 @@ function filter_permitted_params($get_param_names, $post_param_names, $cookie_pa
 	_filter_permitted_params_typecast($_POST, $post_typecasts);
 
 	if(defined('__PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-		_print_debug_request_args('Permitted $_GET params', $_GET);
-		_print_debug_request_args('List of all specified $_GET params that are permitted', $get_param_names);
-		
-		_print_debug_request_args('Permitted $_POST params', $_POST);
-		_print_debug_request_args('List of all specified $_POST params that are permitted', $post_param_names);
-
-		_print_debug_request_args('Permitted $_COOKIE params', $_COOKIE);
-		_print_debug_request_args('List of all specified $_COOKIE params that are permitted', $cookie_param_names);
+		_print_debug_permitted_params($get_param_names, $post_param_names, $cookie_param_names);
 	}
 
 	return true;
@@ -104,12 +97,7 @@ function filter_routes($get_action_names, $post_action_names, $patch_action_name
 	if(defined('TEMPLATE_HAS_RENDERED')) return false;
 
 	if(defined('__PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-		_print_debug_request_args('List of GET actions with required params from [$_GET, $_REQUEST]', $get_action_names, ['URI', 'Value']);
-		_print_debug_request_args('List of POST actions with required params from [$_GET, $_POST, $_REQUEST]', $post_action_names, ['URI', 'Value']);
-		_print_debug_request_args('List of PATCH actions with required params from [$_GET, $_POST, $_REQUEST]', $patch_action_names, ['URI', 'Value']);
-		_print_debug_request_args('List of DELETE actions with required params from [$_GET, $_POST, $_REQUEST]', $delete_action_names, ['URI', 'Value']);
-		
-		_print_url_helpers($get_action_names, $post_action_names, $patch_action_names, $delete_action_names);
+		_print_debug_routes_pre($get_action_names, $post_action_names, $patch_action_names, $delete_action_names);
 	}
 
 	if( isset($_GET['post_uri']) ) {
@@ -126,7 +114,8 @@ function filter_routes($get_action_names, $post_action_names, $patch_action_name
 		return _filter_routes_method('get', 'uri', $get_action_names);
 	} else if( !isset($_GET['uri']) ) {
 		if($_SERVER['REQUEST_METHOD'] != 'GET') return false;
-		return get_root();
+		$_GET['uri'] = 'root';
+		return _filter_routes_method('get', 'uri', $get_action_names);
 	}
 
 	return false;
@@ -135,24 +124,14 @@ function filter_routes($get_action_names, $post_action_names, $patch_action_name
 
 function _filter_routes_method($method_name, $uri_param_key, $action_names)
 {
-	if(defined('__PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-		_print_debug_request_args('PHP Variables', [
-										"PHP_SAPI" => PHP_SAPI,
-										"\$_SERVER['DOCUMENT_ROOT']" => $_SERVER['DOCUMENT_ROOT'],
-										"\$_SERVER['SERVER_NAME']" => $_SERVER['SERVER_NAME'],
-										"\$_SERVER['REQUEST_METHOD']" => $_SERVER['REQUEST_METHOD'],
-										"\$_SERVER['REQUEST_URI']" => $_SERVER['REQUEST_URI']
-									]);
-	}
-
 	// $_GET['uri'] / $_GET['post_uri'] / $_GET['patch_uri']
 	$uri_route = $_GET[$uri_param_key];
 
-	// Required params for action
-	$required_params = $action_names[$uri_route];
-	$action_name = $method_name . '_' . preg_replace("/[^a-zA-Z0-9]/", '_', $uri_route);
-
 	if( is_string($uri_route) && array_key_exists($uri_route, $action_names)){
+		// Required params for action
+		$required_params = $action_names[$uri_route];
+		$action_name = $method_name . '_' . preg_replace("/[^a-zA-Z0-9]/", '_', $uri_route);
+
 		if($method_name == 'get'){
 			if( array_intersect($required_params[0], array_keys($_GET)) != $required_params[0]) return false;
 			if( array_intersect($required_params[1], array_keys($_REQUEST)) != $required_params[1]) return false;
@@ -163,13 +142,7 @@ function _filter_routes_method($method_name, $uri_param_key, $action_names)
 		}
 
 		if(defined('__PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-			_print_debug_request_args('Current Route', [
-											'Internal HTTP method' => $method_name,
-											'Current URI Var' => '$_GET[\'' . $uri_param_key . '\']',
-											'Required params for action' => $required_params,
-											'Action function' => "function $action_name()",
-											'APP_ENV_IS_DEVELOPMENT' => (APP_ENV_IS_DEVELOPMENT ? 'true' : 'false') . "\nTODO: Disable in production and test env."
-										]);
+			_print_debug_routes_post($method_name, $uri_param_key, $required_params, $action_name);
 		}
 
 		return call_user_func( $action_name );
@@ -442,24 +415,84 @@ function tag_table($headers, $data, $attrs=[], $cb=false)
 // Markdown
 // 
 
-function render_markdown($text, $shortcodes=false)
+function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 {
 	$out = '';
 	
 	// Todo: Optimize, use substr.
 	$lines = explode("\n", $text);
+	$codeblock_start = false;
+	$add_tabs = true;
 	foreach ($lines as $i => $line) {
-		if(strlen(trim($line)) == 0) $line = "&nbsp;";
-		
-		// Shortcode
-		if($shortcodes && preg_match("/\[[a-z]+[^\]]*\][^(]?/", $line)){
-			$out .= process_shortcodes($line);
-		} else {
-			$out .= "<p>\n" . htmlentities($line) . "\n</p>\n";
+		$line = htmlentities($line);
+
+		$matches = [];
+		if(preg_match("/^(\t*)```$/", $line, $matches)){
+			if($codeblock_start){
+				$codeblock_start = false;
+				$add_tabs = true;
+				$out .= "</div>";
+			} else {
+				$codeblock_start = true;
+				$add_tabs = false;
+				$tabs = "style='margin-left:" . strlen($matches[1]) * 40 . "px;'";
+				$out .= "<div class='markdown-codeblock' $tabs>";
+			}
+			continue;
 		}
+
+		$line = preg_replace(
+			[
+				"/\*\*\*([^*]+)\*\*\*/",	// bold italic
+				"/\*\*([^*]+)\*\*/",		// italic
+				"/([^*\t])\*([^*]+)\*/",	// bold
+				"/~~([^~]+)~~/",			// strikethrough
+				"/^#\s(.+)/",				// h1
+				"/^##\s(.+)/",				// h2
+				"/^###\s(.+)/",				// h3
+				"/^####\s(.+)/",			// h4
+				"/^#####\s(.+)/",			// h5
+				"/`([^`]+)`/",				// code
+				"/^(\t*)-\s\[x\]\s(.+)$/",	// List checked
+				"/^(\t*)-\s\[\s\]\s(.+)$/"	// List checked
+			],
+			[
+				"<span class='markdown-bold-italic'>$1</span>",
+				"<span class='markdown-italic'>$1</span>",
+				"$1<span class='markdown-bold'>$2</span>",
+				"<strike>$1</strike>",
+				"<h1>$1</h1>\n",
+				"<h2>$1</h2>\n",
+				"<h3>$1</h3>\n",
+				"<h4>$1</h4>\n",
+				"<h5>$1</h5>\n",
+				"<span class='markdown-code'>$1</span>",
+				"$1<input type='checkbox' checked='checked' disabled='true' /> <strike>$2</strike>",
+				"$1<input type='checkbox' disabled='true' /> <span>$2</span>",
+			],
+			$line
+		);
+
+		if(!preg_match("/^\t*<h/", $line)){
+			$tabs = '';
+			if($add_tabs && preg_match("/^\t+/", $line, $matches)){
+				$tabs = " style='margin-left:" . strlen($matches[0]) * 30 . "px;'";
+			}
+
+			$line = strlen($line) == 0 ? "<p class='markdown-br'></p>\n" : "<p$tabs>\n" . $line . "\n</p>\n";
+		}
+
+		if($enable_shortcodes && $shortcode_line = process_shortcodes($line)){
+			$line = $shortcode_line;
+		}
+
+		$out .= $line;
 	}
 
-	return $out;
+	$attrs_str = sizeof($attrs) == 0 ? "class='markdown'" : '';
+	foreach ($attrs as $key => $value) $attrs_str .= "$key='" . htmlentities($value) . "' ";
+
+	return "\n<!-- Markdown start -->\n<div $attrs_str>\n$out\n</div>\n<!-- Markdown end -->\n";
 }
 
 
@@ -484,21 +517,26 @@ function render_markdown($text, $shortcodes=false)
 // Process all shortcodes using respective functions and replace with return values.
 function process_shortcodes($text)
 {
+	static $shortcode_list_regex = false;
+
+	if(!$shortcode_list_regex) {
+		$shortcodes_list = preg_replace("/[^[:alnum:]_-]/", "_", _shortcodes_list());
+		$shortcode_list_regex = "/\[(" . join('|', $shortcodes_list) . ")([^\]]*)\]/";
+	}
+
 	// start with [
 	// \[([a-z]+) = name
 	// ([^\]]*) = args_str
 	// [^\(] = Should not match markdown links
-	if(!preg_match_all("/\[([a-z]+)([^\]]*)\][^(]?/", $text, $matches)) return $text;
+	if(!preg_match_all($shortcode_list_regex, $text, $matches)) return false;
 
-	$shortcodes_list = shortcodes_list();
+	
 	$shortcodes_matches = [];
 	$shortcode_replacements = [];
 	foreach ($matches[0] as $key => $match) {
 		$full_shortcode = trim($matches[0][$key]);
 		$name = $matches[1][$key];
 		$args_str = $matches[2][$key];
-
-		if(!in_array($name, $shortcodes_list)) continue;
 		
 		$args = [];
 		if(strpos($args_str, '=') === false){
@@ -519,7 +557,7 @@ function process_shortcodes($text)
 
 		// Todo: Optimize, insert using substr.
 		$shortcodes_matches[] = '/' . preg_quote($full_shortcode) . '/';
-		$shortcode_replacements[] = call_user_func("shortcode_$name", $args);
+		$shortcode_replacements[] = call_user_func("shortcode_" . str_replace('-', '_', $name), $args);
 	}
 
 	return preg_replace($shortcodes_matches, $shortcode_replacements, $text, 1);
@@ -733,11 +771,11 @@ function filter_set_config($filepath)
 // Internal functions
 // 
 
-// Fill null in arr, isset will not be needed
-function _array_fill_keys_with_null(&$arr, $keys)
+// Fill defaults in arr
+function _arr_defaults(&$arr, $defaults)
 {
-	foreach ($keys as $key) {
-		if(!isset($arr[$key])) $arr[$key] = NULL;
+	foreach ($defaults as $key=>$default) {
+		if(!isset($arr[$key])) $arr[$key] = $default;
 	}
 }
 

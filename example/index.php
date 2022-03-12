@@ -1,6 +1,7 @@
 <?php
 
 require_once '../helpers.php';
+require_once '../helpers-extra.php';
 
 define('CONFIG_ROOT_URL', '/');
 
@@ -17,7 +18,8 @@ function initialize(){
 		],
 		// POST params with max_length
 		[
-			'title' => 1024
+			'title' => 1024,
+			'body'	=> 1024
 		],
 		// COOKIE params with max_length
 		[
@@ -37,20 +39,19 @@ function initialize(){
 	if(!filter_routes(
 		// Get uri, with required params from $_REQUEST
 		[
-			'new-post'	=> [],
-			'posts'		=> [],
-			'post'		=> ['id']
+			'root'		=> [[], []],
+			'new-post'	=> [[], []],
+			'posts'		=> [[], []],
+			'post'		=> [['id'], []]
 		],
 		// Post uri, with required params from $_REQUEST
 		[
-			'create-post' => ['title', 'body']
+			'create-post' => [[], ['title', 'body'], []]
 		],
 		// Patch (update)
-		[
-		],
+		[],
 		// Delete
-		[
-		]
+		[]
 	)) return get_404('Invalid URL');
 }
 
@@ -73,16 +74,34 @@ function get_new_post()
 
 function get_posts()
 {
-	return render('posts.php', ['title'=>$_GET['title']]);
+	_arr_defaults($_GET, ['title'=>'', 'body'=>'']);
+
+	return render('posts.php', ['id'=>'', 'title'=>$_GET['title'], 'body'=>$_GET['body']]);
 }
 
 function get_post()
 {
-	return render('posts.php', ['id'=>$_GET['id']]);
+	_arr_defaults($_GET, ['title'=>'', 'body'=>'']);
+	
+	return render('posts.php', ['id'=>$_GET['id'], 'title'=>$_GET['title'], 'body'=>$_GET['body']]);
 }
 
 function post_create_post()
 {
 	flash_set('Post created!');
-	return redirectto('posts', ['title' => $_POST['title']]);
+	return redirectto('posts', ['title' => $_POST['title'], 'body' => $_POST['body']]);
+}
+
+
+// 
+// Internal
+// 
+function _shortcodes_list()
+{
+	return ['random-number'];
+}
+
+function shortcode_random_number($args)
+{
+	return rand();
 }

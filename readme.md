@@ -7,7 +7,6 @@ License: GPL
 Status: Work in progress
 
 
-
 ## It contains
 
 1. Template rendering
@@ -26,8 +25,6 @@ Status: Work in progress
 ## Note
 * **Not tested**, do not use.
 * Please feel free to implement it yourself.
-
-
 
 
 
@@ -93,15 +90,26 @@ Status: Work in progress
 
 ### Markdown
 
-1. render_markdown($text, $shortcodes=false)
+1. render_markdown($text, $attrs=[], $shortcodes=false)
 	* Returns markdown as HTML
+	* Supports
+		* Bold Italic - ***Bold Italic***
+		* Italic - **Italic**
+		* Bold - *Bold*
+		* Strikethrough - ~~Strikethrough~~
+		* h1 to h5 starting with `#, ##, ###, ####, #####` respectively.
+		* Codeblock
+		```
+		<?php echo "Hello!" ?>
+		```
 
 
 ### Shortcodes
 
 1. process_shortcodes($text)
 	* Process shortcodes `[example #1]` through shortcode function.
-	* `shortcodes_list()` must return array of available shortcodes.
+	* `_shortcodes_list()` must return array of available shortcodes.
+	* Example: `[random\-number]=[random-number]`
 
 
 ### Flash messages
@@ -169,5 +177,14 @@ Status: Work in progress
 
 * Use URL rewrite for nice looking URLs, if needed. `/page/1` -> `/?get=page&id=1`.
 	* Custom URL helpers will be needed based on your rewrites.
+
+
+## TODO
+
+- [ ] Code Review
+- [ ] Test
+- [ ] URL param names in url
+- [x] Example application
+
 
 

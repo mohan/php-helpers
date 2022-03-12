@@ -4,9 +4,7 @@
 	</div>
 	<div id='debug-info-container' style='display:none;'>
 		<h2>Debug Information Panel</h2>
-		<div style='padding: 20px;'>
-			<?= $_REQUEST['DEBUG_REQUEST_ARGS_HTML'] ?>
-		</div>
+		<div style='padding: 20px;'><?= $_REQUEST['DEBUG_REQUEST_ARGS_HTML'] ?></div>
 	</div>
 
 	<style type="text/css">
@@ -28,7 +26,7 @@
 			background:#f6c457;
 			padding:10px 20px 10px 20px;
 			margin:0;
-			text-shadow:0 1px #AAD;
+			text-shadow:0 1px #f5C356;
 		}
 		#debug-info-container textarea{
 			border: 0px solid #f6c457;
@@ -38,6 +36,9 @@
 			width:100%;
 			height:40px;
 			background:transparent;
+		}
+		#debug-info-container table{
+			width: 100%;
 		}
 		#debug-info-container table th:first-child{
 			width: 350px;

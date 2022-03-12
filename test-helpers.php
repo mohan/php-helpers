@@ -8,34 +8,10 @@ define('RENDER_TO_STRING', true);
 define('CUSTOM_HEADER_HANDLERS', true);
 
 
-if(PHP_SAPI != 'cli' && !defined('ENABLE_WEB_TEST_RESULTS_INTERFACE')) {
-	_test_page_not_found();
+if(PHP_SAPI != 'cli') {
+	exit;
 }
 
-
-function call_tests($function_names){
-	if(defined('ENABLE_WEB_TEST_RESULTS_INTERFACE') && PHP_SAPI != 'cli'){
-		if($_SERVER['REMOTE_ADDR'] == '127.0.0.1'	&&
-			$_SERVER['SERVER_NAME'] == '127.0.0.1'	&&
-			$_SERVER['REQUEST_METHOD'] == 'GET'		&&
-			$_GET['token'] == "test-" . intval(time() / 10000)
-		){
-			echo "<style>body{background:#f9f9f9;margin:50px 0 900px 0;}pre{background:#fff;margin:20px auto;max-width:70%;border-radius:5px;border: 1px solid #ccc;padding: 20px 40px;font-size:1.15em;line-height:1.7em;}</style>";
-			echo "<pre>";
-			_call_tests($function_names);
-			echo "</pre>";
-			// To stop url request
-			exit;
-		} else {
-			_test_page_not_found();
-		}
-	}
-
-	if(PHP_SAPI == 'cli') {
-		echo "Web test results interface token: token=" . intval(time() / 10000) . "\n";
-		_call_tests($function_names);
-	}
-}
 
 
 // 
@@ -84,7 +60,7 @@ function do_get($uri_str, $cookies=[])
 {
 	_clear_request();
 	$uri = parse_url($uri_str);
-	parse_str($uri['query'], $_GET);
+	parse_str(isset($uri['query']) ? $uri['query'] : '', $_GET);
 	$_SERVER['REQUEST_METHOD'] = 'GET';
 	_set_params($_COOKIE, $cookies);
 	_set_params($_REQUEST, $_GET);
@@ -117,11 +93,7 @@ function do_post($uri_str, $post_params=[], $cookies=[])
 
 
 
-// 
-// Internal
-// 
-
-function _call_tests($function_names)
+function call_tests($function_names)
 {
 	$functions_to_implement = [];
 
@@ -150,6 +122,11 @@ function _call_tests($function_names)
 }
 
 
+// 
+// Internal
+// 
+
+
 function _clear_request()
 {
 	foreach ($_POST as $key => $value) {
@@ -176,13 +153,6 @@ function _set_params(&$input, $params)
 	}
 }
 
-function _test_page_not_found()
-{
-	header('HTTP/1.1 404 Not Found');
-	echo "404 Not Found";
-	exit;	
-}
-
 
 // Capture req/res headers
 
@@ -195,8 +165,10 @@ function _setcookie($name="", $value="", $expires_or_options=0, $path="", $domai
 		return;
 	}
 	if(!$name) {
-		if($list['flash']){
-			$list['flash'] = reset(explode('%', base64_decode($list['flash'])));
+		if(isset($list['flash']) && $list['flash']){
+			$list['flash'] = explode('%', base64_decode($list['flash']))[0];
+		} else {
+			$list['flash'] = $_REQUEST['flash'];
 		}
 
 		return $list;

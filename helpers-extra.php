@@ -47,6 +47,48 @@ if(APP_ENV_IS_DEVELOPMENT){
 	}
 
 
+	function _print_debug_permitted_params($get_param_names, $post_param_names, $cookie_param_names)
+	{
+		_print_debug_request_args('$_GET params', $_GET);
+		_print_debug_request_args('$_POST params', $_POST);
+		_print_debug_request_args('$_COOKIE params', $_COOKIE);
+		_print_debug_request_args('$_REQUEST[\'flash\']', ['flash'=>secure_cookie_get('flash')]);
+		_print_debug_request_args('All specified $_GET params that are permitted', $get_param_names);
+		_print_debug_request_args('All specified $_POST params that are permitted', $post_param_names);
+		_print_debug_request_args('All specified $_COOKIE params that are permitted', $cookie_param_names);
+	}
+
+
+	function _print_debug_routes_pre($get_action_names, $post_action_names, $patch_action_names, $delete_action_names)
+	{
+		_print_url_helpers($get_action_names, $post_action_names, $patch_action_names, $delete_action_names);
+		_print_debug_request_args('PHP Variables', [
+										"PHP_SAPI" => PHP_SAPI,
+										"\$_SERVER['SERVER_NAME']" => $_SERVER['SERVER_NAME'],
+										"\$_SERVER['REQUEST_METHOD']" => $_SERVER['REQUEST_METHOD'],
+										"\$_SERVER['REQUEST_URI']" => $_SERVER['REQUEST_URI']
+									]);
+	}
+
+
+	function _print_debug_routes_post($method_name, $uri_param_key, $required_params, $action_name)
+	{
+		$args = [
+			'Internal HTTP method' => $method_name,
+			'Route' => '$_GET[\'' . $uri_param_key . '\'] == "' . $_GET[$uri_param_key] . '"',
+			'Action function' => "function $action_name(){ ... }",
+			'Required params for action' => $required_params,
+			'$_GET' => json_encode($_GET)
+		];
+
+		if($_SERVER['REQUEST_METHOD'] == 'POST') $args['$_POST'] = json_encode($_POST);
+
+		$args['APP_ENV_IS_DEVELOPMENT'] = (APP_ENV_IS_DEVELOPMENT ? 'true' : 'false') . "\nTODO: Disable in production and test env.";
+
+		_print_debug_request_args('Current Route', $args);
+	}
+
+
 	function _print_debug_request_args($name, $args, $table_headers=['Param', 'Value'], $encode=true)
 	{
 		if(!isset($_REQUEST['DEBUG_REQUEST_ARGS_HTML'])) $_REQUEST['DEBUG_REQUEST_ARGS_HTML'] = '';
@@ -58,7 +100,7 @@ if(APP_ENV_IS_DEVELOPMENT){
 		if($name) $_REQUEST['DEBUG_REQUEST_ARGS_HTML'] .= tag($name, [], 'h3');
 		$_REQUEST['DEBUG_REQUEST_ARGS_HTML'] .=
 					tag_table($table_headers, $data,
-						['class'=>'table w-100', 'style'=>'margin: 0 0 50px 0;'],
+						['class'=>'table w-100'],
 						function($row_value, $header_key) use($encode){
 							if($header_key == 0){
 								return htmlentities($row_value[0]);
@@ -83,16 +125,16 @@ if(APP_ENV_IS_DEVELOPMENT){
 
 		$url_helpers_arr = [];
 		$url_helpers_arr = _generate_url_helper('get', $get_action_names);
-		_print_debug_request_args('Function calls for GET METHOD request', $url_helpers_arr, ['GET Route Name', 'Function calls'], false);
+		_print_debug_request_args('All GET actions with required params from [$_GET, $_REQUEST]', $url_helpers_arr, ['GET Route URI', 'Info'], false);
 		$url_helpers_arr = [];
-		$url_helpers_arr = _generate_url_helper('post', $get_action_names);
-		_print_debug_request_args('Function calls for POST METHOD request', $url_helpers_arr, ['POST Route Name', 'Function calls'], false);
+		$url_helpers_arr = _generate_url_helper('post', $post_action_names);
+		_print_debug_request_args('All POST actions with required params from [$_GET, $_POST, $_REQUEST]', $url_helpers_arr, ['POST Route URI', 'Info'], false);
 		$url_helpers_arr = [];
-		$url_helpers_arr = _generate_url_helper('patch', $get_action_names);
-		_print_debug_request_args('Function calls for PATCH METHOD request', $url_helpers_arr, ['PATCH Route Name', 'Function calls'], false);
+		$url_helpers_arr = _generate_url_helper('patch', $patch_action_names);
+		_print_debug_request_args('All PATCH actions with required params from [$_GET, $_POST, $_REQUEST]', $url_helpers_arr, ['PATCH Route URI', 'Info'], false);
 		$url_helpers_arr = [];
-		$url_helpers_arr = _generate_url_helper('delete', $get_action_names);
-		_print_debug_request_args('Function calls for DELETE METHOD request', $url_helpers_arr, ['DELETE Route Name', 'Function calls'], false);
+		$url_helpers_arr = _generate_url_helper('delete', $delete_action_names);
+		_print_debug_request_args('All DELETE actions with required params from [$_GET, $_POST, $_REQUEST]', $url_helpers_arr, ['DELETE Route URI', 'Info'], false);
 	}
 
 
@@ -106,7 +148,8 @@ if(APP_ENV_IS_DEVELOPMENT){
 			}
 
 			$action_name = $method_name . '_' . preg_replace("/[^a-zA-Z0-9]/", '_', $uri_route);
-			$url_helpers_arr[$uri_route] = ["function $action_name()"];
+			$url_helpers_arr[$uri_route] = [json_encode($required_params)];
+			$url_helpers_arr[$uri_route][] = "function $action_name(){ ... }";
 
 			switch ($method_name) {
 				case 'get':
