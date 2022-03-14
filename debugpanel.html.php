@@ -1,4 +1,4 @@
-<?php if(defined('APP_ENV_IS_DEVELOPMENT') && APP_ENV_IS_DEVELOPMENT): ?>
+<?php if(defined('APP_ENV_IS_DEVELOPMENT') && APP_ENV_IS_DEVELOPMENT && isset($_REQUEST['DEBUG_REQUEST_ARGS_HTML'])): ?>
 	<div style='text-align:right;'>
 		<a id='toggle-debug-info' href='#toggle-debug-info' style=''>Show/Hide Debug Panel</a>
 	</div>
@@ -21,12 +21,23 @@
 			border-bottom:2px solid #f6c457;
 			background:#efefef;
 			font-size:12px;
+			font-family: 'arial';
 		}
 		#debug-info-container h2{
 			background:#f6c457;
 			padding:10px 20px 10px 20px;
 			margin:0;
 			text-shadow:0 1px #f5C356;
+		}
+		#debug-info-container h3:first-child{
+			border: 0;
+			padding-top: 0;
+			margin-top: 0;
+		}
+		#debug-info-container h3{
+			border-top: 1px solid #cfcfcf;
+			margin-top: 20px;
+			padding-top: 20px;
 		}
 		#debug-info-container textarea{
 			border: 0px solid #f6c457;
@@ -36,9 +47,11 @@
 			width:100%;
 			height:40px;
 			background:transparent;
+			font-size: 12px;
 		}
 		#debug-info-container table{
 			width: 100%;
+			font-size: 13px;
 		}
 		#debug-info-container table th:first-child{
 			width: 350px;
@@ -48,6 +61,7 @@
 		}
 		#debug-info-container table td:first-child{
 			background: #faedcf;
+			padding-left: 10px;
 		}
 	</style>
 	<script type="text/javascript">

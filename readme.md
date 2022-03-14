@@ -1,35 +1,31 @@
 # PHP Helpers
 
-23 functions for building a PHP application.
-
+23 functions for building PHP applications.
 License: GPL
-
 Status: Work in progress
 
 
 ## It contains
-
-1. Template rendering
-2. URL helpers
-3. HTML Tag helpers
-4. Markdown
-5. Shortcodes
-6. Flash message
-7. Cookie with added authenticity
-8. Debug helper
-9. Config file helpers
-10. Router
-11. Permitted Params
+1. Rewrite URIs
+2. Permitted Params
+3. Router (to call action functions)
+4. Templates
+5. URL helpers
+6. HTML Tag helpers
+7. Markdown
+8. Shortcodes
+9. Flash messages
+10. Secure cookie (Cookie with added authenticity)
+11. Config file helpers
+12. Debug helpers (helpers-extra.php)
 
 
 ## Note
 * **Not tested**, do not use.
-* Please feel free to implement it yourself.
 
 
 
 ## Available functions
-
 
 ### Templates
 
@@ -97,11 +93,17 @@ Status: Work in progress
 		* Italic - **Italic**
 		* Bold - *Bold*
 		* Strikethrough - ~~Strikethrough~~
+		* Link without text - (http://example.org) (/) (/posts)
+		* Link with text - [Example](http://example.org) [Home](/) [Posts](/posts)
 		* h1 to h5 starting with `#, ##, ###, ####, #####` respectively.
+		* Bullet, dashed and numbered lists
+			* Bullet list item
+			1. Numbered list item
+			- Dash list item
 		* Codeblock
-		```
-		<?php echo "Hello!" ?>
-		```
+			```
+			<?php echo "Hello!" ?>
+			```
 
 
 ### Shortcodes
@@ -109,7 +111,7 @@ Status: Work in progress
 1. process_shortcodes($text)
 	* Process shortcodes `[example #1]` through shortcode function.
 	* `_shortcodes_list()` must return array of available shortcodes.
-	* Example: `[random\-number]=[random-number]`
+	* Example: `[\timestamp] = [timestamp]`
 
 
 ### Flash messages
@@ -144,8 +146,15 @@ Status: Work in progress
 
 ### Debug helper
 
-1. __d($exit, ...$args)
-	* Debug variables; uses print_r.
+1. __d(...$args)
+	* Debug variables using var_dump.
+
+2. __d_(...$args)
+	* Debug variables and exit.
+
+3. debugpanel.html.php
+	* Include in layout for debug panel to display information about current request.
+	* Environment variable `APP_ENV_IS_DEVELOPMENT=true` is required.
 
 
 ### Config file helpers
@@ -175,16 +184,15 @@ Status: Work in progress
 
 ## Notes
 
-* Use URL rewrite for nice looking URLs, if needed. `/page/1` -> `/?get=page&id=1`.
-	* Custom URL helpers will be needed based on your rewrites.
+- Use URL rewrite for nice looking resource style URLs, if needed. `/page/1` -> `/?uri=page&id=1`.
+	- Custom URL helpers will be needed based on your rewrites.
 
 
 ## TODO
 
 - [ ] Code Review
 - [ ] Test
-- [ ] URL param names in url
 - [x] Example application
-
-
+- [!] URL param names in url
+	- Use web server rewrites
 

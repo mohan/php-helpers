@@ -1,0 +1,98 @@
+body{
+	background: #f0f0f0;
+	padding: 0;
+	margin: 0;
+	font-family: monaco, "courier new", courier, monospace;
+	font-size: 0.8em;
+	line-height: 1.8em;
+}
+ul#nav{
+	background: #f6c457;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	text-align: center;
+}
+ul#nav li{
+	display: inline-block;
+	margin: 20px 1px;
+}
+ul#nav li a{
+	display: inline-block;
+	background: #da9603;
+	padding: 5px 15px;
+	color: #FFFFFF;
+	text-decoration: none;
+	border-radius: 3px;
+	width: 100px;
+	text-shadow: 0px 1px #a48032;
+}
+ul#nav li a:hover{
+	background: #444;
+}
+ul#nav li a.current-uri-link{
+	background: #222;
+	text-shadow: 0px 1px #444;
+}
+
+#main{
+	margin: 60px 200px 0 200px;
+	min-height: 60vh;
+}
+
+input[type='text'], textarea{
+	width: 100%;
+	font-size: 1em;
+	padding: 5px;
+}
+pre{
+	tab-size:4;
+	font-family: inherit;
+	line-height: 2em;
+}
+
+.panel{
+	background: #ddd;
+	padding: 5px 20px;
+	border-radius: 5px;
+}
+
+.text-center{
+	text-align: center;
+}
+
+
+.markdown p{ margin: 8px 0; }
+.markdown .markdown-br{ padding: 7px; }
+.markdown .tab-count-1{ margin-left: 30px; }
+.markdown .tab-count-2{ margin-left: 60px; }
+.markdown .tab-count-3{ margin-left: 90px; }
+.markdown .tab-count-5{ margin-left: 120px; }
+.markdown .tab-count-6{ margin-left: 150px; }
+.markdown .tab-count-7{ margin-left: 180px; }
+.markdown .markdown-codeblock .tab-count-1, .markdown .markdown-codeblock .tab-count-2,
+.markdown .markdown-codeblock .tab-count-3, .markdown .markdown-codeblock .tab-count-4,
+.markdown .markdown-codeblock .tab-count-5, .markdown .markdown-codeblock .tab-count-6,
+.markdown .markdown-codeblock .tab-count-7 { margin-left: 0; }
+.markdown .markdown-codeblock.tab-count-1{ margin-left: 35px; }
+.markdown .markdown-codeblock.tab-count-2{ margin-left: 65px; }
+.markdown .markdown-codeblock.tab-count-3{ margin-left: 95px; }
+.markdown .markdown-codeblock.tab-count-5{ margin-left: 125px; }
+.markdown .markdown-codeblock.tab-count-6{ margin-left: 155px; }
+.markdown .markdown-codeblock.tab-count-7{ margin-left: 185px; }
+.markdown .markdown-italic{ font-style: italic; }
+.markdown .markdown-bold{ font-weight: bold; }
+.markdown .markdown-bold-italic{ font-weight: bold; font-style: italic; }
+.markdown .markdown-code{ display: inline-block; background: #ddd; padding:0 7px; border-radius: 4px; font-size: 0.85em; }
+.markdown .markdown-codeblock{ background: #ddd; padding:25px 25px 20px 25px; border-radius: 4px; }
+.markdown .markdown-list-bullet, .markdown .markdown-list-number, .markdown .markdown-list-dash{ color: #888; }
+.markdown .markdown-task-list{ display: block; }
+.markdown .markdown-task-list-checked{ background: #002200; color: #fff; padding: 0 5px; border-radius: 3px; }
+.markdown .markdown-task-list-checked-striked{ background: #550000; color: #fff; padding: 0 5px; border-radius: 3px; }
+.markdown .markdown-task-list-unchecked-striked{ background: #550000; color: #fff; padding: 0 5px; border-radius: 3px; }
+.markdown .markdown-task-list-unchecked{ background: #ccc; padding: 0 5px; border-radius: 3px; }
+.markdown h1{ font-size: 1.3em; margin: 0 0 2px 0; }
+.markdown h2{ font-size: 1.2em; margin: 0 0 2px 0; }
+.markdown h3{ font-size: 1.1em; margin: 0 0 2px 0; }
+.markdown h4{ font-size: 1.0em; margin: 0 0 2px 0; }
+.markdown h5{ font-size: 0.9em; margin: 0 0 2px 0; }

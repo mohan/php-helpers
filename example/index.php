@@ -4,17 +4,31 @@ require_once '../helpers.php';
 require_once '../helpers-extra.php';
 
 define('CONFIG_ROOT_URL', '/');
+// Secure hash of 32 characters
+// /usr/bin/php -r "echo md5(rand()*rand());"
+define('CONFIG_SECURE_HASH', '00000000000000000000000000000000');
 
 initialize();
 
 function initialize(){
+	// Directly render a template, without action function
+	$page = isset($_GET['uri']) && $_GET['uri'] == 'markdown' ? 'markdown' : false;
+	if($page){
+		return render("app/$page.php", ['_pagetitle'=>ucfirst($page)]);
+	}
+
+	filter_rewrite_uri([
+		"/^\/(?P<uri>post)\/(?P<id>\d+)$/"
+	]);
+
 	if(!filter_permitted_params(
 		// GET params with regex
 		[
-			'uri' => '/^[a-z0-9_-]+$/',
-			'post_uri' => '/^[a-z0-9_-]+$/',
-			'id' => '/^\d+$/',
-			'title' => 1024,
+			'uri'		=> '/^[a-z0-9_-]+$/',
+			'post_uri'	=> '/^[a-z0-9_-]+$/',
+			'id'		=> '/^\d+$/',
+			'title'		=> 1024,
+			'body'		=> 1024
 		],
 		// POST params with max_length
 		[
@@ -37,20 +51,21 @@ function initialize(){
 
 	// Routes
 	if(!filter_routes(
-		// Get uri, with required params from $_REQUEST
+		// Get uri, with required params from $_GET, $_REQUEST
 		[
 			'root'		=> [[], []],
 			'new-post'	=> [[], []],
 			'posts'		=> [[], []],
-			'post'		=> [['id'], []]
+			'post'		=> [['id'], []],
+			'markdown'	=> [[], []]
 		],
-		// Post uri, with required params from $_REQUEST
+		// Post uri, with required params from $_GET, $_POST, $_REQUEST
 		[
 			'create-post' => [[], ['title', 'body'], []]
 		],
-		// Patch (update)
+		// Patch (update) uri, with required params from $_GET, $_POST, $_REQUEST
 		[],
-		// Delete
+		// Delete uri, with required params from $_GET, $_POST, $_REQUEST
 		[]
 	)) return get_404('Invalid URL');
 }
@@ -64,32 +79,39 @@ function initialize(){
 
 function get_root()
 {
-	return render('hello.php');
+	return render('app/readme.php', ['_pagetitle'=>'Readme']);
 }
 
 function get_new_post()
 {
-	return render('new_post.php');
+	_arr_defaults($_POST, ['title'=>'', 'body'=>'']);
+
+	return render('app/new_post.php', ['_pagetitle'=>'New Post', 'title'=>$_POST['title'], 'body'=>$_POST['body']]);
 }
 
 function get_posts()
 {
 	_arr_defaults($_GET, ['title'=>'', 'body'=>'']);
 
-	return render('posts.php', ['id'=>'', 'title'=>$_GET['title'], 'body'=>$_GET['body']]);
+	return render('app/posts.php', ['_pagetitle'=>'Posts', 'id'=>1, 'title'=>$_GET['title'], 'body'=>$_GET['body']]);
 }
 
 function get_post()
 {
 	_arr_defaults($_GET, ['title'=>'', 'body'=>'']);
 	
-	return render('posts.php', ['id'=>$_GET['id'], 'title'=>$_GET['title'], 'body'=>$_GET['body']]);
+	return render('app/posts.php', ['_pagetitle'=>'Post', 'id'=>$_GET['id'], 'title'=>$_GET['title'], 'body'=>$_GET['body']]);
 }
 
 function post_create_post()
 {
-	flash_set('Post created!');
-	return redirectto('posts', ['title' => $_POST['title'], 'body' => $_POST['body']]);
+	if($_POST['title'] && $_POST['body']){
+		flash_set('Post created!');
+		return redirectto('posts', ['title' => $_POST['title'], 'body' => $_POST['body']]);
+	} else {
+		flash_set('Invalid fields!', true);
+		return get_new_post();
+	}
 }
 
 
@@ -98,10 +120,10 @@ function post_create_post()
 // 
 function _shortcodes_list()
 {
-	return ['random-number'];
+	return ['timestamp'];
 }
 
-function shortcode_random_number($args)
+function shortcode_timestamp($args)
 {
-	return rand();
+	return time();
 }

@@ -6,6 +6,35 @@
 
 
 
+
+// 
+// Rewrite uris
+// 
+
+function filter_rewrite_uri($paths)
+{
+	$matches = [];
+	foreach ($paths as $path) {
+		if(preg_match($path, $_SERVER['REQUEST_URI'], $matches)) break;
+	}
+
+	if(sizeof($matches) == 0) return false;
+
+	foreach ($matches as $key => $value) {
+		if(is_string($key)) $_GET[$key] = $value;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
 // 
 // Permitted Params
 // 
@@ -15,21 +44,14 @@
 // Ex: $get_param_names = [ 'param_name' => int_length ... ]
 function filter_permitted_params($get_param_names, $post_param_names, $cookie_param_names, $get_typecasts, $post_typecasts)
 {
-	$uri_param_key =  isset($_GET['post_uri']) ? 'post_uri' :
-						isset($_GET['patch_uri']) ? 'patch_uri' :
-						isset($_GET['delete_uri']) ? 'delete_uri' :
-						isset($_GET['uri']) ? 'uri' : false;
-
-	if(isset($_GET['uri']) && $uri_param_key === false) return false;
-
-	if(!_filter_permitted_params_names($_GET, $uri_param_key, $get_param_names)) return false;
-	if(!_filter_permitted_params_names($_POST, $uri_param_key, $post_param_names)) return false;
-	if(!_filter_permitted_params_names($_COOKIE, $uri_param_key, $cookie_param_names)) return false;
+	if(!_filter_permitted_params_names($_GET, $get_param_names)) return false;
+	if(!_filter_permitted_params_names($_POST, $post_param_names)) return false;
+	if(!_filter_permitted_params_names($_COOKIE, $cookie_param_names)) return false;
 
 	_filter_permitted_params_typecast($_GET, $get_typecasts);
 	_filter_permitted_params_typecast($_POST, $post_typecasts);
 
-	if(defined('__PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
+	if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
 		_print_debug_permitted_params($get_param_names, $post_param_names, $cookie_param_names);
 	}
 
@@ -37,7 +59,7 @@ function filter_permitted_params($get_param_names, $post_param_names, $cookie_pa
 }
 
 
-function _filter_permitted_params_names(&$input, $uri_param_key, $permitted_arr)
+function _filter_permitted_params_names(&$input, $permitted_arr)
 {
 	foreach ($input as $key => $value) {
 		if(!array_key_exists($key, $permitted_arr)) unset($input[$key]);
@@ -94,9 +116,9 @@ function _filter_permitted_params_typecast($input, $typecast_def_arr)
 // Max action name 32 chars
 function filter_routes($get_action_names, $post_action_names, $patch_action_names, $delete_action_names)
 {
-	if(defined('TEMPLATE_HAS_RENDERED')) return false;
+	if(isset($_REQUEST['TEMPLATE_HAS_RENDERED'])) return false;
 
-	if(defined('__PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
+	if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
 		_print_debug_routes_pre($get_action_names, $post_action_names, $patch_action_names, $delete_action_names);
 	}
 
@@ -141,7 +163,7 @@ function _filter_routes_method($method_name, $uri_param_key, $action_names)
 			if( array_intersect($required_params[2], array_keys($_REQUEST)) != $required_params[2]) return false;
 		}
 
-		if(defined('__PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
+		if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
 			_print_debug_routes_post($method_name, $uri_param_key, $required_params, $action_name);
 		}
 
@@ -152,8 +174,6 @@ function _filter_routes_method($method_name, $uri_param_key, $action_names)
 }
 
 
-
-
 function redirectto($uri, $args=[])
 {
 	_header('Location: ' . urltoget($uri, $args));
@@ -161,11 +181,11 @@ function redirectto($uri, $args=[])
 }
 
 
-if(!defined('CUSTOM_404_ACTION')){
+if(!defined('CUSTOM_GET_404')){
 	function get_404($message='')
 	{
 		_header("HTTP/1.1 404 Not Found");
-		return render('layouts/404.php', ['__pagetitle'=>'404', 'message' => $message], false);
+		return render('layouts/404.php', ['_pagetitle'=>'404', 'message' => $message], false);
 	}
 }
 
@@ -265,35 +285,51 @@ function urlto_public_dir($uri)
 function urltoget($uri, $args=[], $arg_separator='&')
 {
 	if(!$args) $args = [];
+	if(isset($args['ROOT_URL'])){
+		$root_url = $args['ROOT_URL'];
+		unset($args['ROOT_URL']);
+	} else {
+		$root_url = CONFIG_ROOT_URL;
+	}
 
-	$hash = isset($args['__hash']) ? '#' . $args['__hash'] : '';
-	unset($args['__hash']);
+	$hash = isset($args['_hash']) ? '#' . $args['_hash'] : '';
+	unset($args['_hash']);
+
+	if(isset($args['p'])){
+		return $root_url . $args['p'] . $hash;
+	}
 
 	if($uri) {
 		$_args = ['uri' => $uri];
 		$args = array_merge($_args, $args);
 
-		return CONFIG_ROOT_URL . '?' . http_build_query($args, '', $arg_separator) . $hash;
+		return $root_url . '?' . http_build_query($args, '', $arg_separator) . $hash;
 	}
 
-	return CONFIG_ROOT_URL . $hash;
+	return $root_url . $hash;
 }
 
 
 function urltopost($uri, $args=[], $arg_separator='&')
 {
 	if(!$args) $args = [];
+	if(isset($args['ROOT_URL'])){
+		$root_url = $args['ROOT_URL'];
+		unset($args['ROOT_URL']);
+	} else {
+		$root_url = CONFIG_ROOT_URL;
+	}
 	
-	if( isset($args['__method']) && ($args['__method'] == 'patch' || $args['__method'] == 'delete') ){
-		$_args = [$args['__method'] . '_uri' => $uri];
+	if( isset($args['_method']) && ($args['_method'] == 'patch' || $args['_method'] == 'delete') ){
+		$_args = [$args['_method'] . '_uri' => $uri];
 	} else {
 		$_args = ['post_uri' => $uri];
 	}
-	if( isset($args['__method']) ) unset($args['__method']);
+	if( isset($args['_method']) ) unset($args['_method']);
 
 	$args = array_merge($_args, $args);
 
-	return CONFIG_ROOT_URL . '?' . http_build_query($args, '', $arg_separator);
+	return $root_url . '?' . http_build_query($args, '', $arg_separator);
 }
 
 
@@ -339,6 +375,11 @@ function formto($uri, $args=[], $attrs=[])
 function linkto($uri, $html, $args=[], $attrs=[])
 {
 	$url = urltoget($uri, $args, '&amp;');
+
+	if($_SERVER['REQUEST_URI'] == urltoget($uri, $args)) {
+		_arr_defaults($attrs, ['class'=>'']);
+		$attrs['class'] .= 'current-uri-link';
+	}
 	
 	$attrs_str = '';
 	foreach ($attrs as $key => $value) $attrs_str .= "$key='" . htmlentities($value) . "' ";
@@ -417,12 +458,52 @@ function tag_table($headers, $data, $attrs=[], $cb=false)
 
 function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 {
-	$out = '';
+	static $patterns = [[
+		"/^#\s(.+)/",												// h1
+		"/^##\s(.+)/",												// h2
+		"/^###\s(.+)/",												// h3
+		"/^####\s(.+)/",											// h4
+		"/^#####\s(.+)/",											// h5
+		"/\*\*\*([^*]+)\*\*\*/",									// bold italic
+		"/\*\*([^*]+)\*\*/",										// italic
+		"/([^*\t])\*([^*]+)\*/",									// bold
+		"/~~([^~]+)~~/",											// strikethrough
+		"/\[([[:graph:]]+)\]\((\/|[a-z]+:\/\/)([[:graph:]]*)\)/",	// link with text
+		"/\((\/|[a-z]+:\/\/)([[:graph:]]*)\)/",						// link without text
+		"/`([^`]+)`/",												// code
+		"/^(\t*)-\s\[x\]\s(.+)$/",									// Task list item checked
+		"/^(\t*)-\s\[X\]\s(.+)$/",									// Task list item checked and striked
+		"/^(\t*)-\s\[!\]\s(.+)$/",									// Task list item striked unchecked
+		"/^(\t*)-\s\[\s\]\s(.+)$/",									// Task list unchecked
+		"/^(\t*)\*\s/",												// Bullet list
+		"/^(\t*)\-\s/",												// Dash list
+		"/^(\t*)(\d+\.)\s/"											// Numbered list
+	],[
+		"<h1>$1</h1>\n",
+		"<h2>$1</h2>\n",
+		"<h3>$1</h3>\n",
+		"<h4>$1</h4>\n",
+		"<h5>$1</h5>\n",
+		"<span class='markdown-bold-italic'>$1</span>",
+		"<span class='markdown-italic'>$1</span>",
+		"$1<span class='markdown-bold'>$2</span>",
+		"<strike>$1</strike>",
+		"<a href='$2$3'>$1</a>",
+		"<a href='$1$2'>$1$2</a>",
+		"<span class='markdown-code'>$1</span>",
+		"$1<span class='markdown-task-list markdown-task-list-checked'><input type='checkbox' checked='checked' disabled='true' /> $2</span>",
+		"$1<span class='markdown-task-list markdown-task-list-checked-striked'><input type='checkbox' checked='checked' disabled='true' /> <strike>$2</strike></span>",
+		"$1<span class='markdown-task-list markdown-task-list-unchecked-striked'><input type='checkbox' disabled='true' /> <strike>$2</strike></span>",
+		"$1<span class='markdown-task-list markdown-task-list-unchecked'><input type='checkbox' disabled='true' /> $2</span>",
+		"$1<span class='markdown-list-bullet'>&bull;</span> ",
+		"$1<span class='markdown-list-dash'>&ndash;</span> ",
+		"$1<span class='markdown-list-number'>$2</span> "
+	]];
 	
+	$out = '';
 	// Todo: Optimize, use substr.
 	$lines = explode("\n", $text);
 	$codeblock_start = false;
-	$add_tabs = true;
 	foreach ($lines as $i => $line) {
 		$line = htmlentities($line);
 
@@ -430,53 +511,21 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 		if(preg_match("/^(\t*)```$/", $line, $matches)){
 			if($codeblock_start){
 				$codeblock_start = false;
-				$add_tabs = true;
 				$out .= "</div>";
 			} else {
 				$codeblock_start = true;
-				$add_tabs = false;
-				$tabs = "style='margin-left:" . strlen($matches[1]) * 40 . "px;'";
-				$out .= "<div class='markdown-codeblock' $tabs>";
+				$tabs = "tab-count-" . strlen($matches[1]);
+				$out .= "<div class='markdown-codeblock $tabs'>";
 			}
 			continue;
 		}
 
-		$line = preg_replace(
-			[
-				"/\*\*\*([^*]+)\*\*\*/",	// bold italic
-				"/\*\*([^*]+)\*\*/",		// italic
-				"/([^*\t])\*([^*]+)\*/",	// bold
-				"/~~([^~]+)~~/",			// strikethrough
-				"/^#\s(.+)/",				// h1
-				"/^##\s(.+)/",				// h2
-				"/^###\s(.+)/",				// h3
-				"/^####\s(.+)/",			// h4
-				"/^#####\s(.+)/",			// h5
-				"/`([^`]+)`/",				// code
-				"/^(\t*)-\s\[x\]\s(.+)$/",	// List checked
-				"/^(\t*)-\s\[\s\]\s(.+)$/"	// List checked
-			],
-			[
-				"<span class='markdown-bold-italic'>$1</span>",
-				"<span class='markdown-italic'>$1</span>",
-				"$1<span class='markdown-bold'>$2</span>",
-				"<strike>$1</strike>",
-				"<h1>$1</h1>\n",
-				"<h2>$1</h2>\n",
-				"<h3>$1</h3>\n",
-				"<h4>$1</h4>\n",
-				"<h5>$1</h5>\n",
-				"<span class='markdown-code'>$1</span>",
-				"$1<input type='checkbox' checked='checked' disabled='true' /> <strike>$2</strike>",
-				"$1<input type='checkbox' disabled='true' /> <span>$2</span>",
-			],
-			$line
-		);
+		$line = preg_replace($patterns[0], $patterns[1], $line);
 
 		if(!preg_match("/^\t*<h/", $line)){
 			$tabs = '';
-			if($add_tabs && preg_match("/^\t+/", $line, $matches)){
-				$tabs = " style='margin-left:" . strlen($matches[0]) * 30 . "px;'";
+			if(preg_match("/^\t+/", $line, $matches)){
+				$tabs = " class='tab-count-" . strlen($matches[0]) . "'";
 			}
 
 			$line = strlen($line) == 0 ? "<p class='markdown-br'></p>\n" : "<p$tabs>\n" . $line . "\n</p>\n";
@@ -527,7 +576,6 @@ function process_shortcodes($text)
 	// start with [
 	// \[([a-z]+) = name
 	// ([^\]]*) = args_str
-	// [^\(] = Should not match markdown links
 	if(!preg_match_all($shortcode_list_regex, $text, $matches)) return false;
 
 	

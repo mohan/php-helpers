@@ -4,7 +4,7 @@
 // License: GPL
 // Status: Work in progress
 
-define('__PHP_HELPERS_EXTRA_IS_DEFINED', true);
+define('_PHP_HELPERS_EXTRA_IS_DEFINED', true);
 define('APP_ENV_IS_DEVELOPMENT', getenv('APP_ENV_IS_DEVELOPMENT') == 'true');
 
 
@@ -27,7 +27,6 @@ if(APP_ENV_IS_DEVELOPMENT){
 			echo "<hr/>";
 		}
 		echo "</pre>";
-		
 	}
 
 
