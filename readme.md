@@ -1,7 +1,9 @@
 # PHP Helpers
 
 23 functions for building PHP applications.
+
 License: GPL
+
 Status: Work in progress
 
 
@@ -22,7 +24,7 @@ Status: Work in progress
 
 ## Note
 * **Not tested**, do not use.
-
+* Please feel free to implement it yourself.
 
 
 ## Available functions
