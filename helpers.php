@@ -459,77 +459,104 @@ function tag_table($headers, $data, $attrs=[], $cb=false)
 function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 {
 	static $patterns = [[
-		"/^#\s(.+)/",												// h1
-		"/^##\s(.+)/",												// h2
-		"/^###\s(.+)/",												// h3
-		"/^####\s(.+)/",											// h4
-		"/^#####\s(.+)/",											// h5
-		"/\*\*\*([^*]+)\*\*\*/",									// bold italic
-		"/\*\*([^*]+)\*\*/",										// italic
-		"/([^*\t])\*([^*]+)\*/",									// bold
-		"/~~([^~]+)~~/",											// strikethrough
-		"/\[([[:graph:]]+)\]\((\/|[a-z]+:\/\/)([[:graph:]]*)\)/",	// link with text
-		"/\((\/|[a-z]+:\/\/)([[:graph:]]*)\)/",						// link without text
-		"/`([^`]+)`/",												// code
-		"/^(\t*)-\s\[x\]\s(.+)$/",									// Task list item checked
-		"/^(\t*)-\s\[X\]\s(.+)$/",									// Task list item checked and striked
-		"/^(\t*)-\s\[!\]\s(.+)$/",									// Task list item striked unchecked
-		"/^(\t*)-\s\[\s\]\s(.+)$/",									// Task list unchecked
-		"/^(\t*)\*\s/",												// Bullet list
-		"/^(\t*)\-\s/",												// Dash list
-		"/^(\t*)(\d+\.)\s/"											// Numbered list
+		"/\*\*\*([^*]+)\*\*\*/",										// bold italic
+		"/\*\*([^*]+)\*\*/",											// italic
+		"/([^*\t])\*([^*]+)\*/",										// bold
+		"/~~([^~]+)~~/",												// strikethrough
+		"/\[([^\]]+)\]\((\/|#|\?|[a-z]+:\/\/)([^\)]*)\)/",				// link with text
+		"/\((\/|#|\?|[a-z]+:\/\/)([^\)]*)\)/",							// link without text
+		"/`([^`]+)`/",													// code
+		"/^(\t*)-\s\[x\]\s(.+)$/",										// Task list item checked
+		"/^(\t*)-\s\[X\]\s(.+)$/",										// Task list item checked and striked
+		"/^(\t*)-\s\[!\]\s(.+)$/",										// Task list item striked unchecked
+		"/^(\t*)-\s\[\s\]\s(.+)$/",										// Task list unchecked
+		"/^(\t*)\*\s/",													// Bullet list
+		"/^(\t*)\-\s/",													// Dash list
+		"/^(\t*)(\d+\.)\s/"												// Numbered list
 	],[
-		"<h1>$1</h1>\n",
-		"<h2>$1</h2>\n",
-		"<h3>$1</h3>\n",
-		"<h4>$1</h4>\n",
-		"<h5>$1</h5>\n",
-		"<span class='markdown-bold-italic'>$1</span>",
-		"<span class='markdown-italic'>$1</span>",
-		"$1<span class='markdown-bold'>$2</span>",
+		"<strong><em>$1</em></strong>",
+		"<em>$1</em>",
+		"$1<strong>$2</strong>",
 		"<strike>$1</strike>",
 		"<a href='$2$3'>$1</a>",
 		"<a href='$1$2'>$1$2</a>",
-		"<span class='markdown-code'>$1</span>",
-		"$1<span class='markdown-task-list markdown-task-list-checked'><input type='checkbox' checked='checked' disabled='true' /> $2</span>",
-		"$1<span class='markdown-task-list markdown-task-list-checked-striked'><input type='checkbox' checked='checked' disabled='true' /> <strike>$2</strike></span>",
-		"$1<span class='markdown-task-list markdown-task-list-unchecked-striked'><input type='checkbox' disabled='true' /> <strike>$2</strike></span>",
-		"$1<span class='markdown-task-list markdown-task-list-unchecked'><input type='checkbox' disabled='true' /> $2</span>",
-		"$1<span class='markdown-list-bullet'>&bull;</span> ",
-		"$1<span class='markdown-list-dash'>&ndash;</span> ",
-		"$1<span class='markdown-list-number'>$2</span> "
+		"<span class='md-code'>$1</span>",
+		"$1<span class='md-task-list md-task-list-checked'><input type='checkbox' checked='checked' disabled='true' /> $2</span>",
+		"$1<span class='md-task-list md-task-list-checked-striked'><input type='checkbox' checked='checked' disabled='true' /> <strike>$2</strike></span>",
+		"$1<span class='md-task-list md-task-list-unchecked-striked'><input type='checkbox' disabled='true' /> <strike>$2</strike></span>",
+		"$1<span class='md-task-list md-task-list-unchecked'><input type='checkbox' disabled='true' /> $2</span>",
+		"$1<span class='md-list-bullet'>&bull;</span> ",
+		"$1<span class='md-list-dash'>&ndash;</span> ",
+		"$1<span class='md-list-number'>$2</span> "
 	]];
 	
 	$out = '';
 	// Todo: Optimize, use substr.
 	$lines = explode("\n", $text);
-	$codeblock_start = false;
+	$is_codeblock = false;
+	$tab_size_for_current_block = 0;
+	$codeblock_attr = 'raw';
+	$data_table_header = [];
+	$data_table = [];
+	$data_table_i = 0;
 	foreach ($lines as $i => $line) {
-		$line = htmlentities($line);
-
 		$matches = [];
-		if(preg_match("/^(\t*)```$/", $line, $matches)){
-			if($codeblock_start){
-				$codeblock_start = false;
-				$out .= "</div>";
+		if(preg_match("/^(\t*)```([[:alnum:]\s]*)$/", $line, $matches)){
+			if($is_codeblock){
+				if(_str_contains($codeblock_attr, 'table')){
+					$out .= tag_table($data_table_header, $data_table);
+					$data_table_header = [];
+					$data_table = [];
+					$data_table_i = 0;
+				}
+
+				$is_codeblock = false;
+				$tab_size_for_current_block = 0;
+				$codeblock_attr = 'raw';
+				$out .= "</div>\n";
 			} else {
-				$codeblock_start = true;
-				$tabs = "tab-count-" . strlen($matches[1]);
-				$out .= "<div class='markdown-codeblock $tabs'>";
+				$is_codeblock = true;
+				$tab_size_for_current_block = strlen($matches[1]);
+				$codeblock_attr = str_replace(' ', ' md-codeblock-', $matches[2]);
+				if(!$codeblock_attr) $codeblock_attr = 'plain';
+				$class_list = "tab-count-$tab_size_for_current_block md-codeblock-" . $codeblock_attr;
+				$out .= "<div class='md-codeblock $class_list'>\n";
 			}
 			continue;
 		}
 
-		$line = preg_replace($patterns[0], $patterns[1], $line);
+		if($is_codeblock && _str_contains($codeblock_attr, 'table')){
+			if($data_table_i == 0) $data_table_header = str_getcsv(trim($line));
+			else $data_table[] = str_getcsv(trim($line));
 
-		if(!preg_match("/^\t*<h/", $line)){
-			$tabs = '';
-			if(preg_match("/^\t+/", $line, $matches)){
-				$tabs = " class='tab-count-" . strlen($matches[0]) . "'";
-			}
-
-			$line = strlen($line) == 0 ? "<p class='markdown-br'></p>\n" : "<p$tabs>\n" . $line . "\n</p>\n";
+			$data_table_i++;
+			continue;
 		}
+
+		$line = htmlentities($line);
+
+		if($is_codeblock && !_str_contains($codeblock_attr, 'raw')){
+			$line = preg_replace($patterns[0], $patterns[1], $line);
+		}
+
+		if(!$is_codeblock){
+			$line = preg_replace($patterns[0], $patterns[1], $line);
+		}
+
+		if(preg_match("/^\t*(#{1,5})\s(.+)$/", $line, $matches)){
+			// headings
+			$_tag = 'h' . strlen($matches[1]);
+			$_id = strtolower(preg_replace("/[^a-zA-Z\d]/", '-', $matches[2]));
+			$out .= "<$_tag id='$_id' class='md-heading'><a class='md-hash-link' href='#$_id'>\n" . htmlentities($matches[2]) . "\n</a></$_tag>\n";
+			continue;
+		}
+
+		$tabs = '';
+		if(preg_match("/^\t+/", $line, $matches)){
+			$tabs = " class='tab-count-" . (strlen($matches[0]) - $tab_size_for_current_block) . "'";
+		}
+
+		$line = strlen($line) == 0 ? "<p class='md-br'></p>\n" : "<p$tabs>\n" . $line . "\n</p>\n";
 
 		if($enable_shortcodes && $shortcode_line = process_shortcodes($line)){
 			$line = $shortcode_line;
@@ -587,7 +614,7 @@ function process_shortcodes($text)
 		$args_str = $matches[2][$key];
 		
 		$args = [];
-		if(strpos($args_str, '=') === false){
+		if(_str_contains($args_str, '=')){
 			$args[0] = $args_str;
 		} else {
 			if(preg_match_all('/([a-z]+)="?([^"]+)"?/', $args_str, $args_matches)){
@@ -825,6 +852,12 @@ function _arr_defaults(&$arr, $defaults)
 	foreach ($defaults as $key=>$default) {
 		if(!isset($arr[$key])) $arr[$key] = $default;
 	}
+}
+
+
+function _str_contains($str, $substr)
+{
+	return strpos($str, $substr) !== false;
 }
 
 

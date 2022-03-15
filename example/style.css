@@ -6,6 +6,14 @@ body{
 	font-size: 0.8em;
 	line-height: 1.8em;
 }
+p a{
+	color: #0000AA;
+	text-decoration: none;
+}
+p a:hover{
+	border-bottom: 1px solid #0000AA;
+}
+
 ul#nav{
 	background: #f6c457;
 	list-style: none;
@@ -63,36 +71,35 @@ pre{
 
 
 .markdown p{ margin: 8px 0; }
-.markdown .markdown-br{ padding: 7px; }
+.markdown .md-br{ padding: 7px; }
 .markdown .tab-count-1{ margin-left: 30px; }
 .markdown .tab-count-2{ margin-left: 60px; }
 .markdown .tab-count-3{ margin-left: 90px; }
 .markdown .tab-count-5{ margin-left: 120px; }
 .markdown .tab-count-6{ margin-left: 150px; }
 .markdown .tab-count-7{ margin-left: 180px; }
-.markdown .markdown-codeblock .tab-count-1, .markdown .markdown-codeblock .tab-count-2,
-.markdown .markdown-codeblock .tab-count-3, .markdown .markdown-codeblock .tab-count-4,
-.markdown .markdown-codeblock .tab-count-5, .markdown .markdown-codeblock .tab-count-6,
-.markdown .markdown-codeblock .tab-count-7 { margin-left: 0; }
-.markdown .markdown-codeblock.tab-count-1{ margin-left: 35px; }
-.markdown .markdown-codeblock.tab-count-2{ margin-left: 65px; }
-.markdown .markdown-codeblock.tab-count-3{ margin-left: 95px; }
-.markdown .markdown-codeblock.tab-count-5{ margin-left: 125px; }
-.markdown .markdown-codeblock.tab-count-6{ margin-left: 155px; }
-.markdown .markdown-codeblock.tab-count-7{ margin-left: 185px; }
-.markdown .markdown-italic{ font-style: italic; }
-.markdown .markdown-bold{ font-weight: bold; }
-.markdown .markdown-bold-italic{ font-weight: bold; font-style: italic; }
-.markdown .markdown-code{ display: inline-block; background: #ddd; padding:0 7px; border-radius: 4px; font-size: 0.85em; }
-.markdown .markdown-codeblock{ background: #ddd; padding:25px 25px 20px 25px; border-radius: 4px; }
-.markdown .markdown-list-bullet, .markdown .markdown-list-number, .markdown .markdown-list-dash{ color: #888; }
-.markdown .markdown-task-list{ display: block; }
-.markdown .markdown-task-list-checked{ background: #002200; color: #fff; padding: 0 5px; border-radius: 3px; }
-.markdown .markdown-task-list-checked-striked{ background: #550000; color: #fff; padding: 0 5px; border-radius: 3px; }
-.markdown .markdown-task-list-unchecked-striked{ background: #550000; color: #fff; padding: 0 5px; border-radius: 3px; }
-.markdown .markdown-task-list-unchecked{ background: #ccc; padding: 0 5px; border-radius: 3px; }
+.markdown .md-codeblock.tab-count-1{ margin-left: 35px; }
+.markdown .md-codeblock.tab-count-2{ margin-left: 65px; }
+.markdown .md-codeblock.tab-count-3{ margin-left: 95px; }
+.markdown .md-codeblock.tab-count-5{ margin-left: 125px; }
+.markdown .md-codeblock.tab-count-6{ margin-left: 155px; }
+.markdown .md-codeblock.tab-count-7{ margin-left: 185px; }
+.markdown .md-code{ display: inline-block; background: #ddd; padding:0 7px; border-radius: 4px; font-size: 0.85em; }
+.markdown .md-codeblock{ background: #ccc; border: 1px solid #bbb; color: #000; padding:25px 25px 20px 25px; border-radius: 4px; margin-bottom: 5px; }
+.markdown .md-codeblock-php{ background: #8892BF; border-color: #4F5B93; color: #fff; }
+.markdown .md-codeblock-table{ background: transparent; border-color: transparent; color: inherit; padding: 0; }
+.markdown .md-codeblock-table table { min-width: 50%; text-align: left; font-size: 1em; border: 1px solid #ddd;}
+.markdown .md-codeblock-table table thead th { background: #f6c457; padding: 5px; }
+.markdown .md-codeblock-table table tbody td{ border-top: 1px solid #ddd; padding: 5px; }
+.markdown .md-list-bullet, .markdown .md-list-number, .markdown .md-list-dash{ color: #888; }
+.markdown .md-task-list{ display: block; }
+.markdown .md-task-list-checked{ background: #002200; color: #fff; padding: 0 5px; border-radius: 3px; }
+.markdown .md-task-list-checked-striked{ background: #550000; color: #fff; padding: 0 5px; border-radius: 3px; }
+.markdown .md-task-list-unchecked-striked{ background: #550000; color: #fff; padding: 0 5px; border-radius: 3px; }
+.markdown .md-task-list-unchecked{ background: #ccc; padding: 0 5px; border-radius: 3px; }
 .markdown h1{ font-size: 1.3em; margin: 0 0 2px 0; }
 .markdown h2{ font-size: 1.2em; margin: 0 0 2px 0; }
 .markdown h3{ font-size: 1.1em; margin: 0 0 2px 0; }
 .markdown h4{ font-size: 1.0em; margin: 0 0 2px 0; }
 .markdown h5{ font-size: 0.9em; margin: 0 0 2px 0; }
+.markdown .md-heading a.md-hash-link{ text-decoration: none; color: inherit; display: block; }

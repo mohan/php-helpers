@@ -8,18 +8,18 @@ Status: Work in progress
 
 
 ## It contains
-1. Rewrite URIs
-2. Permitted Params
-3. Router (to call action functions)
-4. Templates
-5. URL helpers
-6. HTML Tag helpers
-7. Markdown
-8. Shortcodes
-9. Flash messages
-10. Secure cookie (Cookie with added authenticity)
-11. Config file helpers
-12. Debug helpers (helpers-extra.php)
+1. [Rewrite URIs](#rewrite-uris)
+2. [Permitted Params](#permitted-params)
+3. [Router (to call action functions)](#router)
+4. [Templates](#templates)
+5. [URL helpers](#url-helpers)
+6. [HTML Tag helpers](#html-tag-helpers)
+7. [Markdown](#markdown)
+8. [Shortcodes](#shortcodes)
+9. [Flash messages](#flash-messages)
+10. [Secure cookie (Cookie with added authenticity)](#secure-cookie)
+11. [Config file helpers](#config-file-helpers)
+12. [Debug helpers (helpers-extra.php)](#debug-helpers)
 
 
 ## Note
@@ -28,6 +28,30 @@ Status: Work in progress
 
 
 ## Available functions
+
+### Rewrite URIs
+
+1. filter_rewrite_uri($paths)
+	* Parse current matching `$_SERVER['REQUEST_URI']` in $paths into $_GET
+
+
+### Permitted Params
+
+1. filter_permitted_params($get_param_names, $post_param_names, $cookie_param_names, $get_typecasts, $post_typecasts)
+	* Remove `$_GET` and `$_POST` params that are not in $get_param_names and $post_param_names.
+	* `$get_param_names` key value is key: param_name, value is either number (strlen) or regex.
+	* `typecasts` change the type of value to specified type.
+
+
+### Router
+
+1. filter_routes($get_action_names, $post_action_names)
+	* Finds the current `$_GET['uri']` or `$_GET['post_uri']`
+	* Calls `get_$uri` or `get_$post_uri` action functions.
+	* If `$_GET['uri']` is empty, without `post_uri`, calls `get_root`
+	* If nothing matches, calls built-in `get_404`
+	* Checks if specified required params from $_REQUEST are present, if not calls `get_404`
+
 
 ### Templates
 
@@ -104,7 +128,20 @@ Status: Work in progress
 			- Dash list item
 		* Codeblock
 			```
-			<?php echo "Hello!" ?>
+			Plain block example. Supports *bold*, **italic** etc.
+			```
+			```php raw
+			<?php
+				echo "**Hello**";
+			?>
+			```
+		* Table
+			```table
+			Alphabets, Numbers
+			A, 1
+			B, 2
+			C, 3
+			"""D""", 4
 			```
 
 
@@ -132,7 +169,7 @@ Status: Work in progress
 	* Deletes flash cookie
 
 
-### Cookie with added authenticity
+### Secure cookie
 
 1. secure_cookie_set($name, $value)
 	* Sets a cookie with built-in authenticity token
@@ -146,7 +183,13 @@ Status: Work in progress
 	* Deletes a cookie
 
 
-### Debug helper
+### Config file helpers
+
+1. filter_set_config($filepath)
+	* Sets ini file data in `CONFIG_property_name` constants.
+
+
+### Debug helpers
 
 1. __d(...$args)
 	* Debug variables using var_dump.
@@ -158,36 +201,6 @@ Status: Work in progress
 	* Include in layout for debug panel to display information about current request.
 	* Environment variable `APP_ENV_IS_DEVELOPMENT=true` is required.
 
-
-### Config file helpers
-
-1. filter_set_config($filepath)
-	* Sets ini file data in `CONFIG_property_name` constants.
-
-
-### Router
-
-1. filter_routes($get_action_names, $post_action_names)
-	* Finds the current `$_GET['uri']` or `$_GET['post_uri']`
-	* Calls `get_$uri` or `get_$post_uri` action functions.
-	* If `$_GET['uri']` is empty, without `post_uri`, calls `get_root`
-	* If nothing matches, calls built-in `get_404`
-	* Checks if specified required params from $_REQUEST are present, if not calls `get_404`
-
-
-### Permitted Params
-
-1. filter_permitted_params($get_param_names, $post_param_names, $cookie_param_names, $get_typecasts, $post_typecasts)
-	* Remove `$_GET` and `$_POST` params that are not in $get_param_names and $post_param_names.
-	* `$get_param_names` key value is key: param_name, value is either number (strlen) or regex.
-	* `typecasts` change the type of value to specified type.
-
-
-
-## Notes
-
-- Use URL rewrite for nice looking resource style URLs, if needed. `/page/1` -> `/?uri=page&id=1`.
-	- Custom URL helpers will be needed based on your rewrites.
 
 
 ## TODO
