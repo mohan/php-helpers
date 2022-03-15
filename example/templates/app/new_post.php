@@ -2,8 +2,8 @@
 
 <div class='panel'>
 	<?= formto('create-post') ?>
-		<p><input type='text' name='title' placeholder='title' value='<?= $title ?>' /></p>
-		<p><textarea name='body' placeholder='body'><?= $body ?></textarea></p>
+		<p><?= tag($title, ['type'=>'text', 'name'=>'title', 'placeholder'=>'title'], 'input') ?></p>
+		<p><?= tag($body, ['name'=>'body', 'placeholder'=>'body'], 'textarea') ?></p>
 		<input type='submit' />
 	</form>
 </div>

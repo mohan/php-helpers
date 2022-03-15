@@ -5,6 +5,37 @@
 // Status: Work in progress
 
 
+/***
+# Available Functions
+
+function filter_rewrite_uri($paths)
+function filter_permitted_params($get_param_names, $post_param_names, $cookie_param_names, $get_typecasts, $post_typecasts)
+function filter_routes($get_action_names, $post_action_names, $patch_action_names, $delete_action_names)
+function redirectto($uri, $args=[])
+function get_404($message='')
+function render($template_name, $args=[], $layout='layouts/index.php')
+function render_partial($template_name, $args=[], $return=false)
+function urlto_public_dir($uri)
+function urltoget($uri, $args=[], $arg_separator='&')
+function urltopost($uri, $args=[], $arg_separator='&')
+function formto($uri, $args=[], $attrs=[])
+function linkto($uri, $html, $args=[], $attrs=[])
+function tag($html, $attrs=[], $name='div', $closing=true)
+function tag_table($headers, $data, $attrs=[], $cb=false)
+function render_markdown($text, $attrs=[], $enable_shortcodes=false)
+function process_shortcodes($text)
+function flash_set($html, $in_current_request=false)
+function flash_clear()
+function filter_set_flash()
+function secure_cookie_set($name, $value)
+function secure_cookie_get($name)
+function cookie_delete($name)
+function filter_set_config($filepath)
+function _arr_defaults(&$arr, $defaults)
+function _str_contains($str, $substr)
+
+***/
+
 
 
 // 
@@ -389,7 +420,7 @@ function linkto($uri, $html, $args=[], $attrs=[])
 
 
 // Auto htmlentities for safe user input
-function tag($html, $attrs=[], $name='div', $closing=true)
+function tag($html, $attrs=[], $name='p', $closing=true)
 {
 	if($name != 'input' && $name != 'textarea' && !$html) return;
 

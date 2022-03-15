@@ -1,3 +1,1 @@
-<pre style='tab-size:4;'>
-<?= htmlentities(file_get_contents('../docs/markdown.md')) ?>
-</pre>
+<?= tag(file_get_contents('../docs/markdown.md'), ['style'=>'tab-size:4;'], 'pre') ?>

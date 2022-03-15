@@ -6,7 +6,7 @@
 
 define('_PHP_HELPERS_EXTRA_IS_DEFINED', true);
 define('APP_ENV_IS_DEVELOPMENT', getenv('APP_ENV_IS_DEVELOPMENT') == 'true');
-
+define('APP_ENV_IS_TEST', defined('APP_ENV_IS_TEST') ? APP_ENV_IS_TEST : false);
 
 // 
 // Debug helpers
@@ -14,11 +14,15 @@ define('APP_ENV_IS_DEVELOPMENT', getenv('APP_ENV_IS_DEVELOPMENT') == 'true');
 
 // Simple debug
 // Remember to remove all debugs
-if(APP_ENV_IS_DEVELOPMENT){
+if(APP_ENV_IS_DEVELOPMENT || APP_ENV_IS_TEST){
 	function __d(...$args)
 	{
-		echo "<pre style='width:94%;margin:1%;padding:2%;background:#fff;border:2px solid #aa0000;'>";
+		if(!APP_ENV_IS_TEST) echo "<pre style='width:94%;margin:1%;padding:2%;background:#fff;border:2px solid #aa0000;'>";
 		foreach($args as $arg) {
+			if(APP_ENV_IS_TEST) {
+				var_dump($arg);
+				continue;
+			}
 			ob_start();
 			var_dump($arg);
 			$out = ob_get_contents();
@@ -26,14 +30,18 @@ if(APP_ENV_IS_DEVELOPMENT){
 			echo htmlentities($out);
 			echo "<hr/>";
 		}
-		echo "</pre>";
+		if(!APP_ENV_IS_TEST) echo "</pre>";
 	}
 
 
 	function __d_(...$args)
 	{
-		echo "<pre style='width:94%;margin:1%;padding:2%;background:#fff;border:2px solid #aa0000;'>";
+		if(!APP_ENV_IS_TEST) echo "<pre style='width:94%;margin:1%;padding:2%;background:#fff;border:2px solid #aa0000;'>";
 		foreach($args as $arg) {
+			if(APP_ENV_IS_TEST) {
+				var_dump($arg);
+				continue;
+			}
 			ob_start();
 			var_dump($arg);
 			$out = ob_get_contents();
@@ -41,7 +49,7 @@ if(APP_ENV_IS_DEVELOPMENT){
 			echo htmlentities($out);
 			echo "<hr/>";
 		}
-		echo "</pre>";
+		if(!APP_ENV_IS_TEST) echo "</pre>";
 		exit;
 	}
 

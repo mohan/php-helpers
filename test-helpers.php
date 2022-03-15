@@ -4,8 +4,25 @@
 // License: GPL
 // Status: Work in progress
 
+
+/***
+# Available Functions
+
+function call_tests($function_names)
+function t($test_name, $result)
+function is_redirect($expected_redirect_url, $response)
+function is_not_redirect($response)
+function is_flash($expected_message, $response)
+function do_get($uri_str, $cookies=[])
+function do_post($uri_str, $post_params=[], $cookies=[])
+***/
+
+
+
+
 define('RENDER_TO_STRING', true);
 define('CUSTOM_HEADER_HANDLERS', true);
+define('APP_ENV_IS_TEST', true);
 
 
 if(PHP_SAPI != 'cli') {
@@ -17,14 +34,44 @@ if(PHP_SAPI != 'cli') {
 // 
 // Test functions
 // 
+function call_tests($function_names)
+{
+	$functions_to_implement = [];
+
+	$start_time = time();
+
+	echo "\n" . str_repeat('-', 60) . "\n";
+	foreach ($function_names as $name) {
+		$test_name = "test_$name";
+		if(function_exists($test_name)) {
+			echo "\n# $test_name\n";
+			call_user_func($test_name);
+		} else {
+			$functions_to_implement[] = $test_name;
+		}
+	}
+	echo str_repeat('-', 60) . "\n";
+	echo "✓ " . (sizeof($function_names) - sizeof($functions_to_implement)) . "/" . sizeof($function_names) . " tests passed.\n";
+
+	if(sizeof($functions_to_implement)){
+		echo sizeof($functions_to_implement) . " functions not implemented: " . join(', ', $functions_to_implement) . "\n";
+	}
+
+	echo "Time taken: " . abs(time() - $start_time) . " seconds\n\n";
+}
+
+
 function t($test_name, $result)
 {
+	$_debug = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
+	$_debug_line_number = " (" . basename($_debug[0]['file']) . "#{$_debug[0]['line']})\n";
+
 	if($result === false || $result == NULL || !$result) {
-		echo "  ✗ Fail: " . $test_name . "\n\n";
+		echo "  ✗ Fail: " . $test_name . $_debug_line_number . "\n\n";
 		debug_print_backtrace();
 		exit;
 	} else {
-		echo "  ✓ Pass: " . $test_name . "\n";
+		echo "  ✓ Pass: " . $test_name . $_debug_line_number;
 	}
 }
 
@@ -62,10 +109,11 @@ function do_get($uri_str, $cookies=[])
 	$uri = parse_url($uri_str);
 	parse_str(isset($uri['query']) ? $uri['query'] : '', $_GET);
 	$_SERVER['REQUEST_METHOD'] = 'GET';
+	if($uri_str[0] == '/') $_SERVER['REQUEST_URI'] = $uri_str;
 	_set_params($_COOKIE, $cookies);
 	_set_params($_REQUEST, $_GET);
 
-	$body = defined('APP_NAME') ? call_user_func(APP_NAME . '_initialize') : init();
+	$body = defined('APP_NAME') ? call_user_func(APP_NAME . '_initialize') : initialize();
 	$headers = _header();
 	$cookies = _setcookie();
 
@@ -79,12 +127,13 @@ function do_post($uri_str, $post_params=[], $cookies=[])
 	$uri = parse_url($uri_str);
 	parse_str($uri['query'], $_GET);
 	$_SERVER['REQUEST_METHOD'] = 'POST';
+	if($uri_str[0] == '/') $_SERVER['REQUEST_URI'] = $uri_str;
 	_set_params($_COOKIE, $cookies);
 	_set_params($_POST, $post_params);
 	_set_params($_REQUEST, $post_params);
 	_set_params($_REQUEST, $_GET);
 
-	$body = defined('APP_NAME') ? call_user_func(APP_NAME . '_initialize') : init();
+	$body = defined('APP_NAME') ? call_user_func(APP_NAME . '_initialize') : initialize();
 	$headers = _header();
 	$cookies = _setcookie();
 
@@ -93,33 +142,19 @@ function do_post($uri_str, $post_params=[], $cookies=[])
 
 
 
-function call_tests($function_names)
-{
-	$functions_to_implement = [];
 
-	$start_time = time();
 
-	echo "\n" . str_repeat('-', 60) . "\n";
-	foreach ($function_names as $name) {
-		$test_name = "test_$name";
-		if(function_exists($test_name)) {
-			echo "\n# $test_name\n";
-			call_user_func($test_name);
-		} else {
-			$functions_to_implement[] = $test_name;
-		}
-	}
-	echo "\n" . str_repeat('-', 60) . "\n\n";
-	echo "✓ " . (sizeof($function_names) - sizeof($functions_to_implement)) . "/" . sizeof($function_names) . " tests passed.\n\n";
 
-	if(sizeof($functions_to_implement)){
-		echo sizeof($functions_to_implement) . " functions not implemented: " . join(', ', $functions_to_implement) . "\n";
-	}
 
-	echo "Time taken: " . abs(time() - $start_time) . ' seconds';
 
-	echo "\n\n" . str_repeat('-', 60) . "\n\n\n";
-}
+
+
+
+
+
+
+
+
 
 
 // 
@@ -143,6 +178,7 @@ function _clear_request()
 	}
 	_header('__reset');
 	_setcookie('__reset');
+	$_SERVER['REQUEST_URI'] = '';
 }
 
 

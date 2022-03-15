@@ -1,7 +1,7 @@
 <?php
 
-require_once '../helpers.php';
-require_once '../helpers-extra.php';
+require '../helpers.php';
+require '../helpers-extra.php';
 
 define('CONFIG_ROOT_URL', '/');
 // Secure hash of 32 characters
@@ -50,7 +50,7 @@ function initialize(){
 	filter_set_flash();
 
 	// Routes
-	if(!filter_routes(
+	$response = filter_routes(
 		// Get uri, with required params from $_GET, $_REQUEST
 		[
 			'root'		=> [[], []],
@@ -67,7 +67,10 @@ function initialize(){
 		[],
 		// Delete uri, with required params from $_GET, $_POST, $_REQUEST
 		[]
-	)) return get_404('Invalid URL');
+	);
+
+	if(!$response) return get_404('Invalid URL');
+	return $response;
 }
 
 
@@ -100,7 +103,7 @@ function get_post()
 {
 	_arr_defaults($_GET, ['title'=>'', 'body'=>'']);
 	
-	return render('app/posts.php', ['_pagetitle'=>'Post', 'id'=>$_GET['id'], 'title'=>$_GET['title'], 'body'=>$_GET['body']]);
+	return render('app/posts.php', ['_pagetitle'=>"Post #" . $_GET['id'], 'id'=>$_GET['id'], 'title'=>$_GET['title'], 'body'=>$_GET['body']]);
 }
 
 function post_create_post()
