@@ -8,10 +8,10 @@
 
 	<ul id='nav'>
 		<li><?= linkto('', 'Home') ?></li>
+		<li><?= linkto('docs', 'Docs') ?></li>
 		<li><?= linkto('posts', 'Posts') ?></li>
 		<li><?= linkto('new-post', 'New Post') ?></li>
-		<li><?= linkto('post', 'Post 1', ['p'=>"post/1"]) ?></li>
-		<li><?= linkto('markdown', 'Markdown') ?></li>
+		<li><?= linkto('post', 'Post 1', ['_p'=>"post/1"]) ?></li>
 		<li><?= linkto('404', '404') ?></li>
 	</ul>
 

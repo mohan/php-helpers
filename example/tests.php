@@ -1,19 +1,24 @@
 <?php
 
 // 
-// To run tests use build command in your programming editor to execute this file
+// To run tests use build command in your programming editor, to execute this file
 // or `php tests.php`
 // 
 
+define('APP_DIR', __DIR__);
+
 // Require test-helpers.php before everything
 require '../test-helpers.php';
-require './index.php';
+require './initialize.php';
 
-call_tests([
+
+call_tests_for([
 	'get_root',
 	'get_new_post',
 	'get_posts',
 	'get_post',
+	'get_markdown',
+	'get_docs',
 
 	'post_create_post'
 ]);
@@ -22,54 +27,86 @@ call_tests([
 function test_get_root()
 {
 	$uri = urltoget('root');
-	$response = do_get($uri);
-	t('root page renders', $response
-							&& is_not_redirect($response)
-							&& _str_contains($response['body'], '<!-- Markdown start -->'));
+	$resp = do_get($uri);
+	t('root page renders',  is_not_redirect($resp)
+							&& response_contains($resp,
+									'<!-- Markdown start -->',
+									"<p>\nStatus: Work in progress\n</p>",
+									'<!-- Markdown end -->'
+								)
+	);
 }
 
 
 function test_get_new_post()
 {
 	$uri = urltoget('new-post');
-	$response = do_get($uri);
-	t('new-post page renders', $response
-								&& is_not_redirect($response)
-								&& _str_contains($response['body'], formto('create-post')));
+	$resp = do_get($uri);
+	t('new-post page renders', is_not_redirect($resp)
+								&& response_contains($resp,
+										formto('create-post'),
+										tag('', ['type'=>'text', 'name'=>'title', 'placeholder'=>'title'], 'input'),
+										'</form>'
+									)
+	);
 }
 
 
 function test_get_posts()
 {
 	$uri = urltoget('posts');
-	$response = do_get($uri);
-	t('posts page renders', $response
-					&& is_not_redirect($response)
-					&& _str_contains($response['body'], tag('List of all Posts', [], 'h1'))
-					&& _str_contains($response['body'], tag('Posts - Example', [], 'title'))
-		);
+	$resp = do_get($uri);
+	t('posts page renders', is_not_redirect($resp)
+					&& response_contains($resp,
+							tag('List of all Posts', [], 'h1'),
+							tag('Posts - Example', [], 'title')
+						)
+	);
 }
 
 
 function test_get_post()
 {
-	$uri = urltoget('post', ['p'=>'post/1']);
-	$response = do_get($uri);
-	t('post page renders', $response
-					&& is_not_redirect($response)
-					&& _str_contains($response['body'], tag('List of all Posts', [], 'h1'))
-					&& _str_contains($response['body'], tag('Post #1 - Example', [], 'title'))
-		);
+	$uri = urltoget('post', ['_p'=>'post/1']);
+	$resp = do_get($uri);
+	t('post page renders', is_not_redirect($resp)
+					&& response_contains($resp,
+							tag('List of all Posts', [], 'h1'),
+							tag('Post #1 - Example', [], 'title')
+						)
+	);
 }
 
 
+function test_get_markdown()
+{
+	$uri = urltoget('markdown', ['path'=>'readme.md']);
+	$resp = do_get($uri);
+	t('markdown page renders', is_not_redirect($resp)
+					&& response_contains($resp, '<!-- Markdown start -->')
+	);
+}
+
+
+function test_get_docs()
+{
+	$uri = urltoget('docs');
+	$resp = do_get($uri);
+	t('post page renders', is_not_redirect($resp)
+					&& response_contains($resp, tag('PHP Helpers Docs', [], 'h2'))
+	);
+}
+
+
+// 
+// Post functions
+// 
 function test_post_create_post()
 {
-	$uri = urltopost('create-post', []);
+	$uri = urltopost('create-post');
 	$args = ['title'=>'example title 1', 'body'=>'...'];
-	$response = do_post($uri, $args);
-	t('create-post creates post', $response
-					&& is_redirect(urltoget('posts', $args), $response)
-					&& is_flash('Post created!', $response)
-		);
+	$resp = do_post($uri, $args);
+	t('create-post creates post', is_redirect(urltoget('posts', $args), $resp)
+									&& is_flash('Post created!', $resp)
+	);
 }

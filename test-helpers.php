@@ -8,11 +8,12 @@
 /***
 # Available Functions
 
-function call_tests($function_names)
+function call_tests_for($function_names)
 function t($test_name, $result)
 function is_redirect($expected_redirect_url, $response)
 function is_not_redirect($response)
 function is_flash($expected_message, $response)
+function response_contains($response, ...$expected_html_substrs)
 function do_get($uri_str, $cookies=[])
 function do_post($uri_str, $post_params=[], $cookies=[])
 ***/
@@ -34,13 +35,13 @@ if(PHP_SAPI != 'cli') {
 // 
 // Test functions
 // 
-function call_tests($function_names)
+function call_tests_for($function_names)
 {
 	$functions_to_implement = [];
 
-	$start_time = time();
+	$start_time = microtime(true);
 
-	echo "\n" . str_repeat('-', 60) . "\n";
+	echo str_repeat('-', 60);
 	foreach ($function_names as $name) {
 		$test_name = "test_$name";
 		if(function_exists($test_name)) {
@@ -51,27 +52,27 @@ function call_tests($function_names)
 		}
 	}
 	echo str_repeat('-', 60) . "\n";
-	echo "✓ " . (sizeof($function_names) - sizeof($functions_to_implement)) . "/" . sizeof($function_names) . " tests passed.\n";
+	echo "  = All " . (sizeof($function_names) - sizeof($functions_to_implement)) . "/" . sizeof($function_names) . " tests passed.\n";
 
 	if(sizeof($functions_to_implement)){
-		echo sizeof($functions_to_implement) . " functions not implemented: " . join(', ', $functions_to_implement) . "\n";
+		echo '  ' . sizeof($functions_to_implement) . " functions not implemented: " . join(', ', $functions_to_implement) . "\n";
 	}
 
-	echo "Time taken: " . abs(time() - $start_time) . " seconds\n\n";
+	echo "  Time taken: " . round((microtime(true) - $start_time), 5) . " seconds\n\n";
 }
 
 
 function t($test_name, $result)
 {
 	$_debug = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
-	$_debug_line_number = " (" . basename($_debug[0]['file']) . "#{$_debug[0]['line']})\n";
+	$_debug_line_number = " [" . basename($_debug[0]['file']) . "#{$_debug[0]['line']}]\n";
 
 	if($result === false || $result == NULL || !$result) {
-		echo "  ✗ Fail: " . $test_name . $_debug_line_number . "\n\n";
+		echo "  - Fail: " . $test_name . $_debug_line_number . "\n\n";
 		debug_print_backtrace();
 		exit;
 	} else {
-		echo "  ✓ Pass: " . $test_name . $_debug_line_number;
+		echo "  + Pass: " . $test_name . $_debug_line_number;
 	}
 }
 
@@ -93,6 +94,11 @@ function is_not_redirect($response)
 function is_flash($expected_message, $response)
 {
 	return $response['cookies']['flash'] == $expected_message;
+}
+
+function response_contains($response, ...$expected_html_substrs)
+{
+	return _str_contains($response['body'], ...$expected_html_substrs);
 }
 
 

@@ -40,8 +40,7 @@
 			padding-top: 20px;
 		}
 		#debug-info-container textarea{
-			border: 0px solid #f6c457;
-			border-radius: 2px;
+			border: 0;
 			margin-bottom: 1px;
 			height: 30px;
 			width:100%;
@@ -62,6 +61,9 @@
 		#debug-info-container table td:first-child{
 			background: #faedcf;
 			padding-left: 10px;
+		}
+		#debug-info-container table td{
+			border-bottom: 1px solid #f6c457;
 		}
 	</style>
 	<script type="text/javascript">

@@ -20,7 +20,7 @@ function urltoget($uri, $args=[], $arg_separator='&')
 function urltopost($uri, $args=[], $arg_separator='&')
 function formto($uri, $args=[], $attrs=[])
 function linkto($uri, $html, $args=[], $attrs=[])
-function tag($html, $attrs=[], $name='div', $closing=true)
+function tag($html, $attrs=[], $name='p', $closing=true)
 function tag_table($headers, $data, $attrs=[], $cb=false)
 function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 function process_shortcodes($text)
@@ -32,7 +32,7 @@ function secure_cookie_get($name)
 function cookie_delete($name)
 function filter_set_config($filepath)
 function _arr_defaults(&$arr, $defaults)
-function _str_contains($str, $substr)
+function _str_contains($str, ...$substrs)
 
 ***/
 
@@ -108,7 +108,7 @@ function _filter_permitted_params_names(&$input, $permitted_arr)
 }
 
 
-function _filter_permitted_params_typecast($input, $typecast_def_arr)
+function _filter_permitted_params_typecast(&$input, $typecast_def_arr)
 {
 	foreach ($typecast_def_arr as $name => $type) {
 		if(isset($input[$name]) && is_string($input[$name]))
@@ -181,6 +181,15 @@ function _filter_routes_method($method_name, $uri_param_key, $action_names)
 	$uri_route = $_GET[$uri_param_key];
 
 	if( is_string($uri_route) && array_key_exists($uri_route, $action_names)){
+		// Render template directly
+		if($uri_param_key == 'uri' && is_string($action_names[$uri_route])){
+			if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
+				_print_debug_routes_post($method_name, $uri_param_key, $action_names[$uri_route], 'render');
+			}
+
+			return render($action_names[$uri_route]);
+		}
+
 		// Required params for action
 		$required_params = $action_names[$uri_route];
 		$action_name = $method_name . '_' . preg_replace("/[^a-zA-Z0-9]/", '_', $uri_route);
@@ -326,8 +335,8 @@ function urltoget($uri, $args=[], $arg_separator='&')
 	$hash = isset($args['_hash']) ? '#' . $args['_hash'] : '';
 	unset($args['_hash']);
 
-	if(isset($args['p'])){
-		return $root_url . $args['p'] . $hash;
+	if(isset($args['_p'])){
+		return $root_url . $args['_p'] . $hash;
 	}
 
 	if($uri) {
@@ -420,7 +429,7 @@ function linkto($uri, $html, $args=[], $attrs=[])
 
 
 // Auto htmlentities for safe user input
-function tag($html, $attrs=[], $name='p', $closing=true)
+function tag($html, $attrs=[], $name='div', $closing=true)
 {
 	if($name != 'input' && $name != 'textarea' && !$html) return;
 
@@ -490,6 +499,7 @@ function tag_table($headers, $data, $attrs=[], $cb=false)
 function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 {
 	static $patterns = [[
+		"/^(\t*)---$/",													// hr
 		"/\*\*\*([^*]+)\*\*\*/",										// bold italic
 		"/\*\*([^*]+)\*\*/",											// italic
 		"/([^*\t])\*([^*]+)\*/",										// bold
@@ -505,6 +515,7 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 		"/^(\t*)\-\s/",													// Dash list
 		"/^(\t*)(\d+\.)\s/"												// Numbered list
 	],[
+		"$1<hr/>",
 		"<strong><em>$1</em></strong>",
 		"<em>$1</em>",
 		"$1<strong>$2</strong>",
@@ -587,7 +598,8 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 			$tabs = " class='tab-count-" . (strlen($matches[0]) - $tab_size_for_current_block) . "'";
 		}
 
-		$line = strlen($line) == 0 ? "<p class='md-br'></p>\n" : "<p$tabs>\n" . $line . "\n</p>\n";
+		$_tag = _str_contains($line, '<hr/>') ? 'div' : 'p';
+		$line = strlen($line) == 0 ? "<p class='md-br'></p>\n" : "<$_tag$tabs>\n" . $line . "\n</$_tag>\n";
 
 		if($enable_shortcodes && $shortcode_line = process_shortcodes($line)){
 			$line = $shortcode_line;
@@ -883,12 +895,20 @@ function _arr_defaults(&$arr, $defaults)
 	foreach ($defaults as $key=>$default) {
 		if(!isset($arr[$key])) $arr[$key] = $default;
 	}
+
+	return $arr;
 }
 
 
-function _str_contains($str, $substr)
+// Checks if substr is in string. Accepts multiple substrings.
+// Returns true if atleast str contains one substring.
+function _str_contains($str, ...$substrs)
 {
-	return strpos($str, $substr) !== false;
+	foreach ($substrs as $substr) {
+		if(strpos($str, $substr) !== false) return true;
+	}
+
+	return false;
 }
 
 

@@ -6,7 +6,7 @@
 
 define('_PHP_HELPERS_EXTRA_IS_DEFINED', true);
 define('APP_ENV_IS_DEVELOPMENT', getenv('APP_ENV_IS_DEVELOPMENT') == 'true');
-define('APP_ENV_IS_TEST', defined('APP_ENV_IS_TEST') ? APP_ENV_IS_TEST : false);
+if(!defined('APP_ENV_IS_TEST')) define('APP_ENV_IS_TEST', false);
 
 // 
 // Debug helpers
@@ -107,7 +107,7 @@ if(APP_ENV_IS_DEVELOPMENT || APP_ENV_IS_TEST){
 		if($name) $_REQUEST['DEBUG_REQUEST_ARGS_HTML'] .= tag($name, [], 'h3');
 		$_REQUEST['DEBUG_REQUEST_ARGS_HTML'] .=
 					tag_table($table_headers, $data,
-						['class'=>'table w-100'],
+						['class'=>'table w-100', 'cellspacing'=>0],
 						function($row_value, $header_key) use($encode){
 							if($header_key == 0){
 								return htmlentities($row_value[0]);
@@ -149,6 +149,12 @@ if(APP_ENV_IS_DEVELOPMENT || APP_ENV_IS_TEST){
 	{
 		$url_helpers_arr = [];
 		foreach ($action_names as $uri_route => $required_params) {
+			if($method_name == 'get' && is_string($required_params)){
+				$url_helpers_arr[$uri_route] = [$required_params];
+				$url_helpers_arr[$uri_route][] = "<?= urltoget('" . $uri_route . "') ?>";
+				continue;
+			}
+
 			$required_params_as_args = [];
 			foreach ($required_params[0] as $param_name) {
 				$required_params_as_args[] = "'$param_name'=> ";
