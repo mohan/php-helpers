@@ -18,9 +18,9 @@ function render_partial($template_name, $args=[], $return=false)
 function urlto_public_dir($uri)
 function urltoget($uri, $args=[], $arg_separator='&')
 function urltopost($uri, $args=[], $arg_separator='&')
-function formto($uri, $args=[], $attrs=[])
+function formto($uri, $args=[], $attrs=[], $fields=[])
 function linkto($uri, $html, $args=[], $attrs=[])
-function tag($html, $attrs=[], $name='p', $closing=true)
+function tag($html, $attrs=[], $name='div', $closing=true, $escape=true)
 function tag_table($headers, $data, $attrs=[], $cb=false)
 function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 function process_shortcodes($text)
@@ -33,7 +33,6 @@ function cookie_delete($name)
 function filter_set_config($filepath)
 function _arr_defaults(&$arr, $defaults)
 function _str_contains($str, ...$substrs)
-
 ***/
 
 
@@ -401,14 +400,32 @@ function urltopost($uri, $args=[], $arg_separator='&')
 // HTML Tag helpers
 // 
 
-function formto($uri, $args=[], $attrs=[])
+function formto($uri, $args=[], $attrs=[], $fields=[])
 {
-	$url = urltopost($uri, $args);
+	_arr_defaults($attrs, ['method'=>'post', 'action'=>urltopost($uri, $args)]);
 
 	$attrs_str = '';
-	foreach ($attrs as $key => $value) $attrs_str .= "$key='" . htmlentities($value) . "'";
+	foreach ($attrs as $key => $value) $attrs_str .= "$key='" . htmlentities($value) . "' ";
 
-	return "<form method='post' action='$url' $attrs_str>";
+	$out  = "<div class='form-container'><form $attrs_str>";
+
+	foreach ($fields as $field) {
+		_arr_defaults($field, ['value'=>'', 'title'=>'', 'tag'=>'input']);
+		$field['id'] = isset($field['name']) ? preg_replace("/[^a-z\d-]/", '-', $uri) . "-form-field-" . $field['name'] : '';
+		$value = $field['value'];
+		$title = $field['title'];
+		$tag = $field['tag'];
+		unset($field['value'], $field['title'], $field['tag']);
+
+		$out .= "\n<div class='form-field'>\n\t";
+		$out .= 	$title ? (tag($title, ['for'=>$field['id']], 'label') . "\n\t") : '';
+		$out .= 	tag($value, $field, $tag) . "\n";
+		$out .= "</div>\n";
+	}
+
+	$out .= "</form></div>\n";
+
+	return $out;
 }
 
 
@@ -429,20 +446,20 @@ function linkto($uri, $html, $args=[], $attrs=[])
 
 
 // Auto htmlentities for safe user input
-function tag($html, $attrs=[], $name='div', $closing=true)
+function tag($html, $attrs=[], $name='div', $closing=true, $escape=true)
 {
 	if($name != 'input' && $name != 'textarea' && !$html) return;
 
 	$attrs_str = '';
-	foreach ($attrs as $key => $value) $attrs_str .= " $key=\"" . htmlentities($value) . "\"";
+	foreach ($attrs as $key => $value) $attrs_str .= "$key=\"" . htmlentities($value) . "\" ";
 	
-	$out = "<$name$attrs_str";
+	$out = "<$name $attrs_str";
 
 	if($name != 'input'){
-		$out .= ">" . htmlentities($html);
+		$out .= ">" . ($escape ? htmlentities($html) : $html);
 		if($closing) $out .= "</$name>";
 	} else {
-		$out .= 'value="' . htmlentities($html) . '"';
+		$out .= ' value="' . htmlentities($html) . '"';
 		$out .= " />";
 	}
 

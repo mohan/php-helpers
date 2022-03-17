@@ -1,9 +1,8 @@
 <h1>New post</h1>
 
-<div class='panel'>
-	<?= formto('create-post') ?>
-		<p><?= tag($title, ['type'=>'text', 'name'=>'title', 'placeholder'=>'title'], 'input') ?></p>
-		<p><?= tag($body, ['name'=>'body', 'placeholder'=>'body'], 'textarea') ?></p>
-		<input type='submit' />
-	</form>
-</div>
+<?= formto('create-post', [], ['class'=>'panel'], [
+		['tag'=>'input', 'type'=>'text', 'name'=>'title', 'value'=>$title, 'placeholder'=>'Title', 'title'=>'Title'],
+		['tag'=>'textarea', 'name'=>'body', 'value'=>$body, 'placeholder'=>'Body', 'title'=>'Body'],
+		['tag'=>'button', 'type'=>'submit', 'value'=>'Submit']
+	])
+?>

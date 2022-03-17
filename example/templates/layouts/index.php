@@ -4,7 +4,7 @@
 	<link rel="stylesheet" type="text/css" href="<?= urlto_public_dir('style.css'); ?>">
 </head>
 <body>
-	<?php render_partial('../../debugpanel.html.php'); ?>
+	<?php render_partial('../../partials/debugpanel.html.php'); ?>
 
 	<ul id='nav'>
 		<li><?= linkto('', 'Home') ?></li>

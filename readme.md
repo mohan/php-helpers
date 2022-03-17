@@ -40,9 +40,9 @@ function render_partial($template_name, $args=[], $return=false)
 function urlto_public_dir($uri)
 function urltoget($uri, $args=[], $arg_separator='&')
 function urltopost($uri, $args=[], $arg_separator='&')
-function formto($uri, $args=[], $attrs=[])
+function formto($uri, $args=[], $attrs=[], $fields=[])
 function linkto($uri, $html, $args=[], $attrs=[])
-function tag($html, $attrs=[], $name='p', $closing=true)
+function tag($html, $attrs=[], $name='div', $closing=true, $escape=true)
 function tag_table($headers, $data, $attrs=[], $cb=false)
 function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 function process_shortcodes($text)
@@ -53,6 +53,9 @@ function secure_cookie_set($name, $value)
 function secure_cookie_get($name)
 function cookie_delete($name)
 function filter_set_config($filepath)
+
+// Internal utility functions
+
 function _arr_defaults(&$arr, $defaults)
 function _str_contains($str, ...$substrs)
 ```

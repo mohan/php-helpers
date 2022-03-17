@@ -53,6 +53,9 @@ input[type='text'], textarea{
 	font-size: 1em;
 	padding: 5px;
 }
+label{
+	display: block;
+}
 pre{
 	tab-size:4;
 	font-family: inherit;
@@ -63,6 +66,7 @@ pre{
 	background: #ddd;
 	padding: 5px 20px;
 	border-radius: 5px;
+	margin: 5px 0;
 }
 
 .text-center{
