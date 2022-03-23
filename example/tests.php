@@ -29,7 +29,7 @@ function test_get_root()
 	$uri = urltoget('root');
 	$resp = do_get($uri);
 	t('root page renders',  is_not_redirect($resp)
-							&& response_contains($resp,
+							&& contains($resp,
 									'<!-- Markdown start -->',
 									"<p>\nStatus: Work in progress\n</p>",
 									'<!-- Markdown end -->'
@@ -43,7 +43,7 @@ function test_get_new_post()
 	$uri = urltoget('new-post');
 	$resp = do_get($uri);
 	t('new-post page renders', is_not_redirect($resp)
-								&& response_contains($resp,
+								&& contains($resp,
 										formto('create-post'),
 										tag('', ['type'=>'text', 'name'=>'title', 'placeholder'=>'title'], 'input'),
 										'</form>'
@@ -57,7 +57,7 @@ function test_get_posts()
 	$uri = urltoget('posts');
 	$resp = do_get($uri);
 	t('posts page renders', is_not_redirect($resp)
-					&& response_contains($resp,
+					&& contains($resp,
 							tag('List of all Posts', [], 'h1'),
 							tag('Posts - Example', [], 'title')
 						)
@@ -70,7 +70,7 @@ function test_get_post()
 	$uri = urltoget('post', ['_p'=>'post/1']);
 	$resp = do_get($uri);
 	t('post page renders', is_not_redirect($resp)
-					&& response_contains($resp,
+					&& contains($resp,
 							tag('List of all Posts', [], 'h1'),
 							tag('Post #1 - Example', [], 'title')
 						)
@@ -83,7 +83,7 @@ function test_get_markdown()
 	$uri = urltoget('markdown', ['path'=>'readme.md']);
 	$resp = do_get($uri);
 	t('markdown page renders', is_not_redirect($resp)
-					&& response_contains($resp, '<!-- Markdown start -->')
+					&& contains($resp, '<!-- Markdown start -->')
 	);
 }
 
@@ -93,7 +93,7 @@ function test_get_docs()
 	$uri = urltoget('docs');
 	$resp = do_get($uri);
 	t('post page renders', is_not_redirect($resp)
-					&& response_contains($resp, tag('PHP Helpers Docs', [], 'h2'))
+					&& contains($resp, tag('PHP Helpers Docs', [], 'h2'))
 	);
 }
 

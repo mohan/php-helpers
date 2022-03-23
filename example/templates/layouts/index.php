@@ -1,13 +1,13 @@
 <html>
 <head>
-	<title><?= isset($_pagetitle) ? "$_pagetitle - " : '' ?>Example</title>
+	<title><?= _page_title(isset($_pagetitle) ? $_pagetitle : '') ?>Example</title>
 	<link rel="stylesheet" type="text/css" href="<?= urlto_public_dir('style.css'); ?>">
 </head>
 <body>
 	<?php render_partial('../../partials/debugpanel.html.php'); ?>
 
 	<ul id='nav'>
-		<li><?= linkto('', 'Home') ?></li>
+		<li><?= linkto('root', 'Home') ?></li>
 		<li><?= linkto('docs', 'Docs') ?></li>
 		<li><?= linkto('posts', 'Posts') ?></li>
 		<li><?= linkto('new-post', 'New Post') ?></li>
@@ -21,3 +21,4 @@
 	</div>
 </body>
 </html>
+

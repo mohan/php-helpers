@@ -1,14 +1,14 @@
 <?php
 
-define('CONFIG_ROOT_URL', '/');
-define('CONFIG_SECURE_HASH', '00000000000000000000000000000000');
+define('ROOT_URL', '/');
+define('SECURE_HASH', '00000000000000000000000000000000');
 
 require APP_DIR . '/../helpers.php';
 require APP_DIR . '/../helpers-extra.php';
 
 function initialize(){
 	filter_rewrite_uri([
-		"/^\/(?P<uri>post)\/(?P<id>\d+)$/",
+		"/^\/(?P<a>post)\/(?P<id>\d+)$/",
 	]);
 
 	if(!filter_permitted_params(
@@ -40,11 +40,9 @@ function initialize(){
 		[ ]
 	)) return get_404('Invalid URL params');
 
-	filter_set_flash();
-
 	// Routes
 	$response = filter_routes(
-		// Get uri, with required params from $_GET, $_REQUEST
+		// Get action, with required params from $_GET, $_REQUEST
 		[
 			'root'		=> [[], []],
 			'new-post'	=> [[], []],
@@ -53,13 +51,13 @@ function initialize(){
 			'markdown'	=> [['path'], []],
 			'docs'		=> 'app/docs.html.php'
 		],
-		// Post uri, with required params from $_GET, $_POST, $_REQUEST
+		// Post action, with required params from $_GET, $_POST, $_REQUEST
 		[
 			'create-post' => [[], ['title', 'body'], []]
 		],
-		// Patch (update) uri, with required params from $_GET, $_POST, $_REQUEST
+		// Patch (update) action, with required params from $_GET, $_POST, $_REQUEST
 		[],
-		// Delete uri, with required params from $_GET, $_POST, $_REQUEST
+		// Delete action, with required params from $_GET, $_POST, $_REQUEST
 		[]
 	);
 
@@ -135,7 +133,7 @@ function get_markdown()
 
 function post_create_post()
 {
-	extract(_arr_defaults($_POST, ['title'=>'', 'body'=>'']));
+	extract(_arr_defaults($_POST, ['title'=>false, 'body'=>false]));
 
 	if($title && $body){
 		flash_set('Post created!');
@@ -160,4 +158,13 @@ function _shortcodes_list()
 function shortcode_timestamp($args)
 {
 	return time();
+}
+
+
+function _page_title($_pagetitle)
+{
+	switch($_REQUEST['CURRENT_ACTION']){
+		case 'docs': return 'Docs - ';
+		default: return isset($_pagetitle) ? "$_pagetitle - " : '';
+	}
 }

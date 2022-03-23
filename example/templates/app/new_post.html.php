@@ -1,8 +1,18 @@
 <h1>New post</h1>
 
+<h3>Form helper example</h3>
 <?= formto('create-post', [], ['class'=>'panel'], [
-		['tag'=>'input', 'type'=>'text', 'name'=>'title', 'value'=>$title, 'placeholder'=>'Title', 'title'=>'Title'],
-		['tag'=>'textarea', 'name'=>'body', 'value'=>$body, 'placeholder'=>'Body', 'title'=>'Body'],
-		['tag'=>'button', 'type'=>'submit', 'value'=>'Submit']
+		'title' => ['value'=>$title, 'label'=>'Title'],
+		'body' => ['value'=>$body, 'label'=>'Body', 'tag'=>'textarea'],
+		'submit' => ['value'=>'Submit', 'type'=>'submit', 'tag'=>'button']
 	])
 ?>
+
+<hr/>
+
+<h3>Form helper with only fields generated</h3>
+<form action="<?= urltopost('create-post') ?>" method="post" class="panel">
+	<?= _form_field('create-post-2', 'title', ['value'=>$title, 'label'=>'Title']) ?>
+	<?= _form_field('create-post-2', 'body', ['value'=>$body, 'label'=>'Body', 'tag'=>'textarea']) ?>
+	<?= _form_field('create-post-2', 'submit', ['value'=>'Submit', 'type'=>'submit', 'tag'=>'button']) ?>
+</form>

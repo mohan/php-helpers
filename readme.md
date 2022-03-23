@@ -33,29 +33,31 @@ Status: Work in progress
 function filter_rewrite_uri($paths)
 function filter_permitted_params($get_param_names, $post_param_names, $cookie_param_names, $get_typecasts, $post_typecasts)
 function filter_routes($get_action_names, $post_action_names, $patch_action_names, $delete_action_names)
-function redirectto($uri, $args=[])
+function redirectto($action, $args=[])
 function get_404($message='')
 function render($template_name, $args=[], $layout='layouts/index.php')
 function render_partial($template_name, $args=[], $return=false)
-function urlto_public_dir($uri)
-function urltoget($uri, $args=[], $arg_separator='&')
-function urltopost($uri, $args=[], $arg_separator='&')
-function formto($uri, $args=[], $attrs=[], $fields=[])
-function linkto($uri, $html, $args=[], $attrs=[])
+function urlto_public_dir($action)
+function urltoget($action, $args=[], $arg_separator='&')
+function urltopost($action, $args=[], $arg_separator='&')
+function formto($action, $args=[], $attrs=[], $fields=[])
+function _form_field($form_id, $field_name, $field_options)
+function linkto($action, $html, $args=[], $attrs=[])
 function tag($html, $attrs=[], $name='div', $closing=true, $escape=true)
 function tag_table($headers, $data, $attrs=[], $cb=false)
 function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 function process_shortcodes($text)
 function flash_set($html, $in_current_request=false)
 function flash_clear()
-function filter_set_flash()
-function secure_cookie_set($name, $value)
-function secure_cookie_get($name)
+function md5_cookie_set($name, $value)
+function md5_cookie_get($name)
 function cookie_delete($name)
 function filter_set_config($filepath)
 
 // Internal utility functions
 
+function _to_id($str, $replace_with='-')
+function _path_join(...$parts)
 function _arr_defaults(&$arr, $defaults)
 function _str_contains($str, ...$substrs)
 ```
@@ -67,6 +69,6 @@ function _str_contains($str, ...$substrs)
 - [ ] Code Review
 - [ ] Test
 - [x] Example application
-- [!] URL param names in url
+- [x] URL param names in url
 	- Use web server rewrites
 

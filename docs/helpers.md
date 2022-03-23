@@ -190,7 +190,11 @@
 	* Environment variable `APP_ENV_IS_DEVELOPMENT=true` is required.
 
 
+## Notes
 
+* Use built-in `filter_rewrite_uri` for nice looking URLs, if needed. `/page/1` -> `/?get=page&id=1`.
+	* `_p` attr in url helpers will point to the nice looking URL.
+	* Both URLs will work, unless you define a deny in your web server.
 
 
 # Constants
@@ -200,10 +204,11 @@
 * CUSTOM_GET_404
 * APP_DIR
 * APP_TEMPLATE
+* TEMPLATES_DIR
+* ROOT_URL
 * RENDER_TO_STRING
-* CONFIG_ROOT_URL
+* SECURE_HASH
 
 ## helpers-extra.php
 
-* _PHP_HELPERS_EXTRA_IS_DEFINED
-* APP_ENV_IS_DEVELOPMENT
+* Environment variable `APP_ENV_IS_DEVELOPMENT=true`

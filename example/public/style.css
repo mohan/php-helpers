@@ -5,6 +5,7 @@ body{
 	font-family: monaco, "courier new", courier, monospace;
 	font-size: 0.8em;
 	line-height: 1.8em;
+	min-height: 150vh;
 }
 a{
 	color: #0000AA;

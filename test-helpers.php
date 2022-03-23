@@ -13,7 +13,7 @@ function t($test_name, $result)
 function is_redirect($expected_redirect_url, $response)
 function is_not_redirect($response)
 function is_flash($expected_message, $response)
-function response_contains($response, ...$expected_html_substrs)
+function contains($response, ...$expected_html_substrs)
 function do_get($uri_str, $cookies=[])
 function do_post($uri_str, $post_params=[], $cookies=[])
 ***/
@@ -96,9 +96,14 @@ function is_flash($expected_message, $response)
 	return $response['cookies']['flash'] == $expected_message;
 }
 
-function response_contains($response, ...$expected_html_substrs)
+function contains($response, ...$expected_html_substrs)
 {
 	return _str_contains($response['body'], ...$expected_html_substrs);
+}
+
+function pagetitle_is($str, $response)
+{
+	return _str_contains($response['body'], $str);
 }
 
 
@@ -118,6 +123,7 @@ function do_get($uri_str, $cookies=[])
 	if($uri_str[0] == '/') $_SERVER['REQUEST_URI'] = $uri_str;
 	_set_params($_COOKIE, $cookies);
 	_set_params($_REQUEST, $_GET);
+	_php_helpers_init();
 
 	$body = defined('APP_NAME') ? call_user_func(APP_NAME . '_initialize') : initialize();
 	$headers = _header();
@@ -138,6 +144,7 @@ function do_post($uri_str, $post_params=[], $cookies=[])
 	_set_params($_POST, $post_params);
 	_set_params($_REQUEST, $post_params);
 	_set_params($_REQUEST, $_GET);
+	_php_helpers_init();
 
 	$body = defined('APP_NAME') ? call_user_func(APP_NAME . '_initialize') : initialize();
 	$headers = _header();

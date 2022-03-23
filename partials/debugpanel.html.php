@@ -1,10 +1,10 @@
-<?php if(defined('APP_ENV_IS_DEVELOPMENT') && APP_ENV_IS_DEVELOPMENT && isset($_REQUEST['DEBUG_REQUEST_ARGS_HTML'])): ?>
+<?php if(defined('APP_ENV_IS_DEVELOPMENT') && APP_ENV_IS_DEVELOPMENT && defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && _PHP_HELPERS_EXTRA_IS_DEFINED): ?>
 	<div style='text-align:right;'>
-		<a id='toggle-debug-info' href='#toggle-debug-info' style=''>Show/Hide Debug Panel</a>
+		<a id='toggle-debug-info' href='#toggle-debug-info'>Show/Hide Debug Panel</a>
 	</div>
 	<div id='debug-info-container' style='display:none;'>
 		<h2>Debug Information Panel</h2>
-		<div style='padding: 20px;'><?= $_REQUEST['DEBUG_REQUEST_ARGS_HTML'] ?></div>
+		<div style='padding: 20px;'><?= _print_debugpanel() ?></div>
 	</div>
 
 	<style type="text/css">

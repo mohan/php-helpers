@@ -18,6 +18,8 @@ if(APP_ENV_IS_DEVELOPMENT || APP_ENV_IS_TEST){
 	function __d(...$args)
 	{
 		if(!APP_ENV_IS_TEST) echo "<pre style='width:94%;margin:1%;padding:2%;background:#fff;border:2px solid #aa0000;'>";
+		$_debug = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
+		echo "> [" . basename($_debug[0]['file']) . "#{$_debug[0]['line']}]\n";
 		foreach($args as $arg) {
 			if(APP_ENV_IS_TEST) {
 				var_dump($arg);
@@ -37,6 +39,8 @@ if(APP_ENV_IS_DEVELOPMENT || APP_ENV_IS_TEST){
 	function __d_(...$args)
 	{
 		if(!APP_ENV_IS_TEST) echo "<pre style='width:94%;margin:1%;padding:2%;background:#fff;border:2px solid #aa0000;'>";
+		$_debug = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
+		echo "> [" . basename($_debug[0]['file']) . "#{$_debug[0]['line']}]\n";
 		foreach($args as $arg) {
 			if(APP_ENV_IS_TEST) {
 				var_dump($arg);
@@ -54,12 +58,19 @@ if(APP_ENV_IS_DEVELOPMENT || APP_ENV_IS_TEST){
 	}
 
 
+	function _print_debugpanel(){
+		_print_debug_permitted_params(...$_REQUEST['_REQUEST_ARGS_PERMITTED_PARAMS']);
+		_print_debug_routes_pre(...$_REQUEST['_REQUEST_ARGS_ROUTES']);
+		_print_debug_routes_post(...$_REQUEST['_REQUEST_ARGS_ROUTES_POST']);
+	}
+
+
 	function _print_debug_permitted_params($get_param_names, $post_param_names, $cookie_param_names)
 	{
 		_print_debug_request_args('$_GET params', $_GET);
 		_print_debug_request_args('$_POST params', $_POST);
 		_print_debug_request_args('$_COOKIE params', $_COOKIE);
-		_print_debug_request_args('$_REQUEST[\'flash\']', ['flash'=>secure_cookie_get('flash')]);
+		_print_debug_request_args('$_REQUEST[\'flash\']', ['flash'=>md5_cookie_get('flash')]);
 		_print_debug_request_args('All specified $_GET params that are permitted', $get_param_names);
 		_print_debug_request_args('All specified $_POST params that are permitted', $post_param_names);
 		_print_debug_request_args('All specified $_COOKIE params that are permitted', $cookie_param_names);
@@ -78,14 +89,13 @@ if(APP_ENV_IS_DEVELOPMENT || APP_ENV_IS_TEST){
 	}
 
 
-	function _print_debug_routes_post($method_name, $uri_param_key, $required_params, $action_name)
+	function _print_debug_routes_post($method_name, $required_params, $action_name)
 	{
 		$args = [
-			'Internal HTTP method' => $method_name,
-			'Route' => '$_GET[\'' . $uri_param_key . '\'] == "' . $_GET[$uri_param_key] . '"',
+			'CURRENT_METHOD' => $_REQUEST['CURRENT_METHOD'],
+			'CURRENT_URI' => $_REQUEST['CURRENT_ACTION'],
 			'Action function' => "function $action_name(){ ... }",
-			'Required params for action' => $required_params,
-			'$_GET' => json_encode($_GET)
+			'Required params for action' => $required_params
 		];
 
 		if($_SERVER['REQUEST_METHOD'] == 'POST') $args['$_POST'] = json_encode($_POST);
@@ -98,31 +108,28 @@ if(APP_ENV_IS_DEVELOPMENT || APP_ENV_IS_TEST){
 
 	function _print_debug_request_args($name, $args, $table_headers=['Param', 'Value'], $encode=true)
 	{
-		if(!isset($_REQUEST['DEBUG_REQUEST_ARGS_HTML'])) $_REQUEST['DEBUG_REQUEST_ARGS_HTML'] = '';
-
 		$data = [];
 		foreach ($args as $key => $value) {
 			$data[] = [$key, $value];
 		}
-		if($name) $_REQUEST['DEBUG_REQUEST_ARGS_HTML'] .= tag($name, [], 'h3');
-		$_REQUEST['DEBUG_REQUEST_ARGS_HTML'] .=
-					tag_table($table_headers, $data,
-						['class'=>'table w-100', 'cellspacing'=>0],
-						function($row_value, $header_key) use($encode){
-							if($header_key == 0){
-								return htmlentities($row_value[0]);
-							} elseif (is_string($row_value[1]) || is_numeric($row_value[1])) {
-								return tag($row_value[$header_key], [], 'textarea');
-							} elseif ((is_bool($row_value[1]) || is_array($row_value[1])) && $encode) {
-								return tag(json_encode($row_value[$header_key]), [], 'textarea');
-							} elseif(is_array($row_value[1])) {
-								$out = '';
-								foreach ($row_value[1] as $value) {
-									$out .= tag($value, ['style'=>'border-width:1px;'], 'textarea');
-								}
-								return $out;
+		if($name) echo tag($name, [], 'h3');
+		echo tag_table($table_headers, $data,
+					['class'=>'table w-100', 'cellspacing'=>0],
+					function($row_value, $header_key) use($encode){
+						if($header_key == 0){
+							return htmlentities($row_value[0]);
+						} elseif (is_string($row_value[1]) || is_numeric($row_value[1])) {
+							return tag($row_value[$header_key], [], 'textarea');
+						} elseif ((is_bool($row_value[1]) || is_array($row_value[1])) && $encode) {
+							return tag(json_encode($row_value[$header_key]), [], 'textarea');
+						} elseif(is_array($row_value[1])) {
+							$out = '';
+							foreach ($row_value[1] as $value) {
+								$out .= tag($value, ['style'=>'border-width:1px;'], 'textarea');
 							}
-						});
+							return $out;
+						}
+					});
 	}
 
 
