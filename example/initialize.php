@@ -1,8 +1,5 @@
 <?php
 
-define('ROOT_URL', '/');
-define('SECURE_HASH', '00000000000000000000000000000000');
-
 require APP_DIR . '/../helpers.php';
 require APP_DIR . '/../helpers-extra.php';
 

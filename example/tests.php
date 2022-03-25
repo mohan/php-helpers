@@ -6,6 +6,9 @@
 // 
 
 define('APP_DIR', __DIR__);
+define('ROOT_URL', '/');
+define('SECURE_HASH', '00000000000000000000000000000000');
+
 
 // Require test-helpers.php before everything
 require '../test-helpers.php';

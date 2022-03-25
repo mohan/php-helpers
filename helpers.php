@@ -318,9 +318,13 @@ function render_partial($template_name, $args=[], $return=false)
 // URL helpers
 // 
 
-function urlto_public_dir($action)
+function urlto_public_dir($uri)
 {
-	return ROOT_URL . $action;
+	if(defined('PUBLIC_URL')){
+		return PUBLIC_URL . $uri;
+	} else {
+		return explode('?', ROOT_URL)[0] . $uri;
+	}
 }
 
 
@@ -328,27 +332,27 @@ function urltoget($action, $args=[], $arg_separator='&')
 {
 	if(!$args) $args = [];
 	if(isset($args['ROOT_URL'])){
-		$root_url = $args['ROOT_URL'];
+		$root_url = $args['ROOT_URL'] . (_str_contains($args['ROOT_URL'], '?') ? '' : '?');
 		unset($args['ROOT_URL']);
 	} else {
-		$root_url = ROOT_URL;
+		$root_url = ROOT_URL . (_str_contains(ROOT_URL, '?') ? '' : '?');
 	}
 
 	$hash = isset($args['_hash']) ? '#' . $args['_hash'] : '';
 	unset($args['_hash']);
 
 	if(isset($args['_p'])){
-		return $root_url . $args['_p'] . $hash;
+		return explode('?', ROOT_URL)[0] . $args['_p'] . $hash;
 	}
 
 	if($action == 'root') {
-		return $root_url . $hash;
+		return explode('?', $root_url)[0] . $hash;
 	}
 
 	$_args = ['a' => $action];
 	$args = array_merge($_args, $args);
 
-	return $root_url . '?' . http_build_query($args, '', $arg_separator) . $hash;
+	return $root_url . http_build_query($args, '', $arg_separator) . $hash;
 }
 
 
@@ -356,10 +360,10 @@ function urltopost($action, $args=[], $arg_separator='&')
 {
 	if(!$args) $args = [];
 	if(isset($args['ROOT_URL'])){
-		$root_url = $args['ROOT_URL'];
+		$root_url = $args['ROOT_URL'] . (_str_contains($args['ROOT_URL'], '?') ? '' : '?');
 		unset($args['ROOT_URL']);
 	} else {
-		$root_url = ROOT_URL;
+		$root_url = ROOT_URL . (_str_contains(ROOT_URL, '?') ? '' : '?');
 	}
 	
 	if( isset($args['_method']) && ($args['_method'] == 'patch' || $args['_method'] == 'delete') ){
@@ -371,7 +375,7 @@ function urltopost($action, $args=[], $arg_separator='&')
 
 	$args = array_merge($_args, $args);
 
-	return $root_url . '?' . http_build_query($args, '', $arg_separator);
+	return $root_url . http_build_query($args, '', $arg_separator);
 }
 
 
@@ -831,7 +835,7 @@ function md5_cookie_get($name)
 
 function cookie_delete($name)
 {
-	_setcookie($name, '', time() - 3600);
+	_setcookie($name, '', time() - 3600, ROOT_URL, '', false, true);
 }
 
 

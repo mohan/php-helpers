@@ -61,7 +61,7 @@ if(APP_ENV_IS_DEVELOPMENT || APP_ENV_IS_TEST){
 	function _print_debugpanel(){
 		_print_debug_permitted_params(...$_REQUEST['_REQUEST_ARGS_PERMITTED_PARAMS']);
 		_print_debug_routes_pre(...$_REQUEST['_REQUEST_ARGS_ROUTES']);
-		_print_debug_routes_post(...$_REQUEST['_REQUEST_ARGS_ROUTES_POST']);
+		if(isset($_REQUEST['_REQUEST_ARGS_ROUTES_POST'])) _print_debug_routes_post(...$_REQUEST['_REQUEST_ARGS_ROUTES_POST']);
 	}
 
 
@@ -92,6 +92,7 @@ if(APP_ENV_IS_DEVELOPMENT || APP_ENV_IS_TEST){
 	function _print_debug_routes_post($method_name, $required_params, $action_name)
 	{
 		$args = [
+			'ROOT_URL' => defined('ROOT_URL') ? ROOT_URL : '',
 			'CURRENT_METHOD' => $_REQUEST['CURRENT_METHOD'],
 			'CURRENT_URI' => $_REQUEST['CURRENT_ACTION'],
 			'Action function' => "function $action_name(){ ... }",
