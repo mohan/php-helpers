@@ -152,7 +152,7 @@ function _filter_permitted_params_typecast(&$input, $typecast_def_arr)
 
 // Map action names to functions and call current name
 // Max action name 32 chars
-function filter_routes($get_action_names, $post_action_names, $patch_action_names, $delete_action_names)
+function filter_routes($get_action_names, $post_action_names=[], $patch_action_names=[], $delete_action_names=[])
 {
 	if(isset($_REQUEST['TEMPLATE_HAS_RENDERED'])) return false;
 
@@ -179,37 +179,35 @@ function _filter_routes_method($current_method_action_names)
 	$current_action_name = $_REQUEST['CURRENT_ACTION'];
 	$current_method_name = $_REQUEST['CURRENT_METHOD'];
 
-	if( array_key_exists($current_action_name, $current_method_action_names) ){
-		// Render template directly
-		if(is_string($current_method_action_names[$current_action_name])){
-			if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-				$_REQUEST['_REQUEST_ARGS_ROUTES_POST'] = [$current_method_name, $current_method_action_names[$current_action_name], 'render'];
-			}
+	if( !array_key_exists($current_action_name, $current_method_action_names) ) return false;
 
-			return render($current_method_action_names[$current_action_name]);
-		}
-
-		// Required params for action
-		$required_params = $current_method_action_names[$current_action_name];
-		$action_function_name = $current_method_name . '_' . preg_replace("/[^a-zA-Z0-9]/", '_', $current_action_name);
-
-		if($current_method_name == 'get'){
-			if( array_intersect($required_params[0], array_keys($_GET)) != $required_params[0]) return false;
-			if( array_intersect($required_params[1], array_keys($_REQUEST)) != $required_params[1]) return false;
-		} else {
-			if( array_intersect($required_params[0], array_keys($_GET)) != $required_params[0]) return false;
-			if( array_intersect($required_params[1], array_keys($_POST)) != $required_params[1]) return false;
-			if( array_intersect($required_params[2], array_keys($_REQUEST)) != $required_params[2]) return false;
-		}
-
+	// Render template directly
+	if(is_string($current_method_action_names[$current_action_name])){
 		if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-			$_REQUEST['_REQUEST_ARGS_ROUTES_POST'] = [$current_method_name, $required_params, $action_function_name];
+			$_REQUEST['_REQUEST_ARGS_ROUTES_POST'] = [$current_method_name, $current_method_action_names[$current_action_name], 'render'];
 		}
 
-		return call_user_func( $action_function_name );
+		return render($current_method_action_names[$current_action_name]);
 	}
 
-	return false;
+	// Required params for action
+	$required_params = $current_method_action_names[$current_action_name];
+	$action_function_name = $current_method_name . '_' . preg_replace("/[^a-zA-Z0-9]/", '_', $current_action_name);
+
+	if($current_method_name == 'get'){
+		if( array_intersect($required_params[0], array_keys($_GET)) != $required_params[0]) return false;
+		if( array_intersect($required_params[1], array_keys($_REQUEST)) != $required_params[1]) return false;
+	} else {
+		if( array_intersect($required_params[0], array_keys($_GET)) != $required_params[0]) return false;
+		if( array_intersect($required_params[1], array_keys($_POST)) != $required_params[1]) return false;
+		if( array_intersect($required_params[2], array_keys($_REQUEST)) != $required_params[2]) return false;
+	}
+
+	if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
+		$_REQUEST['_REQUEST_ARGS_ROUTES_POST'] = [$current_method_name, $required_params, $action_function_name];
+	}
+
+	return call_user_func( $action_function_name );
 }
 
 
