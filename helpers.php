@@ -14,18 +14,24 @@ function filter_rewrite_uri($paths)
 	if(isset($_SERVER['PATH_INFO'])) $request_path = $_SERVER['PATH_INFO'];
 	else $request_path = $_SERVER['REQUEST_URI'];
 
+	$request_path = preg_replace('/^' . preg_quote(ROOT_URL, '/') . '/', '/', $request_path, 1);
+
+	$current_rewrite_args = false;
 	$matches = [];
-	foreach ($paths as $path => $action_name) {
+	foreach ($paths as $path => $rewrite_args) {
 		if(preg_match($path, $request_path, $matches)){
-			$_GET['a'] = $action_name;
+			$current_rewrite_args = $rewrite_args;
 			break;
 		}
 	}
 
-	if(sizeof($matches) == 0) return false;
+	if(!$current_rewrite_args) return false;
 
 	foreach ($matches as $key => $value) {
 		if(is_string($key)) $_GET[$key] = $value;
+	}
+	foreach ($current_rewrite_args as $key => $value) {
+		$_GET[$key] = $value;
 	}
 
 	_php_helpers_init();
@@ -128,14 +134,11 @@ function filter_routes($get_action_names, $post_action_names=[], $patch_action_n
 		$_REQUEST['_REQUEST_ARGS_ROUTES'] = [ $get_action_names, $post_action_names, $patch_action_names, $delete_action_names ];
 	}
 
-	if( $_REQUEST['CURRENT_METHOD'] == 'post' ) {
-		return _filter_routes_method($post_action_names);
-	} else if( $_REQUEST['CURRENT_METHOD'] == 'patch' ) {
-		return _filter_routes_method($patch_action_names);
-	} else if( $_REQUEST['CURRENT_METHOD'] == 'delete' ) {
-		return _filter_routes_method($delete_action_names);
-	} else if( $_REQUEST['CURRENT_METHOD'] == 'get' ) {
-		return _filter_routes_method($get_action_names);
+	switch ($_REQUEST['CURRENT_METHOD']) {
+		case 'post':	return _filter_routes_method($post_action_names);
+		case 'patch':	return _filter_routes_method($patch_action_names);
+		case 'delete':	return _filter_routes_method($delete_action_names);
+		case 'get':		return _filter_routes_method($get_action_names);
 	}
 
 	return false;
@@ -230,7 +233,7 @@ function render($template_name, $args=[], $layout='layouts/index.php')
 
 	if(defined('RENDER_TO_STRING')) ob_start();
 
-	include _path_join($template_path, ($layout ? $layout : $template_name));
+	require _path_join($template_path, ($layout ? $layout : $template_name));
 
 	if(defined('RENDER_TO_STRING')) {
 		$out = ob_get_contents();
@@ -250,7 +253,7 @@ function render_partial($template_name, $args=[], $return=false)
 
 	if($return) ob_start();
 	
-	include _path_join($template_path, $template_name);
+	require _path_join($template_path, $template_name);
 	
 	if($return) {
 		$out = ob_get_contents();
@@ -494,230 +497,6 @@ function tag_table($headers, $data, $attrs=[], $cb=false)
 
 
 
-
-
-
-
-
-
-
-
-
-
-// 
-// Markdown
-// 
-
-function render_markdown($text, $attrs=[], $enable_shortcodes=false)
-{
-	static $patterns = [[
-		"/^(\t*)---$/",													// hr
-		"/\*\*\*([^*]+)\*\*\*/",										// bold italic
-		"/\*\*([^*]+)\*\*/",											// italic
-		"/([^*\t])\*([^*]+)\*/",										// bold
-		"/~~([^~]+)~~/",												// strikethrough
-		"/\[([^\]]+)\]\((\/|#|\?|[a-z]+:\/\/)([^\)]*)\)/",				// link with text
-		"/\((\/|#|\?|[a-z]+:\/\/)([^\)]*)\)/",							// link without text
-		"/`([^`]+)`/",													// code
-		"/^(\t*)-\s\[x\]\s(.+)$/",										// Task list item checked
-		"/^(\t*)-\s\[X\]\s(.+)$/",										// Task list item checked and striked
-		"/^(\t*)-\s\[!\]\s(.+)$/",										// Task list item striked unchecked
-		"/^(\t*)-\s\[\s\]\s(.+)$/",										// Task list unchecked
-		"/^(\t*)\*\s/",													// Bullet list
-		"/^(\t*)\-\s/",													// Dash list
-		"/^(\t*)(\d+\.)\s/"												// Numbered list
-	],[
-		"$1<hr/>",
-		"<strong><em>$1</em></strong>",
-		"<em>$1</em>",
-		"$1<strong>$2</strong>",
-		"<strike>$1</strike>",
-		"<a href='$2$3'>$1</a>",
-		"<a href='$1$2'>$1$2</a>",
-		"<span class='md-code'>$1</span>",
-		"$1<span class='md-task-list md-task-list-checked'><input type='checkbox' checked='checked' disabled='true' /> $2</span>",
-		"$1<span class='md-task-list md-task-list-checked-striked'><input type='checkbox' checked='checked' disabled='true' /> <strike>$2</strike></span>",
-		"$1<span class='md-task-list md-task-list-unchecked-striked'><input type='checkbox' disabled='true' /> <strike>$2</strike></span>",
-		"$1<span class='md-task-list md-task-list-unchecked'><input type='checkbox' disabled='true' /> $2</span>",
-		"$1<span class='md-list-bullet'>&bull;</span> ",
-		"$1<span class='md-list-dash'>&ndash;</span> ",
-		"$1<span class='md-list-number'>$2</span> "
-	]];
-	
-	$out = '';
-	// Todo: Optimize, use substr.
-	$lines = explode("\n", $text);
-	$is_codeblock = false;
-	$tab_size_for_current_block = 0;
-	$codeblock_attr = 'raw';
-	$data_table_header = [];
-	$data_table = [];
-	$data_table_i = 0;
-	foreach ($lines as $i => $line) {
-		$matches = [];
-		if(preg_match("/^(\t*)```([[:alnum:]\s]*)$/", $line, $matches)){
-			if($is_codeblock){
-				if(_str_contains($codeblock_attr, 'table')){
-					$out .= tag_table($data_table_header, $data_table);
-					$data_table_header = [];
-					$data_table = [];
-					$data_table_i = 0;
-				}
-
-				$is_codeblock = false;
-				$tab_size_for_current_block = 0;
-				$codeblock_attr = 'raw';
-				$out .= "</div>\n";
-			} else {
-				$is_codeblock = true;
-				$tab_size_for_current_block = strlen($matches[1]);
-				$codeblock_attr = str_replace(' ', ' md-codeblock-', $matches[2]);
-				if(!$codeblock_attr) $codeblock_attr = 'plain';
-				$class_list = "tab-count-$tab_size_for_current_block md-codeblock-" . $codeblock_attr;
-				$out .= "<div class='md-codeblock $class_list'>\n";
-			}
-			continue;
-		}
-
-		if($is_codeblock && _str_contains($codeblock_attr, 'table')){
-			if($data_table_i == 0) $data_table_header = str_getcsv(trim($line));
-			else $data_table[] = str_getcsv(trim($line));
-
-			$data_table_i++;
-			continue;
-		}
-
-		$line = htmlentities($line);
-
-		if($is_codeblock && !_str_contains($codeblock_attr, 'raw')){
-			$line = preg_replace($patterns[0], $patterns[1], $line);
-		}
-
-		if(!$is_codeblock){
-			$line = preg_replace($patterns[0], $patterns[1], $line);
-		}
-
-		if(preg_match("/^\t*(#{1,5})\s(.+)$/", $line, $matches)){
-			// headings
-			$_tag = 'h' . strlen($matches[1]);
-			$_id = strtolower(preg_replace("/[^a-zA-Z\d]/", '-', $matches[2]));
-			$out .= "<$_tag id='$_id' class='md-heading'><a class='md-hash-link' href='#$_id'>\n" . htmlentities($matches[2]) . "\n</a></$_tag>\n";
-			continue;
-		}
-
-		$tabs = '';
-		if(preg_match("/^\t+/", $line, $matches)){
-			$tabs = " class='tab-count-" . (strlen($matches[0]) - $tab_size_for_current_block) . "'";
-		}
-
-		$_tag = _str_contains($line, '<hr/>') ? 'div' : 'p';
-		$line = strlen($line) == 0 ? "<p class='md-br'></p>\n" : "<$_tag$tabs>\n" . $line . "\n</$_tag>\n";
-
-		if($enable_shortcodes && $shortcode_line = process_shortcodes($line)){
-			$line = $shortcode_line;
-		}
-
-		$out .= $line;
-	}
-
-	$attrs_str = sizeof($attrs) == 0 ? "class='markdown'" : '';
-	foreach ($attrs as $key => $value) $attrs_str .= "$key='" . htmlentities($value) . "' ";
-
-	return "\n<!-- Markdown start -->\n<div $attrs_str>\n$out\n</div>\n<!-- Markdown end -->\n";
-}
-
-
-
-// 
-// END Markdown
-// 
-
-
-
-
-
-
-
-
-
-
-// 
-// Shortcodes
-// 
-
-// Process all shortcodes using respective functions and replace with return values.
-function process_shortcodes($text)
-{
-	static $shortcode_list_regex = false;
-
-	if(!$shortcode_list_regex) {
-		$shortcodes_list = preg_replace("/[^[:alnum:]_-]/", "_", _shortcodes_list());
-		$shortcode_list_regex = "/\[(" . join('|', $shortcodes_list) . ")([^\]]*)\]/";
-	}
-
-	// start with [
-	// \[([a-z]+) = name
-	// ([^\]]*) = args_str
-	if(!preg_match_all($shortcode_list_regex, $text, $matches)) return false;
-
-	
-	$shortcodes_matches = [];
-	$shortcode_replacements = [];
-	foreach ($matches[0] as $key => $match) {
-		$full_shortcode = trim($matches[0][$key]);
-		$name = $matches[1][$key];
-		$args_str = $matches[2][$key];
-		
-		$args = [];
-		if(_str_contains($args_str, '=')){
-			$args[0] = $args_str;
-		} else {
-			if(preg_match_all('/([a-z]+)="?([^"]+)"?/', $args_str, $args_matches)){
-				$arg_counts = $args_matches[1] ? array_count_values($args_matches[1]) : [];
-
-				foreach ($args_matches[0] as $arg_key => $arg_value) {
-					$key = $args_matches[1][$arg_key];
-					$value = $args_matches[2][$arg_key];
-					
-					if($arg_counts[$key] > 1) $args[$key][] = $value;
-					else $args[$key] = $value;
-				}
-			}
-		}
-
-		// Todo: Optimize, insert using substr.
-		$shortcodes_matches[] = '/' . preg_quote($full_shortcode) . '/';
-		$shortcode_replacements[] = call_user_func("shortcode_" . str_replace('-', '_', $name), $args);
-	}
-
-	return preg_replace($shortcodes_matches, $shortcode_replacements, $text, 1);
-}
-
-
-
-// 
-// END Shortcodes
-// 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // 
 // Flash messages
 // 
@@ -776,8 +555,6 @@ function _filter_set_flash()
 
 function md5_cookie_set($name, $value)
 {
-	if(!SECURE_HASH) return;
-	
 	// expires next day - 1hour; reset to keep it continuous;
 	$authenticity = _md5_cookie_authenticity_token($name, $value, time());
 
@@ -826,58 +603,6 @@ function _md5_cookie_authenticity_token($name, $value, $timestamp)
 // 
 // END md5 cookie
 // 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 
-// Config file helpers
-//
-
-
-// Defines constants CONFIG_NAME from config ini file
-function filter_set_config($filepath, $prefix='CONFIG_')
-{
-	$config = parse_ini_file($filepath);
-
-	foreach ($config as $key => $value) {
-		define(strtoupper($prefix . $key), $value);
-	}
-}
-
-
-// 
-// END Config file helpers
-//
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -976,19 +701,20 @@ function _php_helpers_init()
 	else if($_GET['post_action']) 	$_REQUEST['CURRENT_ACTION'] = $_GET['post_action'];
 	else if($_GET['patch_action']) 	$_REQUEST['CURRENT_ACTION'] = $_GET['patch_action'];
 	else if($_GET['delete_action'])	$_REQUEST['CURRENT_ACTION'] = $_GET['delete_action'];
-	else {
-		$_REQUEST['CURRENT_ACTION'] = $_GET['a'] = 'root';
-	}
+	else							$_REQUEST['CURRENT_ACTION'] = $_GET['a'] = 'root';
 
 	if($_GET['a']){
 		$_REQUEST['CURRENT_METHOD'] = 'get';
 	} else if($_SERVER['REQUEST_METHOD'] == 'POST'){
-		if($_GET['post_action']) 		$_REQUEST['CURRENT_METHOD'] = 'post';
-		else if($_GET['patch_action']) 	$_REQUEST['CURRENT_METHOD'] = 'patch';
+		if($_GET['post_action']) 			$_REQUEST['CURRENT_METHOD'] = 'post';
+		else if($_GET['patch_action']) 		$_REQUEST['CURRENT_METHOD'] = 'patch';
 		else if($_GET['delete_action']) 	$_REQUEST['CURRENT_METHOD'] = 'delete';
 	} else {
 		$_REQUEST['CURRENT_METHOD'] = 'get';
 	}
+
+	if(!defined('ROOT_URL')) define('ROOT_URL', '/');
+	if(!defined('SECURE_HASH')) define('SECURE_HASH', md5(filemtime(__FILE__) . filesize(__FILE__) . __FILE__));
 
 	_filter_set_flash();
 }

@@ -37,6 +37,8 @@ if(PHP_SAPI != 'cli') {
 // 
 function call_tests_for($function_names)
 {
+	_php_helpers_init();
+	
 	$functions_to_implement = [];
 
 	$start_time = microtime(true);

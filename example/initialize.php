@@ -33,9 +33,9 @@ function initialize(){
 
 
 	filter_rewrite_uri([
-		"/^\/post\/(?P<id>\d+)$/" 			=> 'post',
-		"/^\/docs\/(?P<path>[a-z0-9]+)$/" 	=> 'docs/view',
-		"/^\/docs$/" 						=> 'docs'
+		"/^\/post\/(?P<id>\d+)$/" 			=> ['a'=>'post'],
+		"/^\/docs\/(?P<path>[a-z0-9]+)$/" 	=> ['a'=>'docs/view'],
+		"/^\/docs$/" 						=> ['a'=>'docs']
 	]);
 
 

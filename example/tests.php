@@ -6,8 +6,6 @@
 // 
 
 define('APP_DIR', __DIR__ . '/');
-define('ROOT_URL', '/');
-define('SECURE_HASH', '00000000000000000000000000000000');
 
 
 // Require test-helpers.php before everything
@@ -20,7 +18,7 @@ call_tests_for([
 	'get_new_post',
 	'get_posts',
 	'get_post',
-	'get_docs_',
+	'get_docs_view',
 	'get_docs',
 
 	'post_create_post'
@@ -81,11 +79,11 @@ function test_get_post()
 }
 
 
-function test_get_docs_()
+function test_get_docs_view()
 {
 	$uri = urltoget('/docs/helpers');
 	$resp = do_get($uri);
-	t('docs_ page renders', is_not_redirect($resp)
+	t('docs_view page renders', is_not_redirect($resp)
 					&& contains($resp, '<!-- Markdown start -->')
 	);
 }
