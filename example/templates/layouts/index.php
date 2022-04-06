@@ -1,24 +1,8 @@
-<html>
-<head>
-	<title><?= _page_title(isset($_pagetitle) ? $_pagetitle : '') ?>Example</title>
-	<link rel="stylesheet" type="text/css" href="<?= urlto_public_dir('style.css'); ?>">
-</head>
-<body>
-	<?php render_partial('../../partials/debugpanel.html.php'); ?>
+<?php
 
-	<ul id='nav'>
-		<li><?= linkto('root', 'Home') ?></li>
-		<li><?= linkto('docs', 'Docs') ?></li>
-		<li><?= linkto('posts', 'Posts') ?></li>
-		<li><?= linkto('new-post', 'New Post') ?></li>
-		<li><?= linkto('post', 'Post 1', ['_p'=>"post/1"]) ?></li>
-		<li><?= linkto('404', '404') ?></li>
-	</ul>
+require_once 'functions.php';
 
-	<div id="main">
-		<?= isset($_REQUEST['flash']) ? tag($_REQUEST['flash'], ['class'=>'panel text-center']) : '' ?>
-		<?php render_partial($template_name, $args); ?>
-	</div>
-</body>
-</html>
-
+if(strpos($_GET['a'], 'docs') === 0)
+	require APP_DIR . '../partials/layout-sidebar.html.php';
+else
+	require APP_DIR . '../partials/layout-navbar.html.php';

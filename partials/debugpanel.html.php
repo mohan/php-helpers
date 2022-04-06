@@ -1,9 +1,6 @@
 <?php if(defined('APP_ENV_IS_DEVELOPMENT') && APP_ENV_IS_DEVELOPMENT && defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && _PHP_HELPERS_EXTRA_IS_DEFINED): ?>
-	<div style='text-align:right;'>
-		<a id='toggle-debug-info' href='#toggle-debug-info'>Show/Hide Debug Panel</a>
-	</div>
+	<a id='toggle-debug-info' href='#toggle-debug-info'>Show/Hide Debug Panel</a>
 	<div id='debug-info-container' style='display:none;'>
-		<h2>Debug Information Panel</h2>
 		<div style='padding: 20px;'><?= _print_debugpanel() ?></div>
 	</div>
 
@@ -11,12 +8,11 @@
 		#toggle-debug-info{
 			display:block;
 			font-size:10px;
-			padding-right:5px;
 			text-align: center;
 			background:#f6c457;
+			text-align: center;
 		}
 		#debug-info-container{
-			margin-top:-15px;
 			border-top:1px solid #f6c457;
 			border-bottom:2px solid #f6c457;
 			background:#efefef;

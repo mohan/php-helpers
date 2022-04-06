@@ -1,0 +1,14 @@
+<html>
+<head>
+	<title>404</title>
+	<link rel="stylesheet" type="text/css" href="<?= urlto_public_dir('helpers.css'); ?>">
+</head>
+<body>
+	<?php include('debugpanel.html.php'); ?>
+	
+	<div id='main' style='min-height:auto;padding:30px 50px;'>
+		<h2>Error 404! Page not found!</h2>
+		<?= tag($message, ['class'=>'text-muted']) ?>
+	</div>
+</body>
+</html>

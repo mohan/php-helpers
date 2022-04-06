@@ -5,53 +5,21 @@
 // Status: Work in progress
 
 
-/***
-# Available Functions
-
-function filter_rewrite_uri($paths)
-function filter_permitted_params($get_param_names, $post_param_names, $cookie_param_names, $get_typecasts, $post_typecasts)
-function filter_routes($get_action_names, $post_action_names, $patch_action_names, $delete_action_names)
-function redirectto($action, $args=[])
-function get_404($message='')
-function render($template_name, $args=[], $layout='layouts/index.php')
-function render_partial($template_name, $args=[], $return=false)
-function urlto_public_dir($action)
-function urltoget($action, $args=[], $arg_separator='&')
-function urltopost($action, $args=[], $arg_separator='&')
-function formto($action, $args=[], $attrs=[], $fields=[])
-function _form_field($form_id, $field_name, $field_options)
-function linkto($action, $html, $args=[], $attrs=[])
-function tag($html, $attrs=[], $name='div', $closing=true, $escape=true)
-function tag_table($headers, $data, $attrs=[], $cb=false)
-function render_markdown($text, $attrs=[], $enable_shortcodes=false)
-function process_shortcodes($text)
-function flash_set($html, $in_current_request=false)
-function flash_clear()
-function md5_cookie_set($name, $value)
-function md5_cookie_get($name)
-function cookie_delete($name)
-function filter_set_config($filepath)
-
-// Internal utility functions
-
-function _to_id($str, $replace_with='-')
-function _path_join(...$parts)
-function _arr_defaults(&$arr, $defaults)
-function _str_contains($str, ...$substrs)
-
-***/
-
-
-
 // 
 // Rewrite current $_SERVER['REQUEST_URI'] into $_GET
 // 
 
 function filter_rewrite_uri($paths)
 {
+	if(isset($_SERVER['PATH_INFO'])) $request_path = $_SERVER['PATH_INFO'];
+	else $request_path = $_SERVER['REQUEST_URI'];
+
 	$matches = [];
-	foreach ($paths as $path) {
-		if(preg_match($path, $_SERVER['REQUEST_URI'], $matches)) break;
+	foreach ($paths as $path => $action_name) {
+		if(preg_match($path, $request_path, $matches)){
+			$_GET['a'] = $action_name;
+			break;
+		}
 	}
 
 	if(sizeof($matches) == 0) return false;
@@ -80,7 +48,7 @@ function filter_rewrite_uri($paths)
 
 // Permitted GET, POST, cookie params, with strlen check and typecasting
 // Ex: $get_param_names = [ 'param_name' => int_length ... ]
-function filter_permitted_params($get_param_names, $post_param_names, $cookie_param_names, $get_typecasts, $post_typecasts)
+function filter_permitted_params($get_param_names, $post_param_names=[], $cookie_param_names=[], $get_typecasts=[], $post_typecasts=[])
 {
 	if(!_filter_permitted_params_names($_GET, $get_param_names)) return false;
 	if(!_filter_permitted_params_names($_POST, $post_param_names)) return false;
@@ -90,7 +58,7 @@ function filter_permitted_params($get_param_names, $post_param_names, $cookie_pa
 	_filter_permitted_params_typecast($_POST, $post_typecasts);
 
 	if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-		$_REQUEST['_REQUEST_ARGS_PERMITTED_PARAMS'] = func_get_args();
+		$_REQUEST['_REQUEST_ARGS_PERMITTED_PARAMS'] = [ $get_param_names, $post_param_names, $cookie_param_names, $get_typecasts, $post_typecasts ];
 	}
 
 	return true;
@@ -157,7 +125,7 @@ function filter_routes($get_action_names, $post_action_names=[], $patch_action_n
 	if(isset($_REQUEST['TEMPLATE_HAS_RENDERED'])) return false;
 
 	if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-		$_REQUEST['_REQUEST_ARGS_ROUTES'] = func_get_args();
+		$_REQUEST['_REQUEST_ARGS_ROUTES'] = [ $get_action_names, $post_action_names, $patch_action_names, $delete_action_names ];
 	}
 
 	if( $_REQUEST['CURRENT_METHOD'] == 'post' ) {
@@ -339,8 +307,11 @@ function urltoget($action, $args=[], $arg_separator='&')
 	$hash = isset($args['_hash']) ? '#' . $args['_hash'] : '';
 	unset($args['_hash']);
 
-	if(isset($args['_p'])){
-		return explode('?', ROOT_URL)[0] . $args['_p'] . $hash;
+	if(strpos($action, '/') === 0){
+		$out = explode('?', ROOT_URL)[0] . ltrim($action, '/');
+		if(sizeof($args) > 0) $out .= '?' . http_build_query($args, '', $arg_separator);
+		if($hash) $out .= $hash;
+		return $out;
 	}
 
 	if($action == 'root') {
@@ -372,6 +343,13 @@ function urltopost($action, $args=[], $arg_separator='&')
 	if( isset($args['_method']) ) unset($args['_method']);
 
 	$args = array_merge($_args, $args);
+
+	if(strpos($action, '/') === 0){
+		$out = explode('?', ROOT_URL)[0] . ltrim($action, '/');
+		if(sizeof($args) > 0) $out .= '?' . http_build_query($args, '', $arg_separator);
+		if($hash) $out .= $hash;
+		return $out;
+	}
 
 	return $root_url . http_build_query($args, '', $arg_separator);
 }
@@ -450,7 +428,7 @@ function linkto($action, $html, $args=[], $attrs=[])
 {
 	$url = urltoget($action, $args, '&amp;');
 
-	if($_SERVER['REQUEST_URI'] == urltoget($action, $args)) {
+	if( $_REQUEST['CURRENT_METHOD'] == 'get' && ($_SERVER['REQUEST_URI'] == urltoget($action, $args) || $_GET['a'] == $action) ) {
 		_arr_defaults($attrs, ['class'=>'']);
 		$attrs['class'] .= 'current-uri-link';
 	}
@@ -792,7 +770,7 @@ function _filter_set_flash()
 
 
 // 
-// Secure cookie - Cookie with added authenticity
+// md5 cookie - Cookie with added md5 check
 // 
 
 
@@ -846,7 +824,7 @@ function _md5_cookie_authenticity_token($name, $value, $timestamp)
 
 
 // 
-// END Secure cookie
+// END md5 cookie
 // 
 
 
@@ -875,12 +853,12 @@ function _md5_cookie_authenticity_token($name, $value, $timestamp)
 
 
 // Defines constants CONFIG_NAME from config ini file
-function filter_set_config($filepath)
+function filter_set_config($filepath, $prefix='CONFIG_')
 {
 	$config = parse_ini_file($filepath);
 
 	foreach ($config as $key => $value) {
-		define('CONFIG_' . $key, $value);
+		define(strtoupper($prefix . $key), $value);
 	}
 }
 
@@ -991,20 +969,23 @@ if(!defined('CUSTOM_HEADER_HANDLERS')){
 // 
 function _php_helpers_init()
 {
-	if(isset($_GET['a']))		 		$_REQUEST['CURRENT_ACTION'] = $_GET['a'];
-	else if(isset($_GET['post_action'])) 	$_REQUEST['CURRENT_ACTION'] = $_GET['post_action'];
-	else if(isset($_GET['patch_action'])) 	$_REQUEST['CURRENT_ACTION'] = $_GET['patch_action'];
-	else if(isset($_GET['delete_action']))	$_REQUEST['CURRENT_ACTION'] = $_GET['delete_action'];
+	if(isset($_GET['a']) && $_GET['a'] == '') $_GET['a'] = 'root';
+	_arr_defaults($_GET, ['a'=>NULL, 'post_action'=>NULL, 'patch_action'=>NULL, 'delete_action'=>NULL]);
+
+	if($_GET['a'])		 			$_REQUEST['CURRENT_ACTION'] = $_GET['a'];
+	else if($_GET['post_action']) 	$_REQUEST['CURRENT_ACTION'] = $_GET['post_action'];
+	else if($_GET['patch_action']) 	$_REQUEST['CURRENT_ACTION'] = $_GET['patch_action'];
+	else if($_GET['delete_action'])	$_REQUEST['CURRENT_ACTION'] = $_GET['delete_action'];
 	else {
 		$_REQUEST['CURRENT_ACTION'] = $_GET['a'] = 'root';
 	}
 
-	if(isset($_GET['a'])){
+	if($_GET['a']){
 		$_REQUEST['CURRENT_METHOD'] = 'get';
 	} else if($_SERVER['REQUEST_METHOD'] == 'POST'){
-		if(isset($_GET['post_action'])) 		$_REQUEST['CURRENT_METHOD'] = 'post';
-		else if(isset($_GET['patch_action'])) 	$_REQUEST['CURRENT_METHOD'] = 'patch';
-		else if(isset($_GET['delete_action'])) 	$_REQUEST['CURRENT_METHOD'] = 'delete';
+		if($_GET['post_action']) 		$_REQUEST['CURRENT_METHOD'] = 'post';
+		else if($_GET['patch_action']) 	$_REQUEST['CURRENT_METHOD'] = 'patch';
+		else if($_GET['delete_action']) 	$_REQUEST['CURRENT_METHOD'] = 'delete';
 	} else {
 		$_REQUEST['CURRENT_METHOD'] = 'get';
 	}

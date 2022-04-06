@@ -4,20 +4,16 @@ require APP_DIR . '/../helpers.php';
 require APP_DIR . '/../helpers-extra.php';
 
 function initialize(){
-	filter_rewrite_uri([
-		"/^\/(?P<a>post)\/(?P<id>\d+)$/",
-	]);
-
 	if(!filter_permitted_params(
 		// GET params with regex
 		[
-			'uri'		=> '/^[a-z0-9_-]+$/',
-			'post_uri'	=> '/^[a-z0-9_-]+$/',
-			'id'		=> '/^\d+$/',
-			'path'		=> '/^[a-z0-9-_\.\/]+$/',
-			'title'		=> 1024,
-			'body'		=> 1024,
-			'raw'		=> '/(0|1)/'
+			'a'				=> '/^(root|docs|posts|new-post|post)$/',
+			'post_action'	=> '/^(create-post)$/',
+			'id'			=> '/^\d+$/',
+			'path'			=> '/^(helpers|markdown)$/',
+			'title'			=> 1024,
+			'body'			=> 1024,
+			'raw'			=> '/(0|1)/'
 		],
 		// POST params with max_length
 		[
@@ -32,30 +28,32 @@ function initialize(){
 		[
 			'id' => 'int',
 			'raw'=> 'bool'
-		],
-		// POST typecast
-		[ ]
+		]
 	)) return get_404('Invalid URL params');
+
+
+	filter_rewrite_uri([
+		"/^\/post\/(?P<id>\d+)$/" 			=> 'post',
+		"/^\/docs\/(?P<path>[a-z0-9]+)$/" 	=> 'docs/view',
+		"/^\/docs$/" 						=> 'docs'
+	]);
+
 
 	// Routes
 	$response = filter_routes(
 		// Get action, with required params from $_GET, $_REQUEST
 		[
-			'root'		=> [[], []],
+			'root'		=> 'app/readme.html.php',
 			'new-post'	=> [[], []],
 			'posts'		=> [[], []],
 			'post'		=> [['id'], []],
-			'markdown'	=> [['path'], []],
+			'docs/view'	=> [['path'], []],
 			'docs'		=> 'app/docs.html.php'
 		],
 		// Post action, with required params from $_GET, $_POST, $_REQUEST
 		[
 			'create-post' => [[], ['title', 'body'], []]
-		],
-		// Patch (update) action, with required params from $_GET, $_POST, $_REQUEST
-		[],
-		// Delete action, with required params from $_GET, $_POST, $_REQUEST
-		[]
+		]
 	);
 
 	if($response === false) return get_404('Invalid URL');
@@ -68,13 +66,6 @@ function initialize(){
 //
 // Actions (if needed, place in APP_NAME/actions.php)
 //
-
-function get_root()
-{
-	return render('app/readme.html.php', [
-		'_pagetitle'=>'Readme'
-	]);
-}
 
 
 function get_new_post()
@@ -115,15 +106,14 @@ function get_post()
 }
 
 
-function get_markdown()
+function get_docs_view()
 {
 	extract(_arr_defaults($_GET, ['path'=>false, 'raw'=>false]));
-	if(array_search($path, ['readme.md', 'docs/markdown.md', 'docs/helpers.md']) === false) return false;
 
 	return render('app/markdown.html.php', [
 		'_pagetitle'=>$path,
 		'raw'=>$raw,
-		'text' => file_get_contents(APP_DIR . '/../' . $path)
+		'text' => file_get_contents(APP_DIR . '/../docs/' . $path . '.md')
 	]);
 }
 
@@ -155,13 +145,4 @@ function _shortcodes_list()
 function shortcode_timestamp($args)
 {
 	return time();
-}
-
-
-function _page_title($_pagetitle)
-{
-	switch($_REQUEST['CURRENT_ACTION']){
-		case 'docs': return 'Docs - ';
-		default: return isset($_pagetitle) ? "$_pagetitle - " : '';
-	}
 }

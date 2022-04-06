@@ -5,7 +5,7 @@
 // or `php tests.php`
 // 
 
-define('APP_DIR', __DIR__);
+define('APP_DIR', __DIR__ . '/');
 define('ROOT_URL', '/');
 define('SECURE_HASH', '00000000000000000000000000000000');
 
@@ -20,7 +20,7 @@ call_tests_for([
 	'get_new_post',
 	'get_posts',
 	'get_post',
-	'get_markdown',
+	'get_docs_',
 	'get_docs',
 
 	'post_create_post'
@@ -70,7 +70,7 @@ function test_get_posts()
 
 function test_get_post()
 {
-	$uri = urltoget('post', ['_p'=>'post/1']);
+	$uri = urltoget('/post/1');
 	$resp = do_get($uri);
 	t('post page renders', is_not_redirect($resp)
 					&& contains($resp,
@@ -81,11 +81,11 @@ function test_get_post()
 }
 
 
-function test_get_markdown()
+function test_get_docs_()
 {
-	$uri = urltoget('markdown', ['path'=>'readme.md']);
+	$uri = urltoget('/docs/helpers');
 	$resp = do_get($uri);
-	t('markdown page renders', is_not_redirect($resp)
+	t('docs_ page renders', is_not_redirect($resp)
 					&& contains($resp, '<!-- Markdown start -->')
 	);
 }
@@ -93,10 +93,10 @@ function test_get_markdown()
 
 function test_get_docs()
 {
-	$uri = urltoget('docs');
+	$uri = urltoget('/docs');
 	$resp = do_get($uri);
-	t('post page renders', is_not_redirect($resp)
-					&& contains($resp, tag('PHP Helpers Docs', [], 'h2'))
+	t('docs page renders', is_not_redirect($resp)
+					&& contains($resp, '<!-- Markdown start -->', 'PHP Helpers')
 	);
 }
 
