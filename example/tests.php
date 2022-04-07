@@ -13,7 +13,7 @@ require '../test-helpers.php';
 require './initialize.php';
 
 
-call_tests_for([
+call_tests_for(
 	'get_root',
 	'get_new_post',
 	'get_posts',
@@ -22,13 +22,13 @@ call_tests_for([
 	'get_docs',
 
 	'post_create_post'
-]);
+);
 
 
 function test_get_root()
 {
-	$uri = urltoget('root');
-	$resp = do_get($uri);
+	$resp = do_get(urltoget('root'));
+	
 	t('root page renders',  is_not_redirect($resp)
 							&& contains($resp,
 									'<!-- Markdown start -->',
@@ -41,8 +41,8 @@ function test_get_root()
 
 function test_get_new_post()
 {
-	$uri = urltoget('new-post');
-	$resp = do_get($uri);
+	$resp = do_get(urltoget('new-post'));
+	
 	t('new-post page renders', is_not_redirect($resp)
 								&& contains($resp,
 										formto('create-post'),
@@ -55,8 +55,8 @@ function test_get_new_post()
 
 function test_get_posts()
 {
-	$uri = urltoget('posts');
-	$resp = do_get($uri);
+	$resp = do_get(urltoget('posts'));
+	
 	t('posts page renders', is_not_redirect($resp)
 					&& contains($resp,
 							tag('List of all Posts', [], 'h1'),
@@ -68,8 +68,8 @@ function test_get_posts()
 
 function test_get_post()
 {
-	$uri = urltoget('/post/1');
-	$resp = do_get($uri);
+	$resp = do_get(urltoget('/post/1'));
+	
 	t('post page renders', is_not_redirect($resp)
 					&& contains($resp,
 							tag('List of all Posts', [], 'h1'),
@@ -81,8 +81,8 @@ function test_get_post()
 
 function test_get_docs_view()
 {
-	$uri = urltoget('/docs/helpers');
-	$resp = do_get($uri);
+	$resp = do_get(urltoget('/docs/helpers'));
+	
 	t('docs_view page renders', is_not_redirect($resp)
 					&& contains($resp, '<!-- Markdown start -->')
 	);
@@ -91,8 +91,8 @@ function test_get_docs_view()
 
 function test_get_docs()
 {
-	$uri = urltoget('/docs');
-	$resp = do_get($uri);
+	$resp = do_get(urltoget('/docs'));
+	
 	t('docs page renders', is_not_redirect($resp)
 					&& contains($resp, '<!-- Markdown start -->', 'PHP Helpers')
 	);
@@ -104,9 +104,9 @@ function test_get_docs()
 // 
 function test_post_create_post()
 {
-	$uri = urltopost('create-post');
 	$args = ['title'=>'example title 1', 'body'=>'...'];
-	$resp = do_post($uri, $args);
+	$resp = do_post(urltopost('create-post'), $args);
+	
 	t('create-post creates post', is_redirect(urltoget('posts', $args), $resp)
 									&& is_flash('Post created!', $resp)
 	);

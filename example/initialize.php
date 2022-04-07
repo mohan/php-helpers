@@ -1,7 +1,7 @@
 <?php
 
-require APP_DIR . '/../helpers.php';
-require APP_DIR . '/../helpers-extra.php';
+require APP_DIR . '../helpers.php';
+require APP_DIR . '../helpers-extra.php';
 
 function initialize(){
 	if(!filter_permitted_params(
@@ -41,18 +41,18 @@ function initialize(){
 
 	// Routes
 	$response = filter_routes(
-		// Get action, with required params from $_GET, $_REQUEST
+		// Get action, with required params from $_GET
 		[
 			'root'		=> 'app/readme.html.php',
-			'new-post'	=> [[], []],
-			'posts'		=> [[], []],
-			'post'		=> [['id'], []],
-			'docs/view'	=> [['path'], []],
+			'new-post'	=> [],
+			'posts'		=> [],
+			'post'		=> ['id'],
+			'docs/view'	=> ['path'],
 			'docs'		=> 'app/docs.html.php'
 		],
-		// Post action, with required params from $_GET, $_POST, $_REQUEST
+		// Post action, with required params from $_GET, $_POST
 		[
-			'create-post' => [[], ['title', 'body'], []]
+			'create-post' => [[], ['title', 'body']]
 		]
 	);
 
@@ -70,7 +70,7 @@ function initialize(){
 
 function get_new_post()
 {
-	extract(_arr_defaults($_POST, ['title'=>'', 'body'=>'']));
+	extract(_arr_get($_POST, ['title'=>'', 'body'=>'']));
 
 	return render('app/new_post.html.php', [
 		'_pagetitle'=>'New Post',
@@ -82,7 +82,7 @@ function get_new_post()
 
 function get_posts()
 {
-	extract(_arr_defaults($_GET, ['title'=>'', 'body'=>'']));
+	extract(_arr_get($_GET, ['title'=>'', 'body'=>'']));
 
 	return render('app/posts.html.php', [
 		'_pagetitle'=>'Posts',
@@ -95,7 +95,7 @@ function get_posts()
 
 function get_post()
 {
-	extract(_arr_defaults($_GET, ['id'=>'', 'title'=>'', 'body'=>'']));
+	extract(_arr_get($_GET, ['id'=>'', 'title'=>'', 'body'=>'']));
 	
 	return render('app/posts.html.php', [
 		'_pagetitle'=>"Post #$id",
@@ -108,7 +108,7 @@ function get_post()
 
 function get_docs_view()
 {
-	extract(_arr_defaults($_GET, ['path'=>false, 'raw'=>false]));
+	extract(_arr_get($_GET, ['path'=>false, 'raw'=>false]));
 
 	return render('app/markdown.html.php', [
 		'_pagetitle'=>$path,
@@ -120,7 +120,7 @@ function get_docs_view()
 
 function post_create_post()
 {
-	extract(_arr_defaults($_POST, ['title'=>false, 'body'=>false]));
+	extract(_arr_get($_POST, ['title'=>false, 'body'=>false]));
 
 	if($title && $body){
 		flash_set('Post created!');

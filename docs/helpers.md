@@ -201,13 +201,12 @@
 
 ## helpers.php
 
-* CUSTOM_GET_404
+* ROOT_URL
 * APP_DIR
 * APP_TEMPLATE
 * TEMPLATES_DIR
-* ROOT_URL
-* RENDER_TO_STRING
 * SECURE_HASH
+* CUSTOM_GET_404
 
 ## helpers-extra.php
 

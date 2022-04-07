@@ -1,3 +1,4 @@
+<?php define('LAYOUT_BODY_CLASS', 'extra-body-class') ?>
 <?php function _page_title($_pagetitle)
 {
 	switch($_REQUEST['CURRENT_ACTION']){

@@ -4,7 +4,7 @@
 	<link rel="stylesheet" type="text/css" href="<?= urlto_public_dir('helpers.css'); ?>">
 	<?php if(defined('LAYOUT_RENDER_HEAD')) _render_head() ?>
 </head>
-<body class='layout-sidebar clear'>
+<body class='layout-sidebar <?= defined('LAYOUT_BODY_CLASS') ? LAYOUT_BODY_CLASS : '' ?>'>
 	<?php include('debugpanel.html.php'); ?>
 
 	<?= _render_sidebar(); ?>

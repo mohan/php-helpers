@@ -53,6 +53,7 @@
 		}
 		#debug-info-container table th{
 			background: #f6c457;
+			padding: 5px;
 		}
 		#debug-info-container table td:first-child{
 			background: #faedcf;
@@ -60,6 +61,7 @@
 		}
 		#debug-info-container table td{
 			border-bottom: 1px solid #f6c457;
+			padding: 5px;
 		}
 	</style>
 	<script type="text/javascript">

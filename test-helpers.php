@@ -5,22 +5,6 @@
 // Status: Work in progress
 
 
-/***
-# Available Functions
-
-function call_tests_for($function_names)
-function t($test_name, $result)
-function is_redirect($expected_redirect_url, $response)
-function is_not_redirect($response)
-function is_flash($expected_message, $response)
-function contains($response, ...$expected_html_substrs)
-function do_get($uri_str, $cookies=[])
-function do_post($uri_str, $post_params=[], $cookies=[])
-***/
-
-
-
-
 define('RENDER_TO_STRING', true);
 define('CUSTOM_HEADER_HANDLERS', true);
 define('APP_ENV_IS_TEST', true);
@@ -35,7 +19,7 @@ if(PHP_SAPI != 'cli') {
 // 
 // Test functions
 // 
-function call_tests_for($function_names)
+function call_tests_for(...$function_names)
 {
 	_php_helpers_init();
 	
@@ -127,7 +111,7 @@ function do_get($uri_str, $cookies=[])
 	_set_params($_REQUEST, $_GET);
 	_php_helpers_init();
 
-	$body = defined('APP_NAME') ? call_user_func(APP_NAME . '_initialize') : initialize();
+	$body = initialize();
 	$headers = _header();
 	$cookies = _setcookie();
 
@@ -148,7 +132,7 @@ function do_post($uri_str, $post_params=[], $cookies=[])
 	_set_params($_REQUEST, $_GET);
 	_php_helpers_init();
 
-	$body = defined('APP_NAME') ? call_user_func(APP_NAME . '_initialize') : initialize();
+	$body = initialize();
 	$headers = _header();
 	$cookies = _setcookie();
 

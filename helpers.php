@@ -63,10 +63,6 @@ function filter_permitted_params($get_param_names, $post_param_names=[], $cookie
 	_filter_permitted_params_typecast($_GET, $get_typecasts);
 	_filter_permitted_params_typecast($_POST, $post_typecasts);
 
-	if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-		$_REQUEST['_REQUEST_ARGS_PERMITTED_PARAMS'] = [ $get_param_names, $post_param_names, $cookie_param_names, $get_typecasts, $post_typecasts ];
-	}
-
 	return true;
 }
 
@@ -130,10 +126,6 @@ function filter_routes($get_action_names, $post_action_names=[], $patch_action_n
 {
 	if(isset($_REQUEST['TEMPLATE_HAS_RENDERED'])) return false;
 
-	if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-		$_REQUEST['_REQUEST_ARGS_ROUTES'] = [ $get_action_names, $post_action_names, $patch_action_names, $delete_action_names ];
-	}
-
 	switch ($_REQUEST['CURRENT_METHOD']) {
 		case 'post':	return _filter_routes_method($post_action_names);
 		case 'patch':	return _filter_routes_method($patch_action_names);
@@ -155,7 +147,7 @@ function _filter_routes_method($current_method_action_names)
 	// Render template directly
 	if(is_string($current_method_action_names[$current_action_name])){
 		if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-			$_REQUEST['_REQUEST_ARGS_ROUTES_POST'] = [$current_method_name, $current_method_action_names[$current_action_name], 'render'];
+			$_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'] = [$current_method_name, $current_method_action_names[$current_action_name], 'render'];
 		}
 
 		return render($current_method_action_names[$current_action_name]);
@@ -166,35 +158,17 @@ function _filter_routes_method($current_method_action_names)
 	$action_function_name = $current_method_name . '_' . preg_replace("/[^a-zA-Z0-9]/", '_', $current_action_name);
 
 	if($current_method_name == 'get'){
-		if( array_intersect($required_params[0], array_keys($_GET)) != $required_params[0]) return false;
-		if( array_intersect($required_params[1], array_keys($_REQUEST)) != $required_params[1]) return false;
+		if( array_intersect($required_params, array_keys($_GET)) != $required_params) return false;
 	} else {
 		if( array_intersect($required_params[0], array_keys($_GET)) != $required_params[0]) return false;
 		if( array_intersect($required_params[1], array_keys($_POST)) != $required_params[1]) return false;
-		if( array_intersect($required_params[2], array_keys($_REQUEST)) != $required_params[2]) return false;
 	}
 
 	if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-		$_REQUEST['_REQUEST_ARGS_ROUTES_POST'] = [$current_method_name, $required_params, $action_function_name];
+		$_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'] = [$current_method_name, $required_params, $action_function_name];
 	}
 
 	return call_user_func( $action_function_name );
-}
-
-
-function redirectto($action, $args=[])
-{
-	_header('Location: ' . urltoget($action, $args));
-	return true;
-}
-
-
-if(!defined('CUSTOM_GET_404')){
-	function get_404($message='')
-	{
-		_header("HTTP/1.1 404 Not Found");
-		return render('layouts/404.php', ['_pagetitle'=>'404', 'message' => $message], false);
-	}
 }
 
 
@@ -247,7 +221,7 @@ function render($template_name, $args=[], $layout='layouts/index.php')
 
 function render_partial($template_name, $args=[], $return=false)
 {
-	$template_path = _path_join((defined('APP_DIR') ? APP_DIR : '.'), 'templates', (defined('APP_TEMPLATE') ? APP_TEMPLATE : ''));
+	$template_path = _path_join((defined('APP_DIR') ? APP_DIR : '.'), (defined('TEMPLATES_DIR') ? TEMPLATES_DIR : 'templates'), (defined('APP_TEMPLATE') ? APP_TEMPLATE : ''));
 	
 	extract($args, EXTR_SKIP);
 
@@ -263,6 +237,21 @@ function render_partial($template_name, $args=[], $return=false)
 }
 
 
+
+function redirectto($action, $args=[])
+{
+	_header('Location: ' . urltoget($action, $args));
+	return true;
+}
+
+
+if(!defined('CUSTOM_GET_404')){
+	function get_404($message='')
+	{
+		_header("HTTP/1.1 404 Not Found");
+		return render('layouts/404.php', ['_pagetitle'=>'404', 'message' => $message], false);
+	}
+}
 // 
 // END Templates
 // 
@@ -297,7 +286,7 @@ function urlto_public_dir($uri)
 }
 
 
-function urltoget($action, $args=[], $arg_separator='&')
+function urltoget($action, $args=[], $arg_separator='&', $skip_action_arg=false)
 {
 	if(!$args) $args = [];
 	if(isset($args['ROOT_URL'])){
@@ -321,8 +310,10 @@ function urltoget($action, $args=[], $arg_separator='&')
 		return explode('?', $root_url)[0] . $hash;
 	}
 
-	$_args = ['a' => $action];
-	$args = array_merge($_args, $args);
+	if(!$skip_action_arg){
+		$_args = ['a' => $action];
+		$args = array_merge($_args, $args);
+	}
 
 	return $root_url . http_build_query($args, '', $arg_separator) . $hash;
 }
@@ -330,14 +321,6 @@ function urltoget($action, $args=[], $arg_separator='&')
 
 function urltopost($action, $args=[], $arg_separator='&')
 {
-	if(!$args) $args = [];
-	if(isset($args['ROOT_URL'])){
-		$root_url = $args['ROOT_URL'] . (_str_contains($args['ROOT_URL'], '?') ? '' : '?');
-		unset($args['ROOT_URL']);
-	} else {
-		$root_url = ROOT_URL . (_str_contains(ROOT_URL, '?') ? '' : '?');
-	}
-	
 	if( isset($args['_method']) && ($args['_method'] == 'patch' || $args['_method'] == 'delete') ){
 		$_args = [$args['_method'] . '_action' => $action];
 	} else {
@@ -347,14 +330,7 @@ function urltopost($action, $args=[], $arg_separator='&')
 
 	$args = array_merge($_args, $args);
 
-	if(strpos($action, '/') === 0){
-		$out = explode('?', ROOT_URL)[0] . ltrim($action, '/');
-		if(sizeof($args) > 0) $out .= '?' . http_build_query($args, '', $arg_separator);
-		if($hash) $out .= $hash;
-		return $out;
-	}
-
-	return $root_url . http_build_query($args, '', $arg_separator);
+	return urltoget($action, $args, $arg_separator, true);
 }
 
 
@@ -637,6 +613,16 @@ function _path_join(...$parts)
 	return implode('/', array_filter($parts));
 }
 
+// Returns only specified keys, with defaults if not set
+function _arr_get($arr, $keys)
+{
+	$arr_out = [];
+	foreach ($keys as $key=>$default) {
+		$arr_out[$key] = isset($arr[$key]) ? $arr[$key] : $default;
+	}
+
+	return $arr_out;
+}
 
 // Fill defaults in arr
 function _arr_defaults(&$arr, $defaults)
@@ -695,15 +681,15 @@ if(!defined('CUSTOM_HEADER_HANDLERS')){
 function _php_helpers_init()
 {
 	if(isset($_GET['a']) && $_GET['a'] == '') $_GET['a'] = 'root';
-	_arr_defaults($_GET, ['a'=>NULL, 'post_action'=>NULL, 'patch_action'=>NULL, 'delete_action'=>NULL]);
+	_arr_defaults($_GET, ['a'=>NULL]);
 
-	if($_GET['a'])		 			$_REQUEST['CURRENT_ACTION'] = $_GET['a'];
-	else if($_GET['post_action']) 	$_REQUEST['CURRENT_ACTION'] = $_GET['post_action'];
-	else if($_GET['patch_action']) 	$_REQUEST['CURRENT_ACTION'] = $_GET['patch_action'];
-	else if($_GET['delete_action'])	$_REQUEST['CURRENT_ACTION'] = $_GET['delete_action'];
-	else							$_REQUEST['CURRENT_ACTION'] = $_GET['a'] = 'root';
+	if(isset($_GET['a']))		 			$_REQUEST['CURRENT_ACTION'] = $_GET['a'];
+	else if(isset($_GET['post_action'])) 	$_REQUEST['CURRENT_ACTION'] = $_GET['post_action'];
+	else if(isset($_GET['patch_action'])) 	$_REQUEST['CURRENT_ACTION'] = $_GET['patch_action'];
+	else if(isset($_GET['delete_action']))	$_REQUEST['CURRENT_ACTION'] = $_GET['delete_action'];
+	else									$_REQUEST['CURRENT_ACTION'] = $_GET['a'] = 'root';
 
-	if($_GET['a']){
+	if(isset($_GET['a'])){
 		$_REQUEST['CURRENT_METHOD'] = 'get';
 	} else if($_SERVER['REQUEST_METHOD'] == 'POST'){
 		if($_GET['post_action']) 			$_REQUEST['CURRENT_METHOD'] = 'post';
@@ -714,9 +700,9 @@ function _php_helpers_init()
 	}
 
 	if(!defined('ROOT_URL')) define('ROOT_URL', '/');
-	if(!defined('SECURE_HASH')) define('SECURE_HASH', md5(filemtime(__FILE__) . filesize(__FILE__) . __FILE__));
+	if(!defined('SECURE_HASH')) define('SECURE_HASH', md5(filemtime(__FILE__) . filesize(__FILE__) . __FILE__ . $_SERVER['SCRIPT_FILENAME'] . sys_get_temp_dir()));
 
 	_filter_set_flash();
 }
 
-if(!defined('APP_ENV_IS_TEST') || !APP_ENV_IS_TEST) _php_helpers_init();
+if(!defined('APP_ENV_IS_TEST')) _php_helpers_init();
