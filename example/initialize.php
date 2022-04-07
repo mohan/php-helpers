@@ -13,7 +13,7 @@ function initialize(){
 			'path'			=> '/^(helpers|markdown)$/',
 			'title'			=> 1024,
 			'body'			=> 1024,
-			'raw'			=> '/(0|1)/'
+			'raw'			=> '/^(0|1)$/'
 		],
 		// POST params with max_length
 		[

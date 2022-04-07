@@ -614,11 +614,11 @@ function _path_join(...$parts)
 }
 
 // Returns only specified keys, with defaults if not set
-function _arr_get($arr, $keys)
+function _arr_get($arr, $keys, $prefix='')
 {
 	$arr_out = [];
 	foreach ($keys as $key=>$default) {
-		$arr_out[$key] = isset($arr[$key]) ? $arr[$key] : $default;
+		$arr_out[$prefix.$key] = isset($arr[$key]) ? $arr[$key] : $default;
 	}
 
 	return $arr_out;
