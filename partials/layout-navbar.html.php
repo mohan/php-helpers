@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<title><?= _page_title(isset($_pagetitle) ? $_pagetitle : '') ?></title>
@@ -11,7 +12,7 @@
 
 	<div id="main">
 		<?= isset($_REQUEST['flash']) ? tag($_REQUEST['flash'], ['class'=>'panel text-center']) : '' ?>
-		<?php render_partial($template_name, $args); ?>
+		<?php render_partial($template_path, $args); ?>
 	</div>
 
 	<?php if(defined('LAYOUT_RENDER_FOOTER')) _render_footer() ?>

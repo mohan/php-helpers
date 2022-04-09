@@ -1,7 +1,9 @@
 <?php if(defined('APP_ENV_IS_DEVELOPMENT') && APP_ENV_IS_DEVELOPMENT && defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && _PHP_HELPERS_EXTRA_IS_DEFINED): ?>
 	<a id='toggle-debug-info' href='#toggle-debug-info'>Show/Hide Debug Panel</a>
-	<div id='debug-info-container' style='display:none;'>
-		<div style='padding: 20px;'><?= _print_debugpanel() ?></div>
+	<div id='debug-info-container'>
+		<div style='padding: 20px;'>
+			<?= _print_debugpanel() ?>
+		</div>
 	</div>
 
 	<style type="text/css">
@@ -18,31 +20,6 @@
 			background:#efefef;
 			font-size:12px;
 			font-family: 'arial';
-		}
-		#debug-info-container h2{
-			background:#f6c457;
-			padding:10px 20px 10px 20px;
-			margin:0;
-			text-shadow:0 1px #f5C356;
-		}
-		#debug-info-container h3:first-child{
-			border: 0;
-			padding-top: 0;
-			margin-top: 0;
-		}
-		#debug-info-container h3{
-			border-top: 1px solid #cfcfcf;
-			margin-top: 20px;
-			padding-top: 20px;
-		}
-		#debug-info-container textarea{
-			border: 0;
-			margin-bottom: 1px;
-			height: 30px;
-			width:100%;
-			height:40px;
-			background:transparent;
-			font-size: 12px;
 		}
 		#debug-info-container table{
 			width: 100%;
@@ -66,6 +43,7 @@
 	</style>
 	<script type="text/javascript">
 		(function(link, debug_info_container){
+			debug_info_container.style.display = 'none';
 			link.addEventListener('click', function(e){
 				e.preventDefault();
 				debug_info_container.style.display = debug_info_container.style.display == 'none' ? 'block' : 'none';

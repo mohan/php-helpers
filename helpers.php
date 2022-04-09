@@ -150,12 +150,15 @@ function _filter_routes_method($current_method_action_names)
 			$_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'] = [$current_method_name, $current_method_action_names[$current_action_name], 'render'];
 		}
 
-		return render($current_method_action_names[$current_action_name]);
+		$_REQUEST['ACTION_ID'] = 'render';
+		$_REQUEST['TEMPLATE_PATH'] = $current_method_action_names[$current_action_name];
+		return render([], $current_method_action_names[$current_action_name]);
 	}
 
 	// Required params for action
 	$required_params = $current_method_action_names[$current_action_name];
-	$action_function_name = $current_method_name . '_' . preg_replace("/[^a-zA-Z0-9]/", '_', $current_action_name);
+	$action_id = preg_replace("/[^a-zA-Z0-9]/", '_', $current_action_name);
+	$action_function_name = $current_method_name . '_' . $action_id;
 
 	if($current_method_name == 'get'){
 		if( array_intersect($required_params, array_keys($_GET)) != $required_params) return false;
@@ -168,6 +171,8 @@ function _filter_routes_method($current_method_action_names)
 		$_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'] = [$current_method_name, $required_params, $action_function_name];
 	}
 
+	$_REQUEST['ACTION_ID'] = $action_id;
+	$_REQUEST['TEMPLATE_PATH'] = 'app/' . $action_id . '.html.php';
 	return call_user_func( $action_function_name );
 }
 
@@ -192,22 +197,19 @@ function _filter_routes_method($current_method_action_names)
 // Templates
 // 
 
-function render($template_name, $args=[], $layout='layouts/index.php')
+function render($args=[], $template_path=true)
 {
 	if(isset($_REQUEST['TEMPLATE_HAS_RENDERED'])) trigger_error('Template has already rendered for this request.', E_USER_ERROR);
 	$_REQUEST['TEMPLATE_HAS_RENDERED'] = true;
 
-	$template_path = _path_join(
-			defined('APP_DIR') ? APP_DIR : '.',
-			defined('TEMPLATES_DIR') ? TEMPLATES_DIR : 'templates',
-			defined('APP_TEMPLATE') ? APP_TEMPLATE : ''
-	);
+	if($template_path === true) $template_path = $_REQUEST['TEMPLATE_PATH'];
+	$layout = $_REQUEST['TEMPLATE_LAYOUT'] ? $_REQUEST['TEMPLATE_LAYOUT'] : 'layouts/index.html.php';
 
 	extract($args, EXTR_SKIP);
 
 	if(defined('RENDER_TO_STRING')) ob_start();
 
-	require _path_join($template_path, ($layout ? $layout : $template_name));
+	require _path_join(TEMPLATES_DIR, ($layout ? $layout : $template_path));
 
 	if(defined('RENDER_TO_STRING')) {
 		$out = ob_get_contents();
@@ -219,15 +221,13 @@ function render($template_name, $args=[], $layout='layouts/index.php')
 }
 
 
-function render_partial($template_name, $args=[], $return=false)
+function render_partial($template_path, $args=[], $return=false)
 {
-	$template_path = _path_join((defined('APP_DIR') ? APP_DIR : '.'), (defined('TEMPLATES_DIR') ? TEMPLATES_DIR : 'templates'), (defined('APP_TEMPLATE') ? APP_TEMPLATE : ''));
-	
 	extract($args, EXTR_SKIP);
 
 	if($return) ob_start();
 	
-	require _path_join($template_path, $template_name);
+	require _path_join(TEMPLATES_DIR, $template_path);
 	
 	if($return) {
 		$out = ob_get_contents();
@@ -240,6 +240,7 @@ function render_partial($template_name, $args=[], $return=false)
 
 function redirectto($action, $args=[])
 {
+	$_REQUEST['TEMPLATE_HAS_RENDERED'] = true;
 	_header('Location: ' . urltoget($action, $args));
 	return true;
 }
@@ -249,9 +250,12 @@ if(!defined('CUSTOM_GET_404')){
 	function get_404($message='')
 	{
 		_header("HTTP/1.1 404 Not Found");
-		return render('layouts/404.php', ['_pagetitle'=>'404', 'message' => $message], false);
+		$_REQUEST['TEMPLATE_LAYOUT'] = 'layouts/404.html.php';
+		$_REQUEST['TEMPLATE_PATH'] = false;
+		return render(['_pagetitle'=>'404', 'message' => $message]);
 	}
 }
+
 // 
 // END Templates
 // 
@@ -571,7 +575,13 @@ function cookie_delete($name)
 function _md5_cookie_authenticity_token($name, $value, $timestamp)
 {
 	return md5(
-		$name . '%' . $value . '%' . base64_encode($value) . '%' . date('y-m-d', $timestamp) . '%' . SECURE_HASH
+		$name . '%' .
+		$value . '%' .
+		base64_encode($value) . '%' .
+		date('y-m-d', $timestamp) . '%' .
+		SECURE_HASH . '%' .
+		(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '')  . '%' .
+		(isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '')
 	);
 }
 
@@ -610,7 +620,7 @@ function _to_id($str, $replace_with='-')
 
 function _path_join(...$parts)
 {
-	return implode('/', array_filter($parts));
+	return preg_replace('/\/+/', '/', implode('/', array_filter($parts)));
 }
 
 // Returns only specified keys, with defaults if not set
@@ -699,8 +709,19 @@ function _php_helpers_init()
 		$_REQUEST['CURRENT_METHOD'] = 'get';
 	}
 
-	if(!defined('ROOT_URL')) define('ROOT_URL', '/');
-	if(!defined('SECURE_HASH')) define('SECURE_HASH', md5(filemtime(__FILE__) . filesize(__FILE__) . __FILE__ . $_SERVER['SCRIPT_FILENAME'] . sys_get_temp_dir()));
+	if(!defined('SECURE_HASH')) define('SECURE_HASH', md5(
+		__FILE__ .
+		filemtime(__FILE__) .
+		filesize(__FILE__) .
+		(isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '') .
+		(isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '') .
+		sys_get_temp_dir()
+	));
+
+	if(!defined('APP_DIR'))			define('APP_DIR', '.');
+	if(!defined('ROOT_URL')) 		define('ROOT_URL', '/');
+	if(!defined('TEMPLATES_DIR')) 	define('TEMPLATES_DIR', _path_join( APP_DIR, 'templates' ));
+	$_REQUEST['TEMPLATE_LAYOUT'] = 'layouts/index.html.php';
 
 	_filter_set_flash();
 }

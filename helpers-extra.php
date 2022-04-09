@@ -61,6 +61,9 @@ if(APP_ENV_IS_DEVELOPMENT || APP_ENV_IS_TEST){
 			'ROOT_URL' => ROOT_URL,
 			"\$_REQUEST['CURRENT_METHOD']" => $_REQUEST['CURRENT_METHOD'],
 			"\$_REQUEST['CURRENT_ACTION']" => $_REQUEST['CURRENT_ACTION'],
+			"\$_REQUEST['TEMPLATE_LAYOUT']" => $_REQUEST['TEMPLATE_LAYOUT'],
+			"\$_REQUEST['TEMPLATE_PATH']" => $_REQUEST['TEMPLATE_PATH'],
+			"\$_REQUEST['ACTION_ID']" => $_REQUEST['ACTION_ID'],
 			'Action function' => $action_name,
 			'Required params for action' => json_encode($required_params)
 		];

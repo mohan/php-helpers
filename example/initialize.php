@@ -72,11 +72,11 @@ function get_new_post()
 {
 	extract(_arr_get($_POST, ['title'=>'', 'body'=>'']));
 
-	return render('app/new_post.html.php', [
+	return render([
 		'_pagetitle'=>'New Post',
 		'title'=>$title,
 		'body'=>$body
-	]);
+	], 'app/new_post.html.php');
 }
 
 
@@ -84,7 +84,7 @@ function get_posts()
 {
 	extract(_arr_get($_GET, ['title'=>'', 'body'=>'']));
 
-	return render('app/posts.html.php', [
+	return render([
 		'_pagetitle'=>'Posts',
 		'id'=>1,
 		'title'=>$title,
@@ -97,12 +97,12 @@ function get_post()
 {
 	extract(_arr_get($_GET, ['id'=>'', 'title'=>'', 'body'=>'']));
 	
-	return render('app/posts.html.php', [
+	return render([
 		'_pagetitle'=>"Post #$id",
 		'id'=>$id,
 		'title'=>$title,
 		'body'=>$body
-	]);
+	], 'app/posts.html.php');
 }
 
 
@@ -110,7 +110,7 @@ function get_docs_view()
 {
 	extract(_arr_get($_GET, ['path'=>false, 'raw'=>false]));
 
-	return render('app/markdown.html.php', [
+	return render([
 		'_pagetitle'=>$path,
 		'raw'=>$raw,
 		'text' => file_get_contents(APP_DIR . '/../docs/' . $path . '.md')
