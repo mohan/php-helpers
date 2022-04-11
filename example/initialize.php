@@ -7,12 +7,13 @@ function initialize(){
 	if(!filter_permitted_params(
 		// GET params with regex
 		[
-			'a'				=> '/^(root|docs|posts|new-post|post)$/',
+			'a'				=> '/^(root|docs|posts|new-post|post|search)$/',
 			'post_action'	=> '/^(create-post)$/',
 			'id'			=> '/^\d+$/',
 			'path'			=> '/^(helpers|markdown)$/',
 			'title'			=> 1024,
 			'body'			=> 1024,
+			'query'			=> 1024,
 			'raw'			=> '/^(0|1)$/'
 		],
 		// POST params with max_length
@@ -48,7 +49,8 @@ function initialize(){
 			'posts'		=> [],
 			'post'		=> ['id'],
 			'docs/view'	=> ['path'],
-			'docs'		=> 'app/docs.html.php'
+			'docs'		=> 'app/docs.html.php',
+			'search'	=> []
 		],
 		// Post action, with required params from $_GET, $_POST
 		[
@@ -66,6 +68,28 @@ function initialize(){
 //
 // Actions (if needed, place in APP_NAME/actions.php)
 //
+
+function get_search()
+{
+	extract(_arr_get($_GET, ['query'=>'']));
+
+	$results = false;
+	if($query){
+		$results = [];
+		for ($i=1; $i <= 20; $i++) {
+			$title = str_repeat(join("{$query[-1]} ", explode($query[-1], $query)), rand(3, 20));
+			$results[] = [
+				'title' => "#$i \n" . ucfirst(trim( $i%2 == 0 ? $title : strrev($title) ))
+			];
+		}
+	}
+
+	return render([
+		'_pagetitle' => $query ? "$query - Search" : "Search",
+		'query' => $query,
+		'results' => $results
+	]);
+}
 
 
 function get_new_post()

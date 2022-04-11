@@ -369,13 +369,21 @@ function urltopost($action, $args=[], $arg_separator='&')
 
 function formto($action, $args=[], $attrs=[], $fields=[])
 {
-	_arr_defaults($attrs, ['method'=>'post', 'action'=>urltopost($action, $args)]);
+	_arr_defaults($attrs, [
+		'id' => '',
+		'method'=>'post',
+		'action'=> isset($attrs['method']) && $attrs['method'] == 'get' ? urltoget($action, $args) : urltopost($action, $args)
+	]);
+
+	$form_id = $attrs['id'] ? $attrs['id'] : _to_id($action) . '-form';
+	unset($attrs['id']);
 
 	$attrs_str = '';
 	foreach ($attrs as $key => $value) $attrs_str .= "$key='" . htmlentities($value) . "' ";
 
-	$form_id = _to_id($action) . '-form';
-	$out  = sizeof($fields) == 0 ? "<form $attrs_str>" : "<div id='{$form_id}' class='form-container'><form $attrs_str>";
+	$out  = sizeof($fields) == 0 ?
+				"<form id='{$form_id}' $attrs_str>" :
+				"<div id='{$form_id}-container' class='form-container'><form id='{$form_id}' $attrs_str>";
 
 	foreach ($fields as $field_name => $field_options) {
 		$out .= _form_field($form_id, $field_name, $field_options);
@@ -395,13 +403,14 @@ function _form_field($form_id, $field_name, $field_options)
 	$value = $field_options['value'];
 	$label = $field_options['label'];
 	$tag = $field_options['tag'];
+	$field_type = $field_options['type'];
 	if($field_options['tag'] != 'input') unset($field_options['type']);
 	unset($field_options['value'], $field_options['label'], $field_options['tag']);
 
-	$out .= "\n<div id='{$field_options['id']}-container' class='form-field'>\n\t";
-	$out .= 	$label ? (tag($label, ['for'=>$field_options['id']], 'label') . "\n\t") : '';
-	$out .= 	tag($value, $field_options, $tag) . "\n";
-	$out .= "</div>\n";
+	if($field_type != 'hidden') $out .= "\n<div id='{$field_options['id']}-container' class='form-field'>\n\t";
+	if($field_type != 'hidden') $out .= 	$label ? (tag($label, ['for'=>$field_options['id']], 'label') . "\n\t") : '';
+											$out .=	tag($value, $field_options, $tag) . "\n";
+	if($field_type != 'hidden') $out .= "</div>\n";
 
 	return $out;
 }
@@ -411,7 +420,7 @@ function linkto($action, $html, $args=[], $attrs=[])
 {
 	$url = urltoget($action, $args, '&amp;');
 
-	if( $_REQUEST['CURRENT_METHOD'] == 'get' && ($_SERVER['REQUEST_URI'] == urltoget($action, $args) || $_GET['a'] == $action) ) {
+	if( $_REQUEST['CURRENT_METHOD'] == 'get' && ( $_SERVER['REQUEST_URI'] == urltoget($action, $args) || $_GET['a'] == $action) ) {
 		_arr_defaults($attrs, ['class'=>'']);
 		$attrs['class'] .= 'current-uri-link';
 	}

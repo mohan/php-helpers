@@ -15,9 +15,11 @@ a:hover{
 }
 
 input[type='text'], textarea{
-	width: 100%;
+	width: 98%;
 	font-size: 1em;
-	padding: 5px;
+	padding: 10px 0.9%;
+	border-radius: 3px;
+	border: 1px solid #AAA;
 }
 label{
 	display: block;
@@ -35,11 +37,44 @@ pre{
 	margin: 5px 0;
 }
 
-.text-center{
-	text-align: center;
-}
+.text-center{ text-align: center; }
+.text-left{ text-align: left; }
+.text-right{ text-align: right; }
+.text-justify{ text-align: justify; }
 
-.text-muted{ color: #777; }
+.text-0{ color: #000; }
+.text-1{ color: #111; }
+.text-2{ color: #222; }
+.text-3{ color: #333; }
+.text-4{ color: #444; }
+.text-5{ color: #555; }
+.text-6{ color: #666; }
+.text-7{ color: #777; }
+.text-8{ color: #888; }
+.text-9{ color: #999; }
+.text-A{ color: #AAA; }
+.text-B{ color: #BBB; }
+.text-C{ color: #CCC; }
+.text-D{ color: #DDD; }
+.text-E{ color: #EEE; }
+.text-F{ color: #FFF; }
+
+.bg-0{ background-color: #000; }
+.bg-1{ background-color: #111; }
+.bg-2{ background-color: #222; }
+.bg-3{ background-color: #333; }
+.bg-4{ background-color: #444; }
+.bg-5{ background-color: #555; }
+.bg-6{ background-color: #666; }
+.bg-7{ background-color: #777; }
+.bg-8{ background-color: #888; }
+.bg-9{ background-color: #999; }
+.bg-A{ background-color: #AAA; }
+.bg-B{ background-color: #BBB; }
+.bg-C{ background-color: #CCC; }
+.bg-D{ background-color: #DDD; }
+.bg-E{ background-color: #EEE; }
+.bg-F{ background-color: #FFF; }
 
 .clear:after{
 	content: ' ';
@@ -152,7 +187,7 @@ layouts
 
 .layout-navbar #main{
 	margin: 60px auto 0 auto;
-	padding: 0 30px;
+	padding: 0 30px 30px 30px;
 	max-width: 900px;
 }
 

@@ -8,18 +8,18 @@ Status: Work in progress
 
 
 ## It contains
-1. Rewrite URIs
+1. Rewrite URI
 2. Permitted Params
 3. Router (to call action functions)
 4. Templates
 5. URL helpers
 6. HTML Tag helpers
-7. Markdown
-8. Shortcodes
-9. Flash messages
-10. Secure cookie (Cookie with added authenticity)
-11. Config file helpers
-12. Debug helpers (helpers-extra.php)
+7. Flash messages
+8. md5 cookie (Cookie with added authenticity)
+9. Config file helpers
+10. Debug helpers
+11. Markdown
+12. Shortcodes
 
 
 ## Note
@@ -30,34 +30,32 @@ Status: Work in progress
 ## Available functions
 
 ```php raw
-function filter_rewrite_uri($paths)
-function filter_permitted_params($get_param_names, $post_param_names, $cookie_param_names, $get_typecasts, $post_typecasts)
-function filter_routes($get_action_names, $post_action_names, $patch_action_names, $delete_action_names)
+filter_rewrite_uri($paths)
+function filter_permitted_params($get_param_names, $post_param_names=[], $cookie_param_names=[], $get_typecasts=[], $post_typecasts=[])
+function filter_routes($get_action_names, $post_action_names=[], $patch_action_names=[], $delete_action_names=[])
+function render($args=[], $template_path=true)
+function render_partial($template_path, $args=[], $return=false)
 function redirectto($action, $args=[])
 function get_404($message='')
-function render($template_name, $args=[], $layout='layouts/index.php')
-function render_partial($template_name, $args=[], $return=false)
-function urlto_public_dir($action)
-function urltoget($action, $args=[], $arg_separator='&')
+function urlto_public_dir($uri)
+function urltoget($action, $args=[], $arg_separator='&', $skip_action_arg=false)
 function urltopost($action, $args=[], $arg_separator='&')
 function formto($action, $args=[], $attrs=[], $fields=[])
 function _form_field($form_id, $field_name, $field_options)
 function linkto($action, $html, $args=[], $attrs=[])
 function tag($html, $attrs=[], $name='div', $closing=true, $escape=true)
 function tag_table($headers, $data, $attrs=[], $cb=false)
-function render_markdown($text, $attrs=[], $enable_shortcodes=false)
-function process_shortcodes($text)
 function flash_set($html, $in_current_request=false)
 function flash_clear()
 function md5_cookie_set($name, $value)
 function md5_cookie_get($name)
 function cookie_delete($name)
-function filter_set_config($filepath)
 
-// Internal utility functions
+// Internal functions
 
 function _to_id($str, $replace_with='-')
 function _path_join(...$parts)
+function _arr_get($arr, $keys, $prefix='')
 function _arr_defaults(&$arr, $defaults)
 function _str_contains($str, ...$substrs)
 ```
@@ -68,6 +66,7 @@ function _str_contains($str, ...$substrs)
 
 - [ ] Code Review
 - [ ] Test
+- [ ] More layouts
 - [x] Example application
 - [x] URL param names in url
 	- Use web server rewrites
