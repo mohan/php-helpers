@@ -206,6 +206,7 @@ layouts
 
 .layout-sidebar #main{
 	width: 80%;
+	min-height: 550px;
 	padding: 25px 2% 35px 3%;
 	float: left;
 	box-shadow: -1px 0px #e9e9e9;

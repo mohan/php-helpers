@@ -172,7 +172,7 @@ function _filter_routes_method($current_method_action_names)
 	}
 
 	$_REQUEST['ACTION_ID'] = $action_id;
-	$_REQUEST['TEMPLATE_PATH'] = 'app/' . $action_id . '.html.php';
+	$_REQUEST['TEMPLATE_PATH'] = APP_NAME . '/' . $action_id . '.html.php';
 	return call_user_func( $action_function_name );
 }
 
@@ -719,9 +719,10 @@ function _php_helpers_init()
 	));
 
 	if(!defined('APP_DIR'))			define('APP_DIR', '.');
+	if(!defined('APP_NAME'))		define('APP_NAME', 'app');
 	if(!defined('ROOT_URL')) 		define('ROOT_URL', '/');
 	if(!defined('TEMPLATES_DIR')) 	define('TEMPLATES_DIR', _path_join( APP_DIR, 'templates' ));
-	$_REQUEST['TEMPLATE_LAYOUT'] = 'layouts/index.html.php';
+	$_REQUEST['TEMPLATE_LAYOUT'] = 'layouts/' . APP_NAME . '.html.php';
 
 	_filter_set_flash();
 }
