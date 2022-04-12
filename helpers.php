@@ -5,15 +5,55 @@
 // Status: Work in progress
 
 
+
+function _php_helpers_init()
+{
+	if(isset($_GET['a']) && $_GET['a'] == '') $_GET['a'] = 'root';
+	_arr_defaults($_GET, ['a'=>NULL]);
+
+	if(isset($_GET['a']))		 			$_REQUEST['CURRENT_ACTION'] = $_GET['a'];
+	else if(isset($_GET['post_action'])) 	$_REQUEST['CURRENT_ACTION'] = $_GET['post_action'];
+	else if(isset($_GET['patch_action'])) 	$_REQUEST['CURRENT_ACTION'] = $_GET['patch_action'];
+	else if(isset($_GET['delete_action']))	$_REQUEST['CURRENT_ACTION'] = $_GET['delete_action'];
+	else									$_REQUEST['CURRENT_ACTION'] = $_GET['a'] = 'root';
+
+	if(isset($_GET['a'])){
+		$_REQUEST['CURRENT_METHOD'] = 'get';
+	} else if($_SERVER['REQUEST_METHOD'] == 'POST'){
+		if($_GET['post_action']) 			$_REQUEST['CURRENT_METHOD'] = 'post';
+		else if($_GET['patch_action']) 		$_REQUEST['CURRENT_METHOD'] = 'patch';
+		else if($_GET['delete_action']) 	$_REQUEST['CURRENT_METHOD'] = 'delete';
+	} else {
+		$_REQUEST['CURRENT_METHOD'] = 'get';
+	}
+
+	if(!defined('SECURE_HASH')) define('SECURE_HASH', md5(
+		__FILE__ .
+		filemtime(__FILE__) .
+		filesize(__FILE__) .
+		(isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '') .
+		(isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '') .
+		sys_get_temp_dir()
+	));
+	if(!defined('APP_DIR'))			define('APP_DIR', '.');
+	if(!defined('APP_NAME'))		define('APP_NAME', 'app');
+	if(!defined('ROOT_URL')) 		define('ROOT_URL', '/');
+	if(!defined('TEMPLATES_DIR')) 	define('TEMPLATES_DIR', _path_join( APP_DIR, 'templates' ));
+	
+	$_REQUEST['TEMPLATE_LAYOUT'] = 'layouts/' . APP_NAME . '.html.php';
+
+	_filter_set_flash();
+}
+
+
+
 // 
 // Rewrite current $_SERVER['REQUEST_URI'] into $_GET
 // 
 
 function filter_rewrite_uri($paths)
 {
-	if(isset($_SERVER['PATH_INFO'])) $request_path = $_SERVER['PATH_INFO'];
-	else $request_path = $_SERVER['REQUEST_URI'];
-
+	$request_path = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : $_SERVER['REQUEST_URI'];
 	$request_path = preg_replace('/^' . preg_quote(ROOT_URL, '/') . '/', '/', $request_path, 1);
 
 	$current_rewrite_args = false;
@@ -27,18 +67,16 @@ function filter_rewrite_uri($paths)
 
 	if(!$current_rewrite_args) return false;
 
-	foreach ($matches as $key => $value) {
-		if(is_string($key)) $_GET[$key] = $value;
-	}
-	foreach ($current_rewrite_args as $key => $value) {
-		$_GET[$key] = $value;
-	}
+	foreach ($matches as $key => $value)				$_GET[$key] = $value;
+	foreach ($current_rewrite_args as $key => $value)	$_GET[$key] = $value;
 
 	_php_helpers_init();
 }
 
 
-
+// 
+// END Rewrite
+// 
 
 
 
@@ -56,45 +94,16 @@ function filter_rewrite_uri($paths)
 // Ex: $get_param_names = [ 'param_name' => int_length ... ]
 function filter_permitted_params($get_param_names, $post_param_names=[], $cookie_param_names=[], $get_typecasts=[], $post_typecasts=[])
 {
-	if(!_filter_permitted_params_names($_GET, $get_param_names)) return false;
-	if(!_filter_permitted_params_names($_POST, $post_param_names)) return false;
-	if(!_filter_permitted_params_names($_COOKIE, $cookie_param_names)) return false;
+	if(
+		!_arr_validate($_GET, $get_param_names, false) ||
+		!_arr_validate($_POST, $post_param_names, false) ||
+		!_arr_validate($_COOKIE, $cookie_param_names, false)
+	) return false;
 
-	_filter_permitted_params_typecast($_GET, $get_typecasts);
-	_filter_permitted_params_typecast($_POST, $post_typecasts);
-
-	return true;
-}
-
-
-function _filter_permitted_params_names(&$input, $permitted_arr)
-{
-	foreach ($input as $key => $value) {
-		if(!array_key_exists($key, $permitted_arr)) unset($input[$key]);
-		else if(isset($input[$key])){
-			if(is_int($permitted_arr[$key]) && strlen($input[$key]) > $permitted_arr[$key]) {
-				return false;
-			}
-			else if(is_string($permitted_arr[$key]) && !preg_match($permitted_arr[$key], $input[$key])) {
-				return false;
-			}
-		}
-	}
+	_arr_typecast($_GET, $get_typecasts);
+	_arr_typecast($_POST, $post_typecasts);
 
 	return true;
-}
-
-
-function _filter_permitted_params_typecast(&$input, $typecast_def_arr)
-{
-	foreach ($typecast_def_arr as $name => $type) {
-		if(isset($input[$name]) && is_string($input[$name]))
-		switch ($type) {
-			case 'int': $input[$name] = intval($input[$name]); break;
-			case 'float': $input[$name] = floatval($input[$name]); break;
-			case 'bool': $input[$name] = boolval($input[$name]); break;
-		}
-	}
 }
 
 
@@ -386,7 +395,7 @@ function formto($action, $args=[], $attrs=[], $fields=[])
 				"<div id='{$form_id}-container' class='form-container'><form id='{$form_id}' $attrs_str>";
 
 	foreach ($fields as $field_name => $field_options) {
-		$out .= _form_field($form_id, $field_name, $field_options);
+		$out .= form_field($form_id, $field_name, $field_options);
 	}
 
 	if(sizeof($fields) > 0) $out .= "</form></div>\n";
@@ -395,15 +404,24 @@ function formto($action, $args=[], $attrs=[], $fields=[])
 }
 
 
-function _form_field($form_id, $field_name, $field_options)
+function form_field($form_id, $field_name, $field_options)
 {
 	$out = '';
 
-	_arr_defaults($field_options, ['value'=>'', 'label'=>'', 'tag'=>'input', 'type'=>'text', 'name'=>$field_name, 'id'=> "{$form_id}-$field_name"]);
+	_arr_defaults($field_options, [
+		'value'=>'',
+		'label'=>'',
+		'tag'=>'input',
+		'type'=>'text',
+		'name'=>$field_name,
+		'id'=> "{$form_id}-$field_name"
+	]);
+
 	$value = $field_options['value'];
 	$label = $field_options['label'];
 	$tag = $field_options['tag'];
 	$field_type = $field_options['type'];
+
 	if($field_options['tag'] != 'input') unset($field_options['type']);
 	unset($field_options['value'], $field_options['label'], $field_options['tag']);
 
@@ -420,7 +438,13 @@ function linkto($action, $html, $args=[], $attrs=[])
 {
 	$url = urltoget($action, $args, '&amp;');
 
-	if( $_REQUEST['CURRENT_METHOD'] == 'get' && ( $_SERVER['REQUEST_URI'] == urltoget($action, $args) || $_GET['a'] == $action) ) {
+	if(
+		$_REQUEST['CURRENT_METHOD'] == 'get' &&
+		(
+			$_SERVER['REQUEST_URI'] == urltoget($action, $args) ||
+			$_GET['a'] == $action
+		)
+	) {
 		_arr_defaults($attrs, ['class'=>'']);
 		$attrs['class'] .= 'current-uri-link';
 	}
@@ -544,7 +568,6 @@ function _filter_set_flash()
 
 function md5_cookie_set($name, $value)
 {
-	// expires next day - 1hour; reset to keep it continuous;
 	$authenticity = _md5_cookie_authenticity_token($name, $value, time());
 
 	// Expires end of session/browser close
@@ -584,13 +607,13 @@ function cookie_delete($name)
 function _md5_cookie_authenticity_token($name, $value, $timestamp)
 {
 	return md5(
-		$name . '%' .
-		$value . '%' .
-		base64_encode($value) . '%' .
-		date('y-m-d', $timestamp) . '%' .
-		SECURE_HASH . '%' .
-		(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '')  . '%' .
-		(isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '')
+		$name . '#' .
+		$value . '#' .
+		base64_encode($value) . '#' .
+		date('y-m-d', $timestamp) . '#' .
+		(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '')  . '#' .
+		(isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '') . '#' .
+		SECURE_HASH
 	);
 }
 
@@ -632,6 +655,7 @@ function _path_join(...$parts)
 	return preg_replace('/\/+/', '/', implode('/', array_filter($parts)));
 }
 
+
 // Returns only specified keys, with defaults if not set
 function _arr_get($arr, $keys, $prefix='')
 {
@@ -643,6 +667,7 @@ function _arr_get($arr, $keys, $prefix='')
 	return $arr_out;
 }
 
+
 // Fill defaults in arr
 function _arr_defaults(&$arr, $defaults)
 {
@@ -652,6 +677,46 @@ function _arr_defaults(&$arr, $defaults)
 
 	return $arr;
 }
+
+
+// Typecast arr values
+// Example def: [ 'id' => 'int', 'raw'=> 'bool' ]
+function _arr_typecast(&$input, $typecast_def_arr)
+{
+	foreach ($typecast_def_arr as $name => $type) {
+		if(isset($input[$name]) && is_string($input[$name]))
+		switch ($type) {
+			case 'int': $input[$name] = intval($input[$name]); break;
+			case 'float': $input[$name] = floatval($input[$name]); break;
+			case 'bool': $input[$name] = boolval($input[$name]); break;
+		}
+	}
+}
+
+
+// Validates arr key values with regex or strlen
+// Unsets any keys that are not in rules
+// Returns true/false
+// Example rules: [ 'a' => '/^(root|docs|posts|new-post|post|search)$/', 'title' => 1024 ]
+function _arr_validate(&$input, $validations, $must_contain_all_keys=true)
+{
+	if( $must_contain_all_keys && sizeof(array_diff_key($validations, $input)) > 0 ) return false;
+
+	foreach ($input as $key => $value) {
+		if(!array_key_exists($key, $validations)) unset($input[$key]);
+		else if(isset($input[$key])){
+			if(is_int($validations[$key]) && strlen($input[$key]) > $validations[$key]) {
+				return false;
+			}
+			else if(is_string($validations[$key]) && !preg_match($validations[$key], $input[$key])) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
 
 
 // Checks if substr is in string. Accepts multiple substrings.
@@ -697,43 +762,4 @@ if(!defined('CUSTOM_HEADER_HANDLERS')){
 // 
 // Init
 // 
-function _php_helpers_init()
-{
-	if(isset($_GET['a']) && $_GET['a'] == '') $_GET['a'] = 'root';
-	_arr_defaults($_GET, ['a'=>NULL]);
-
-	if(isset($_GET['a']))		 			$_REQUEST['CURRENT_ACTION'] = $_GET['a'];
-	else if(isset($_GET['post_action'])) 	$_REQUEST['CURRENT_ACTION'] = $_GET['post_action'];
-	else if(isset($_GET['patch_action'])) 	$_REQUEST['CURRENT_ACTION'] = $_GET['patch_action'];
-	else if(isset($_GET['delete_action']))	$_REQUEST['CURRENT_ACTION'] = $_GET['delete_action'];
-	else									$_REQUEST['CURRENT_ACTION'] = $_GET['a'] = 'root';
-
-	if(isset($_GET['a'])){
-		$_REQUEST['CURRENT_METHOD'] = 'get';
-	} else if($_SERVER['REQUEST_METHOD'] == 'POST'){
-		if($_GET['post_action']) 			$_REQUEST['CURRENT_METHOD'] = 'post';
-		else if($_GET['patch_action']) 		$_REQUEST['CURRENT_METHOD'] = 'patch';
-		else if($_GET['delete_action']) 	$_REQUEST['CURRENT_METHOD'] = 'delete';
-	} else {
-		$_REQUEST['CURRENT_METHOD'] = 'get';
-	}
-
-	if(!defined('SECURE_HASH')) define('SECURE_HASH', md5(
-		__FILE__ .
-		filemtime(__FILE__) .
-		filesize(__FILE__) .
-		(isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '') .
-		(isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '') .
-		sys_get_temp_dir()
-	));
-
-	if(!defined('APP_DIR'))			define('APP_DIR', '.');
-	if(!defined('APP_NAME'))		define('APP_NAME', 'app');
-	if(!defined('ROOT_URL')) 		define('ROOT_URL', '/');
-	if(!defined('TEMPLATES_DIR')) 	define('TEMPLATES_DIR', _path_join( APP_DIR, 'templates' ));
-	$_REQUEST['TEMPLATE_LAYOUT'] = 'layouts/' . APP_NAME . '.html.php';
-
-	_filter_set_flash();
-}
-
 if(!defined('APP_ENV_IS_TEST')) _php_helpers_init();

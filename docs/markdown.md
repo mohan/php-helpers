@@ -48,3 +48,28 @@ Strikethrough - ~~This is strikethrough~~
 - [!] Task list item striked unchecked
 - [ ] Task list item unchecked
 
+
+### Codeblock
+
+```
+Plain block example. Supports *bold*, **italic** etc.
+```
+
+```php raw
+<?php
+	echo "**Hello**";
+?>
+```
+
+### Table
+
+```table
+Alphabets, Numbers
+A, 1
+B, 2
+C, 3
+"""D""", 4
+```
+
+### Horizontal Rule - hr
+---

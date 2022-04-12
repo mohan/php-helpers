@@ -12,7 +12,7 @@
 
 <h3>Form helper with only fields generated</h3>
 <form action="<?= urltopost('create-post') ?>" method="post" class="panel">
-	<?= _form_field('create-post-2', 'title', ['value'=>$title, 'label'=>'Title']) ?>
-	<?= _form_field('create-post-2', 'body', ['value'=>$body, 'label'=>'Body', 'tag'=>'textarea']) ?>
-	<?= _form_field('create-post-2', 'submit', ['value'=>'Submit', 'type'=>'submit', 'tag'=>'button']) ?>
+	<?= form_field('create-post-2', 'title', ['value'=>$title, 'label'=>'Title']) ?>
+	<?= form_field('create-post-2', 'body', ['value'=>$body, 'label'=>'Body', 'tag'=>'textarea']) ?>
+	<?= form_field('create-post-2', 'submit', ['value'=>'Submit', 'type'=>'submit', 'tag'=>'button']) ?>
 </form>

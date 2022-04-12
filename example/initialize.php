@@ -4,13 +4,20 @@ require APP_DIR . '../helpers.php';
 require APP_DIR . '../helpers-extra.php';
 
 function initialize(){
+	filter_rewrite_uri([
+		"/^\/post\/(?P<id>\d+)$/" 			=> ['a'=>'post'],
+		"/^\/docs\/(?P<path>[a-z0-9-]+)$/" 	=> ['a'=>'docs/view'],
+		"/^\/docs$/" 						=> ['a'=>'docs']
+	]);
+
+
 	if(!filter_permitted_params(
 		// GET params with regex
 		[
-			'a'				=> '/^(root|docs|posts|new-post|post|search)$/',
+			'a'				=> '/^(root|docs|docs\/view|posts|new-post|post|search)$/',
 			'post_action'	=> '/^(create-post)$/',
 			'id'			=> '/^\d+$/',
-			'path'			=> '/^(helpers|markdown)$/',
+			'path'			=> '/^(helpers|markdown|database-layer)$/',
 			'title'			=> 1024,
 			'body'			=> 1024,
 			'query'			=> 1024,
@@ -31,13 +38,6 @@ function initialize(){
 			'raw'=> 'bool'
 		]
 	)) return get_404('Invalid URL params');
-
-
-	filter_rewrite_uri([
-		"/^\/post\/(?P<id>\d+)$/" 			=> ['a'=>'post'],
-		"/^\/docs\/(?P<path>[a-z0-9]+)$/" 	=> ['a'=>'docs/view'],
-		"/^\/docs$/" 						=> ['a'=>'docs']
-	]);
 
 
 	// Routes
@@ -137,7 +137,7 @@ function get_docs_view()
 	return render([
 		'_pagetitle'=>$path,
 		'raw'=>$raw,
-		'text' => file_get_contents(APP_DIR . '/../docs/' . $path . '.md')
+		'text' => file_get_contents( _path_join(APP_DIR, '/../docs/', "$path.md") )
 	]);
 }
 

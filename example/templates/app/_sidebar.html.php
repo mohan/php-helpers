@@ -7,6 +7,7 @@
 			<ul>
 				<li><?= linkto('/docs/helpers', 'Helpers') ?></li>
 				<li><?= linkto('/docs/markdown', 'Markdown', ['raw'=>true]) ?></li>
+				<li><?= linkto('/docs/database-layer', 'Database Layer') ?></li>
 			</ul>
 		</li>
 	</ul>
