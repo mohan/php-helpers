@@ -161,7 +161,7 @@ function _filter_routes_method($current_method_action_names)
 
 		$_REQUEST['ACTION_ID'] = 'render';
 		$_REQUEST['TEMPLATE_PATH'] = $current_method_action_names[$current_action_name];
-		return render([], $current_method_action_names[$current_action_name]);
+		return render();
 	}
 
 	// Required params for action
@@ -206,15 +206,23 @@ function _filter_routes_method($current_method_action_names)
 // Templates
 // 
 
-function render($args=[], $template_path=true)
+function render(...$all_render_args)
 {
-	if(isset($_REQUEST['TEMPLATE_HAS_RENDERED'])) trigger_error('Template has already rendered for this request.', E_USER_ERROR);
+	if(isset($_REQUEST['TEMPLATE_HAS_RENDERED']))	trigger_error('Template has already rendered for this request.', E_USER_ERROR);
 	$_REQUEST['TEMPLATE_HAS_RENDERED'] = true;
 
-	if($template_path === true) $template_path = $_REQUEST['TEMPLATE_PATH'];
-	$layout = $_REQUEST['TEMPLATE_LAYOUT'] ? $_REQUEST['TEMPLATE_LAYOUT'] : 'layouts/index.html.php';
+	foreach ($all_render_args as $arg)	extract($arg);
+	$args = [];
+	foreach ($all_render_args as $arg)	$args = array_merge($args, $arg);
 
-	extract($args, EXTR_SKIP);
+	$template_path = isset($args['_template_path']) ? $args['_template_path'] : $_REQUEST['TEMPLATE_PATH'];
+	$layout = isset($args['_layout']) ? $args['_layout'] : 
+					(
+						$_REQUEST['TEMPLATE_LAYOUT'] ? $_REQUEST['TEMPLATE_LAYOUT'] : 'layouts/index.html.php'
+					);
+	
+	$_REQUEST['TEMPLATE_PATH'] = $template_path;
+	$_REQUEST['TEMPLATE_LAYOUT'] = $layout;
 
 	if(defined('RENDER_TO_STRING')) ob_start();
 
@@ -230,19 +238,13 @@ function render($args=[], $template_path=true)
 }
 
 
-function render_partial($template_path, $args=[], $return=false)
+function render_partial($template_path, ...$all_render_args)
 {
-	extract($args, EXTR_SKIP);
+	foreach ($all_render_args as $arg)	extract($arg);
+	$args = [];
+	foreach ($all_render_args as $arg)	$args = array_merge($args, $arg);
 
-	if($return) ob_start();
-	
 	require _path_join(TEMPLATES_DIR, $template_path);
-	
-	if($return) {
-		$out = ob_get_contents();
-		ob_end_clean();
-		return $out;
-	}
 }
 
 

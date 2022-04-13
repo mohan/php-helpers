@@ -5,7 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="<?= urlto_public_dir('helpers.css'); ?>">
 </head>
 <body>
-	<?php include('_debugpanel.html.php'); ?>
+	<?php require('_debugpanel.html.php'); ?>
 	
 	<div id='main' style='min-height:auto;padding:30px 50px;'>
 		<h2>Error 404! Page not found!</h2>

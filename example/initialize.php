@@ -2,6 +2,7 @@
 
 require APP_DIR . '../helpers.php';
 require APP_DIR . '../helpers-extra.php';
+require APP_DIR . 'template-helpers.php';
 
 function initialize(){
 	filter_rewrite_uri([
@@ -17,7 +18,7 @@ function initialize(){
 			'a'				=> '/^(root|docs|docs\/view|posts|new-post|post|search)$/',
 			'post_action'	=> '/^(create-post)$/',
 			'id'			=> '/^\d+$/',
-			'path'			=> '/^(helpers|markdown|database-layer)$/',
+			'path'			=> '/^(markdown|specification|database-layer)$/',
 			'title'			=> 1024,
 			'body'			=> 1024,
 			'query'			=> 1024,
@@ -97,10 +98,11 @@ function get_new_post()
 	extract(_arr_get($_POST, ['title'=>'', 'body'=>'']));
 
 	return render([
+		'_template_path' => 'app/new_post.html.php',
 		'_pagetitle'=>'New Post',
 		'title'=>$title,
 		'body'=>$body
-	], 'app/new_post.html.php');
+	]);
 }
 
 
@@ -122,11 +124,12 @@ function get_post()
 	extract(_arr_get($_GET, ['id'=>'', 'title'=>'', 'body'=>'']));
 	
 	return render([
+		'_template_path' => 'app/posts.html.php',
 		'_pagetitle'=>"Post #$id",
 		'id'=>$id,
 		'title'=>$title,
 		'body'=>$body
-	], 'app/posts.html.php');
+	]);
 }
 
 
@@ -135,8 +138,8 @@ function get_docs_view()
 	extract(_arr_get($_GET, ['path'=>false, 'raw'=>false]));
 
 	return render([
-		'_pagetitle'=>$path,
-		'raw'=>$raw,
+		'_pagetitle'=> ucfirst($path),
+		'raw'=> $raw,
 		'text' => file_get_contents( _path_join(APP_DIR, '/../docs/', "$path.md") )
 	]);
 }

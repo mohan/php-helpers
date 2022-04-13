@@ -81,7 +81,7 @@ function test_get_post()
 
 function test_get_docs_view()
 {
-	$resp = do_get(urltoget('/docs/helpers'));
+	$resp = do_get(urltoget('/docs/markdown'));
 	
 	t('docs_view page renders', is_not_redirect($resp)
 					&& contains($resp, '<!-- Markdown start -->')

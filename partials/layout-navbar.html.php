@@ -6,7 +6,7 @@
 	<?php if(defined('LAYOUT_RENDER_HEAD')) render_partial(APP_NAME . '/_head.html.php', $args); ?>
 </head>
 <body class='layout-navbar <?= defined('LAYOUT_BODY_CLASS') ? LAYOUT_BODY_CLASS : '' ?>'>
-	<?php include('_debugpanel.html.php'); ?>
+	<?php require('_debugpanel.html.php'); ?>
 
 	<?= render_partial(APP_NAME . '/_navbar.html.php', $args); ?>
 
