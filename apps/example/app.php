@@ -1,7 +1,7 @@
 <?php
 
-require APP_DIR . '../helpers.php';
-require APP_DIR . '../helpers-extra.php';
+require APP_DIR . '/../../lib/helpers.php';
+require APP_DIR . '/../../lib/helpers-extra.php';
 require APP_DIR . 'template-helpers.php';
 
 function initialize(){
@@ -140,7 +140,7 @@ function get_docs_view()
 	return render([
 		'_pagetitle'=> ucfirst($path),
 		'raw'=> $raw,
-		'text' => file_get_contents( _path_join(APP_DIR, '/../docs/', "$path.md") )
+		'text' => file_get_contents( _path_join(APP_DIR, '/../../docs/', "$path.md") )
 	]);
 }
 

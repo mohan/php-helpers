@@ -9,8 +9,8 @@ define('APP_DIR', __DIR__ . '/');
 
 
 // Require test-helpers.php before everything
-require '../test-helpers.php';
-require './initialize.php';
+require APP_DIR . '/../../lib/test-helpers.php';
+require APP_DIR . 'app.php';
 
 
 call_tests_for(

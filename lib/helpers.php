@@ -634,6 +634,34 @@ function _md5_cookie_authenticity_token($name, $value, $timestamp)
 
 
 
+function __d(...$args)
+{
+	if(!defined('APP_ENV_IS_TEST')) echo "<pre style='width:94%;margin:1%;padding:2%;background:#fff;border:2px solid #aa0000;'>";
+	$_debug = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
+	echo "<strong>&gt; [" . basename($_debug[0]['file']) . "#{$_debug[0]['line']}]</strong>\n";
+	foreach($args as $arg) {
+		if(defined('APP_ENV_IS_TEST')) {
+			print_r($arg);
+			continue;
+		}
+		echo "<div style='border-top:1px solid #e9e9e9; padding: 10px 20px 0 20px; margin: 10px 0 0 0;'>";
+		ob_start();
+		print_r($arg);
+		$out = ob_get_contents();
+		ob_end_clean();
+		echo htmlentities($out);
+		echo "</div>";
+	}
+	if(!defined('APP_ENV_IS_TEST')) echo "</pre>";
+}
+
+
+function __d_(...$args)
+{
+	__d(func_get_args());
+	exit;
+}
+
 
 
 

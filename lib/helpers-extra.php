@@ -6,7 +6,6 @@
 
 define('_PHP_HELPERS_EXTRA_IS_DEFINED', true);
 define('APP_ENV_IS_DEVELOPMENT', getenv('APP_ENV_IS_DEVELOPMENT') == 'true');
-if(!defined('APP_ENV_IS_TEST')) define('APP_ENV_IS_TEST', false);
 
 // 
 // Debug helpers
@@ -14,36 +13,7 @@ if(!defined('APP_ENV_IS_TEST')) define('APP_ENV_IS_TEST', false);
 
 // Simple debug
 // Remember to remove all debugs
-if(APP_ENV_IS_DEVELOPMENT || APP_ENV_IS_TEST){
-	function __d(...$args)
-	{
-		if(!APP_ENV_IS_TEST) echo "<pre style='width:94%;margin:1%;padding:2%;background:#fff;border:2px solid #aa0000;'>";
-		$_debug = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
-		echo "<strong>&gt; [" . basename($_debug[0]['file']) . "#{$_debug[0]['line']}]</strong>\n";
-		foreach($args as $arg) {
-			if(APP_ENV_IS_TEST) {
-				var_dump($arg);
-				continue;
-			}
-			echo "<div style='border-top:1px solid #e9e9e9; padding: 10px 20px 0 20px; margin: 10px 0 0 0;'>";
-			ob_start();
-			var_dump($arg);
-			$out = ob_get_contents();
-			ob_end_clean();
-			echo htmlentities($out);
-			echo "</div>";
-		}
-		if(!APP_ENV_IS_TEST) echo "</pre>";
-	}
-
-
-	function __d_(...$args)
-	{
-		__d(func_get_args());
-		exit;
-	}
-
-
+if(APP_ENV_IS_DEVELOPMENT){
 	function _print_debugpanel(){
 		if(isset($_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'])) _print_debug_current_action(...$_REQUEST['_REQUEST_ARGS_CURRENT_ACTION']);
 

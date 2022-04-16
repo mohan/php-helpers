@@ -1,0 +1,25 @@
+<?php
+	$layout_options = _arr_get(
+						isset($_REQUEST['LAYOUT_OPTIONS']) ? $_REQUEST['LAYOUT_OPTIONS'] : [],
+						[
+							'HEAD'			=>	false,
+							'BODY_CLASS'	=>	''
+						]
+					);
+
+
+
+
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title><?= _pagetitle(isset($_pagetitle) ? $_pagetitle : '') ?></title>
+	<link rel="stylesheet" type="text/css" href="<?= urlto_public_dir('assets/style.css'); ?>">
+	<?php if($layout_options['HEAD']) render_partial('/partials/head.html.php', $args); ?>
+</head>
+<body id='<?= "action-" . $_REQUEST['ACTION_ID'] ?>' class='layout-blank <?= $layout_options['BODY_CLASS'] ?>'>
+<?php render_partial($template_path, $args); ?>
+</body>
+</html>
