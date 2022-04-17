@@ -18,7 +18,7 @@ function initialize(){
 			'a'				=> '/^(root|docs|docs\/view|posts|new-post|post|search)$/',
 			'post_action'	=> '/^(create-post)$/',
 			'id'			=> '/^\d+$/',
-			'path'			=> '/^(markdown|specification|database-layer)$/',
+			'path'			=> '/^(markdown|specification|database-layer|notes)$/',
 			'title'			=> 1024,
 			'body'			=> 1024,
 			'query'			=> 1024,

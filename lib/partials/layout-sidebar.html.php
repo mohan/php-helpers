@@ -19,7 +19,7 @@
 	<link rel="stylesheet" type="text/css" href="<?= urlto_public_dir('assets/style.css'); ?>">
 	<?php if($layout_options['HEAD']) render_partial('/partials/head.html.php', $args); ?>
 </head>
-<body id='<?= "action-" . $_REQUEST['ACTION_ID'] ?>' class='layout-sidebar <?= $layout_options['BODY_CLASS'] ?>'>
+<body id='<?= "action-" . $_REQUEST['ACTION_ID'] ?>' class='clear layout-sidebar <?= $layout_options['BODY_CLASS'] ?>'>
 	<?php require '_debugpanel.html.php'; ?>
 
 	<?= render_partial('/partials/sidebar.html.php', $args); ?>

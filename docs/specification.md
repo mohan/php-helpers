@@ -4,7 +4,7 @@
 	* HTML/CSS is an easy and good user interface alternative.
 	* `php -S localhost:8000` is available for desktop applications.
 * PHP syntax is similar to C.
-* Functional programming only, for simplicity.
+* Functional programming, for simplicity.
 * Easy to learn and remember. Only required learning -
 	* Constants
 	* Variables

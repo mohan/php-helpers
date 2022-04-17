@@ -1,4 +1,9 @@
 <?php
+// php-helpers
+// utils
+// License: GPL
+// Status: Work in progress
+
 
 function _nested_files_list($dir, $hidden=false)
 {
