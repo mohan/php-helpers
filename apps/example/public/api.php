@@ -2,7 +2,7 @@
 
 define('CUSTOM_GET_404', true);
 
-require '../../helpers.php';
+require '../../../lib/helpers.php';
 
 
 _arr_defaults($_GET, ['format'=>'xml']);

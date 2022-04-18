@@ -31,8 +31,13 @@ function _php_helpers_init()
 		__FILE__ .
 		filemtime(__FILE__) .
 		filesize(__FILE__) .
-		(isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '') .
-		(isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '') .
+		join('-', _arr_get($_SERVER, [
+				'HTTP_HOST' => '',
+				'DOCUMENT_ROOT' => '',
+				'SERVER_SOFTWARE' => '',
+				'REMOTE_ADDR' => '',
+				'HTTP_USER_AGENT' => ''
+		])) .
 		sys_get_temp_dir()
 	));
 	if(!defined('APP_DIR'))			define('APP_DIR', '.');
@@ -610,11 +615,13 @@ function _md5_cookie_authenticity_token($name, $value, $timestamp)
 {
 	return md5(
 		$name . '#' .
-		$value . '#' .
-		base64_encode($value) . '#' .
+		$value . '-' .
+		base64_encode($value) . '-' .
 		date('y-m-d', $timestamp) . '#' .
-		(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '')  . '#' .
-		(isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '') . '#' .
+		join(' ', _arr_get($_SERVER, [
+				'SERVER_SOFTWARE' => '',
+				'REMOTE_ADDR' => ''
+		])) .
 		SECURE_HASH
 	);
 }

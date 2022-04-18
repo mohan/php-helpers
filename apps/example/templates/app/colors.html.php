@@ -281,6 +281,7 @@ for ($i=0; $i < 10; $i++) {
 ?>
 
 <h2 id='websafe'><?= sizeof($colors) ?> Web Safe Palette</h2>
+<p>Colors that appear correctly on all platforms and monitors.</p>
 <?php
 for ($i=0; $i < sizeof($colors); $i++) {
 	render_partial('partials/color.html.php', ['color'=>$colors[$i]]);
