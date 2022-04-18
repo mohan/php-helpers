@@ -86,6 +86,12 @@ pre{
 	clear: both;
 }
 
+.d-block{ display: block; }
+.d-inline-block{ display: inline-block; }
+.d-inline{ display: inline; }
+.w-100{ width: 100%; }
+.h-100{ height: 100%; }
+
 
 .table{
 	margin-bottom: 20px;
@@ -124,7 +130,7 @@ pre{
 .markdown .md-codeblock-php, .markdown .md-codeblock-dark{ background: #494949; border-color: #555; color: #fff; }
 .markdown .md-codeblock-table{ background: transparent; border-color: transparent; color: inherit; padding: 0; }
 .markdown .md-codeblock-table table { min-width: 50%; text-align: left; font-size: 1em; border: 1px solid #ccc; background: #fff; }
-.markdown .md-codeblock-table table thead th { background: #f6c457; padding: 5px; }
+.markdown .md-codeblock-table table thead th { background: #FFCC00; padding: 5px; }
 .markdown .md-codeblock-table table tbody td{ border-top: 1px solid #ddd; padding: 5px; }
 .markdown .md-list-bullet, .markdown .md-list-number, .markdown .md-list-dash{ color: #888; }
 .markdown .md-task-list{ display: block; }
@@ -154,7 +160,7 @@ layouts
 
 /* navbar */
 .layout-navbar #navbar{
-	background: #f6c457;
+	background: #FFCC00;
 	padding: 20px 0;
 	box-shadow: 1px 1px #cdb9b9;
 }
@@ -174,7 +180,7 @@ layouts
 }
 .layout-navbar #navbar ul li a{
 	display: inline-block;
-	background: #da9603;
+	background: #CC9900;
 	padding: 5px 15px;
 	color: #FFFFFF;
 	text-decoration: none;
@@ -202,7 +208,7 @@ layouts
 
 /* Sidebar */
 .layout-sidebar {
-	background: #f6c457;
+	background: #FFCC00;
 }
 .layout-sidebar #sidebar{
 	float: left;
@@ -225,11 +231,11 @@ layouts
 	margin: 0;
 }
 .layout-sidebar #sidebar li{
-	margin: 1px 0px 0px 0px;
+	border-bottom: 1px solid #DDAA14;
 }
 .layout-sidebar #sidebar li a{
 	display: block;
-	background: #da9603;
+	background: #CC9900;
 	padding: 5px 15px;
 	color: #FFFFFF;
 	text-decoration: none;

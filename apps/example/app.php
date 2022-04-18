@@ -18,7 +18,7 @@ function initialize(){
 			'a'				=> '/^(root|docs|docs\/view|posts|new-post|post|search)$/',
 			'post_action'	=> '/^(create-post)$/',
 			'id'			=> '/^\d+$/',
-			'path'			=> '/^(markdown|specification|database-layer|notes)$/',
+			'path'			=> '/^(markdown|specification|database-layer|notes|colors)$/',
 			'title'			=> 1024,
 			'body'			=> 1024,
 			'query'			=> 1024,
@@ -50,7 +50,7 @@ function initialize(){
 			'posts'		=> [],
 			'post'		=> ['id'],
 			'docs/view'	=> ['path'],
-			'docs'		=> 'app/docs.html.php',
+			'docs'		=> [],
 			'search'	=> []
 		],
 		// Post action, with required params from $_GET, $_POST
@@ -98,7 +98,7 @@ function get_new_post()
 	extract(_arr_get($_POST, ['title'=>'', 'body'=>'']));
 
 	return render([
-		'_template_path' => 'app/new_post.html.php',
+		'_template' => 'app/new_post.html.php',
 		'_pagetitle'=>'New Post',
 		'title'=>$title,
 		'body'=>$body
@@ -124,7 +124,7 @@ function get_post()
 	extract(_arr_get($_GET, ['id'=>'', 'title'=>'', 'body'=>'']));
 	
 	return render([
-		'_template_path' => 'app/posts.html.php',
+		'_template' => 'app/posts.html.php',
 		'_pagetitle'=>"Post #$id",
 		'id'=>$id,
 		'title'=>$title,
@@ -133,14 +133,31 @@ function get_post()
 }
 
 
+function get_docs()
+{
+	return render([
+		'_layout'		=>	'layouts/docs.html.php'
+	]);
+}
+
+
 function get_docs_view()
 {
 	extract(_arr_get($_GET, ['path'=>false, 'raw'=>false]));
 
+	if($path == 'colors'){
+		return render([
+			'_layout'		=>	'layouts/docs.html.php',
+			'_template'		=>	'app/colors.html.php',
+			'_pagetitle'	=>	ucfirst($path)
+		]);
+	}
+
 	return render([
-		'_pagetitle'=> ucfirst($path),
-		'raw'=> $raw,
-		'text' => file_get_contents( _path_join(APP_DIR, '/../../docs/', "$path.md") )
+		'_layout'		=>	'layouts/docs.html.php',
+		'_pagetitle'	=>	ucfirst($path),
+		'raw'			=>	$raw,
+		'text'			=>	file_get_contents( _path_join(APP_DIR, '/../../docs/', "$path.md") )
 	]);
 }
 

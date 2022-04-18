@@ -40,7 +40,7 @@ function _php_helpers_init()
 	if(!defined('ROOT_URL')) 		define('ROOT_URL', '/');
 	if(!defined('TEMPLATES_DIR')) 	define('TEMPLATES_DIR', _path_join( APP_DIR, 'templates' ));
 	
-	$_REQUEST['TEMPLATE_LAYOUT'] = 'layouts/' . APP_NAME . '.html.php';
+	$_REQUEST['LAYOUT'] = 'layouts/' . APP_NAME . '.html.php';
 
 	_filter_set_flash();
 }
@@ -160,7 +160,7 @@ function _filter_routes_method($current_method_action_names)
 		}
 
 		$_REQUEST['ACTION_ID'] = 'render';
-		$_REQUEST['TEMPLATE_PATH'] = $current_method_action_names[$current_action_name];
+		$_REQUEST['TEMPLATE'] = $current_method_action_names[$current_action_name];
 		return render();
 	}
 
@@ -181,7 +181,7 @@ function _filter_routes_method($current_method_action_names)
 	}
 
 	$_REQUEST['ACTION_ID'] = $action_id;
-	$_REQUEST['TEMPLATE_PATH'] = APP_NAME . '/' . $action_id . '.html.php';
+	$_REQUEST['TEMPLATE'] = APP_NAME . '/' . $action_id . '.html.php';
 	return call_user_func( $action_function_name );
 }
 
@@ -215,18 +215,18 @@ function render(...$all_render_args)
 	$args = [];
 	foreach ($all_render_args as $arg)	$args = array_merge($args, $arg);
 
-	$template_path = isset($args['_template_path']) ? $args['_template_path'] : $_REQUEST['TEMPLATE_PATH'];
+	$template = isset($args['_template']) ? $args['_template'] : $_REQUEST['TEMPLATE'];
 	$layout = isset($args['_layout']) ? $args['_layout'] : 
 					(
-						$_REQUEST['TEMPLATE_LAYOUT'] ? $_REQUEST['TEMPLATE_LAYOUT'] : 'layouts/index.html.php'
+						$_REQUEST['LAYOUT'] ? $_REQUEST['LAYOUT'] : 'layouts/app.html.php'
 					);
 	
-	$_REQUEST['TEMPLATE_PATH'] = $template_path;
-	$_REQUEST['TEMPLATE_LAYOUT'] = $layout;
+	$_REQUEST['TEMPLATE'] = $template;
+	$_REQUEST['LAYOUT'] = $layout;
 
 	if(defined('RENDER_TO_STRING')) ob_start();
 
-	require _path_join(TEMPLATES_DIR, ($layout ? $layout : $template_path));
+	require _path_join(TEMPLATES_DIR, ($layout ? $layout : $template));
 
 	if(defined('RENDER_TO_STRING')) {
 		$out = ob_get_contents();
@@ -238,13 +238,13 @@ function render(...$all_render_args)
 }
 
 
-function render_partial($template_path, ...$all_render_args)
+function render_partial($template, ...$all_render_args)
 {
 	foreach ($all_render_args as $arg)	extract($arg);
 	$args = [];
 	foreach ($all_render_args as $arg)	$args = array_merge($args, $arg);
 
-	require _path_join(TEMPLATES_DIR, $template_path);
+	require _path_join(TEMPLATES_DIR, $template);
 }
 
 
@@ -261,8 +261,8 @@ if(!defined('CUSTOM_GET_404')){
 	function get_404($message='')
 	{
 		_header("HTTP/1.1 404 Not Found");
-		$_REQUEST['TEMPLATE_LAYOUT'] = 'layouts/404.html.php';
-		$_REQUEST['TEMPLATE_PATH'] = false;
+		$_REQUEST['LAYOUT'] = 'layouts/404.html.php';
+		$_REQUEST['TEMPLATE'] = false;
 		return render(['_pagetitle'=>'404', 'message' => $message]);
 	}
 }

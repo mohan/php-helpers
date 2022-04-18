@@ -62,6 +62,16 @@ function _arr_validate(&$input, $validations, $must_contain_all_keys=true)
 function _str_contains($str, ...$substrs)
 ```
 
+## Creating new project
+
+```php raw
+mkdir APPLICATION-NAME
+cd APPLICATION-NAME
+
+mkdir -p public/assets templates/app templates/layouts templates/partials
+touch public/index.php public/assets/style.css app.php template-helpers.php templates/layouts/app.html.php templates/layouts/404.html.php
+```
+
 ---
 
 ## TODO
