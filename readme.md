@@ -8,18 +8,34 @@ Status: Work in progress
 
 
 ## It contains
+
 1. Rewrite URI
+	* Function to rewrite URI paths to $_GET arguments, for nice looking URLs.
 2. Permitted Params
+	* Function to allow $_GET parameters for the whole application.
 3. Router (to call action functions)
+	* $_GET['action'] regular string paramater to function name mapping
+		* articles		->	$_GET['action'] = 'articles';						->	function get_articles()
+		* article/view	->	$_GET['action'] = 'article/view'; $_GET['id'] = 1;	->	function get_article_view()
+		* article		->	$_GET['post_action'] = 'article';					->	function post_article()
 4. Templates
+	* Functions to echo layouts and templates.
 5. URL helpers
+	* Functions to echo URLs to actions.
 6. HTML Tag helpers
+	* Functions to echo HTML tags like `linkto`, with HTML escaping.
 7. Flash messages
+	* Function to display action success/error messages in next request.
 8. md5 cookie (Cookie with added authenticity)
+	* Cookie with extra md5 hash, to prevent modification by client.
 9. Config file helpers
+	* Function to read ini file to constants.
 10. Debug helpers
+	* Alias functions to `print_r` / `var_dump`.
 11. Markdown
+	* Function to display markdown text format as HTML.
 12. Shortcodes
+	* Function to interpret and display special markdown tags with arguments to HTML.
 
 
 ## Note
@@ -27,42 +43,7 @@ Status: Work in progress
 * Please feel free to implement it yourself.
 
 
-## Available functions
-
-```php raw
-function filter_rewrite_uri($paths)
-function filter_permitted_params($get_param_names, $post_param_names=[], $cookie_param_names=[], $get_typecasts=[], $post_typecasts=[])
-function filter_routes($get_action_names, $post_action_names=[], $patch_action_names=[], $delete_action_names=[])
-function render(...$all_render_args)
-function render_partial($template_path, ...$all_render_args)
-function redirectto($action, $args=[])
-function get_404($message='')
-function urlto_public_dir($uri)
-function urltoget($action, $args=[], $arg_separator='&', $skip_action_arg=false)
-function urltopost($action, $args=[], $arg_separator='&')
-function formto($action, $args=[], $attrs=[], $fields=[])
-function form_field($form_id, $field_name, $field_options)
-function linkto($action, $html, $args=[], $attrs=[])
-function tag($html, $attrs=[], $name='div', $closing=true, $escape=true)
-function tag_table($headers, $data, $attrs=[], $cb=false)
-function flash_set($html, $in_current_request=false)
-function flash_clear()
-function md5_cookie_set($name, $value)
-function md5_cookie_get($name)
-function cookie_delete($name)
-
-// Internal functions
-
-function _to_id($str, $replace_with='-')
-function _path_join(...$parts)
-function _arr_get($arr, $keys, $prefix='')
-function _arr_defaults(&$arr, $defaults)
-function _arr_typecast(&$input, $typecast_def_arr)
-function _arr_validate(&$input, $validations, $must_contain_all_keys=true)
-function _str_contains($str, ...$substrs)
-```
-
-## Creating new project
+## Example structure for a new project
 
 ```php raw
 mkdir APPLICATION-NAME
@@ -82,4 +63,3 @@ touch public/index.php public/assets/style.css app.php template-helpers.php temp
 - [x] Example application
 - [x] URL param names in url
 	- Use web server rewrites
-
