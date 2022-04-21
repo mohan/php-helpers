@@ -7,7 +7,7 @@ require APP_DIR . 'template-helpers.php';
 function initialize(){
 	filter_rewrite_uri([
 		"/^\/post\/(?P<id>\d+)$/" 			=> ['a'=>'post'],
-		"/^\/docs\/(?P<path>[a-z0-9-]+)$/" 	=> ['a'=>'docs/view'],
+		"/^\/docs\/(?P<path>[a-z0-9-.]+)$/" 	=> ['a'=>'docs/view'],
 		"/^\/docs$/" 						=> ['a'=>'docs']
 	]);
 
@@ -15,10 +15,13 @@ function initialize(){
 	if(!filter_permitted_params(
 		// GET params with regex
 		[
-			'a'				=> '/^(root|docs|docs\/view|posts|new-post|post|search)$/',
+			'a'				=> '/^(root|docs|docs\/view|posts|new-post|post|search|src)$/',
 			'post_action'	=> '/^(create-post)$/',
 			'id'			=> '/^\d+$/',
-			'path'			=> '/^(markdown|specification|database-layer|notes|colors)$/',
+			'path'			=> '/^(markdown|specification|database-layer|notes|colors|docs)$/',
+			'src_path'		=> '/^(helpers|helpers-extra|test-helpers|utils|partials\/_debugpanel.html|' .
+								'partials\/layout-404.html|partials\/layout-blank.html|partials\/layout-navbar.html|' .
+								'partials\/layout-sidebar.html)\.php$/',
 			'title'			=> 1024,
 			'body'			=> 1024,
 			'query'			=> 1024,
@@ -49,8 +52,9 @@ function initialize(){
 			'new-post'	=> [],
 			'posts'		=> [],
 			'post'		=> ['id'],
-			'docs/view'	=> ['path'],
 			'docs'		=> [],
+			'docs/view'	=> ['path'],
+			'src'		=> ['src_path'],
 			'search'	=> []
 		],
 		// Post action, with required params from $_GET, $_POST
@@ -158,6 +162,20 @@ function get_docs_view()
 		'_pagetitle'	=>	ucfirst($path),
 		'raw'			=>	$raw,
 		'text'			=>	file_get_contents( _path_join(APP_DIR, '/../../docs/', "$path.md") )
+	]);
+}
+
+
+function get_src()
+{
+	extract(_arr_get($_GET, ['src_path'=>false]));
+
+	return render([
+		'_layout'		=>	'layouts/docs.html.php',
+		'_template'		=>	'app/docs_view.html.php',
+		'_pagetitle'	=>	$src_path,
+		'raw'			=>	true,
+		'text'			=>	file_get_contents( _path_join(APP_DIR, '/../../lib/', $src_path) )
 	]);
 }
 

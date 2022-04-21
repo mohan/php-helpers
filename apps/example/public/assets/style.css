@@ -33,6 +33,7 @@ pre{
 	tab-size:4;
 	font-family: inherit;
 	line-height: 2em;
+	overflow: scroll;
 }
 
 .panel{
@@ -91,6 +92,7 @@ pre{
 .d-inline{ display: inline; }
 .w-100{ width: 100%; }
 .h-100{ height: 100%; }
+.border-bottom{ border-bottom: 1px solid #ccc; padding-bottom: 15px; }
 
 
 .table{
@@ -186,14 +188,14 @@ layouts
 	text-decoration: none;
 	border-radius: 3px;
 	width: 110px;
-	text-shadow: 0px 1px #a48032;
 }
 .layout-navbar #navbar ul li a:hover{
-	background: #444;
+	background: #fff;
+	color: #000;
 }
 .layout-navbar #navbar ul li a.current-uri-link{
-	background: #222;
-	text-shadow: 0px 1px #444;
+	background: #fff;
+	color: #000;
 }
 
 .layout-navbar #main{
@@ -216,11 +218,20 @@ layouts
 	min-width: 150px;
 	min-height: 100%;
 }
-.layout-sidebar #sidebar h2{
-	padding-left: 14px;
+.layout-sidebar #sidebar h2, .layout-sidebar #sidebar h3, .layout-sidebar #sidebar h4, .layout-sidebar #sidebar h5{
+	padding-left: 10px;
 	font-size: 1em;
-	text-shadow: 1px 0px #e6c1c1;
 }
+.layout-sidebar #sidebar h3, .layout-sidebar #sidebar h4, .layout-sidebar #sidebar h5{
+	margin: 0;
+	background: #777;
+	color: #fff;
+	font-weight: normal;
+}
+.layout-sidebar #sidebar h3{ font-size: 0.85em; }
+.layout-sidebar #sidebar h4{ font-size: 0.75em; }
+.layout-sidebar #sidebar h5{ font-size: 0.65em; }
+
 .layout-sidebar #sidebar ul{
 	list-style: none;
 	padding-left: 14px;
@@ -239,15 +250,15 @@ layouts
 	padding: 5px 15px;
 	color: #FFFFFF;
 	text-decoration: none;
-	text-shadow: 0px 1px #a48032;
 	font-size: 0.9em;
 }
 .layout-sidebar #sidebar li a:hover{
-	background: #444;
+	background: #ddd;
+	color: #000;
 }
 .layout-sidebar #sidebar li a.current-uri-link{
-	background: #222;
-	text-shadow: 0px 1px #444;
+	background: #f0f0f0;
+	color: #000;
 }
 
 .layout-sidebar #main{

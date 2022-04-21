@@ -2,17 +2,17 @@
 
 23 functions for building PHP applications.
 
+SLOC: ~500
+
 License: GPL
 
 Status: Work in progress
 
 
-## It contains
-
 1. Rewrite URI
-	* Function to rewrite URI paths to $_GET arguments, for nice looking URLs.
+	* Function to rewrite URI paths to $_GET arguments, for fancy URLs.
 2. Permitted Params
-	* Function to allow $_GET parameters for the whole application.
+	* Function to allow only permitted $_GET parameters and regex matching values for the whole application.
 3. Router (to call action functions)
 	* $_GET['action'] regular string paramater to function name mapping
 		* articles		->	$_GET['action'] = 'articles';						->	function get_articles()
@@ -40,7 +40,6 @@ Status: Work in progress
 
 ## Note
 * **Not tested**, do not use.
-* Please feel free to implement it yourself.
 
 
 ## Example structure for a new project

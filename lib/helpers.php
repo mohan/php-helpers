@@ -5,9 +5,9 @@
 // Status: Work in progress
 
 
-
 function _php_helpers_init()
 {
+	// Set action to 'root' if no params
 	if(isset($_GET['a']) && $_GET['a'] == '') $_GET['a'] = 'root';
 	_arr_defaults($_GET, ['a'=>NULL]);
 
@@ -52,9 +52,6 @@ function _php_helpers_init()
 
 
 
-// 
-// Rewrite current $_SERVER['REQUEST_URI'] into $_GET
-// 
 
 function filter_rewrite_uri($paths)
 {
@@ -72,9 +69,12 @@ function filter_rewrite_uri($paths)
 
 	if(!$current_rewrite_args) return false;
 
+	// Capture group vars
 	foreach ($matches as $key => $value)				$_GET[$key] = $value;
+	// Given parameters for current_rewrite
 	foreach ($current_rewrite_args as $key => $value)	$_GET[$key] = $value;
 
+	// Call init again, as REQUEST vars are modified.
 	_php_helpers_init();
 }
 
@@ -95,8 +95,6 @@ function filter_rewrite_uri($paths)
 // 
 
 
-// Permitted GET, POST, cookie params, with strlen check and typecasting
-// Ex: $get_param_names = [ 'param_name' => int_length ... ]
 function filter_permitted_params($get_param_names, $post_param_names=[], $cookie_param_names=[], $get_typecasts=[], $post_typecasts=[])
 {
 	if(
@@ -134,8 +132,6 @@ function filter_permitted_params($get_param_names, $post_param_names=[], $cookie
 // Router
 // 
 
-// Map action names to functions and call current name
-// Max action name 32 chars
 function filter_routes($get_action_names, $post_action_names=[], $patch_action_names=[], $delete_action_names=[])
 {
 	if(isset($_REQUEST['TEMPLATE_HAS_RENDERED'])) return false;
@@ -211,6 +207,7 @@ function _filter_routes_method($current_method_action_names)
 // Templates
 // 
 
+
 function render(...$all_render_args)
 {
 	if(isset($_REQUEST['TEMPLATE_HAS_RENDERED']))	trigger_error('Template has already rendered for this request.', E_USER_ERROR);
@@ -243,6 +240,7 @@ function render(...$all_render_args)
 }
 
 
+
 function render_partial($template, ...$all_render_args)
 {
 	foreach ($all_render_args as $arg)	extract($arg);
@@ -260,6 +258,7 @@ function redirectto($action, $args=[])
 	_header('Location: ' . urltoget($action, $args));
 	return true;
 }
+
 
 
 if(!defined('CUSTOM_GET_404')){
@@ -296,6 +295,7 @@ if(!defined('CUSTOM_GET_404')){
 // URL helpers
 // 
 
+
 function urlto_public_dir($uri)
 {
 	if(defined('PUBLIC_URL')){
@@ -304,6 +304,7 @@ function urlto_public_dir($uri)
 		return explode('?', ROOT_URL)[0] . $uri;
 	}
 }
+
 
 
 function urltoget($action, $args=[], $arg_separator='&', $skip_action_arg=false)
@@ -337,6 +338,7 @@ function urltoget($action, $args=[], $arg_separator='&', $skip_action_arg=false)
 
 	return $root_url . http_build_query($args, '', $arg_separator) . $hash;
 }
+
 
 
 function urltopost($action, $args=[], $arg_separator='&')
@@ -383,6 +385,7 @@ function urltopost($action, $args=[], $arg_separator='&')
 // HTML Tag helpers
 // 
 
+
 function formto($action, $args=[], $attrs=[], $fields=[])
 {
 	_arr_defaults($attrs, [
@@ -409,6 +412,7 @@ function formto($action, $args=[], $attrs=[], $fields=[])
 
 	return $out;
 }
+
 
 
 function form_field($form_id, $field_name, $field_options)
@@ -441,16 +445,14 @@ function form_field($form_id, $field_name, $field_options)
 }
 
 
+
 function linkto($action, $html, $args=[], $attrs=[])
 {
 	$url = urltoget($action, $args, '&amp;');
 
 	if(
 		$_REQUEST['CURRENT_METHOD'] == 'get' &&
-		(
-			$_SERVER['REQUEST_URI'] == urltoget($action, $args) ||
-			$_GET['a'] == $action
-		)
+		$_SERVER['REQUEST_URI'] == urltoget($action, $args)
 	) {
 		_arr_defaults($attrs, ['class'=>'']);
 		$attrs['class'] .= 'current-uri-link';
@@ -463,7 +465,7 @@ function linkto($action, $html, $args=[], $attrs=[])
 }
 
 
-// Auto htmlentities for safe user input
+
 function tag($html, $attrs=[], $name='div', $closing=true, $escape=true)
 {
 	if(!$name) return;
@@ -483,6 +485,7 @@ function tag($html, $attrs=[], $name='div', $closing=true, $escape=true)
 
 	return $out;
 }
+
 
 
 function tag_table($headers, $data, $attrs=[], $cb=false)
@@ -521,6 +524,7 @@ function tag_table($headers, $data, $attrs=[], $cb=false)
 // Flash messages
 // 
 
+
 function flash_set($html, $in_current_request=false)
 {
 	if($html) {
@@ -530,10 +534,12 @@ function flash_set($html, $in_current_request=false)
 }
 
 
+
 function flash_clear()
 {
 	cookie_delete('flash');
 }
+
 
 
 function _filter_set_flash()
@@ -731,10 +737,14 @@ function _arr_typecast(&$input, $typecast_def_arr)
 }
 
 
-// Validates arr key values with regex or strlen
-// Unsets any keys that are not in rules
-// Returns true/false
-// Example rules: [ 'a' => '/^(root|docs|posts|new-post|post|search)$/', 'title' => 1024 ]
+/***
+
+Validates arr key values with regex or strlen
+Unsets any keys that are not in rules
+Returns true/false
+Example rules: [ 'a' => '/^(root|docs|posts|new-post|post|search)$/', 'title' => 1024 ]
+
+***/
 function _arr_validate(&$input, $validations, $must_contain_all_keys=true)
 {
 	if( $must_contain_all_keys && sizeof(array_diff_key($validations, $input)) > 0 ) return false;
