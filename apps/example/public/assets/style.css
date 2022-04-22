@@ -32,7 +32,7 @@ label{
 pre{
 	tab-size:4;
 	font-family: inherit;
-	line-height: 2em;
+	line-height: 1.5em;
 	overflow: scroll;
 }
 
@@ -242,7 +242,7 @@ layouts
 	margin: 0;
 }
 .layout-sidebar #sidebar li{
-	border-bottom: 1px solid #DDAA14;
+	/*border-bottom: 1px solid #DDAA14;*/
 }
 .layout-sidebar #sidebar li a{
 	display: block;
@@ -250,7 +250,7 @@ layouts
 	padding: 5px 15px;
 	color: #FFFFFF;
 	text-decoration: none;
-	font-size: 0.9em;
+	font-size: 0.85em;
 }
 .layout-sidebar #sidebar li a:hover{
 	background: #ddd;
