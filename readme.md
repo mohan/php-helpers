@@ -52,7 +52,7 @@ mkdir -p public/assets templates/app templates/layouts templates/partials
 touch public/index.php public/assets/style.css app.php template-helpers.php templates/layouts/app.html.php templates/layouts/404.html.php
 ```
 
-### Templates based application/website
+### Template based application/website
 ```php raw
 mkdir APPLICATION-NAME
 cd APPLICATION-NAME

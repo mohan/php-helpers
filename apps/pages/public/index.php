@@ -19,7 +19,7 @@ function get_page()
 {
 	extract(_arr_get($_GET, ['name'=>'']));
 
-	$path = APP_DIR . "data/$name.md";
+	$path = APP_DIR . "data/$name.txt";
 
 	if(!is_file($path)) return false;
 

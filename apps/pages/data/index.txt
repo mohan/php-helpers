@@ -2,6 +2,7 @@
 
 This is example text. This is example text. This is example text. This is example text. This is example text. This is example text. This is example text. This is example text. This is example text. This is example text.
 
+[About](/about)
 
 - Item 1
 - Item 2
