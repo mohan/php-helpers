@@ -11,7 +11,7 @@
 	<div id='main' style='min-height:auto;padding:30px 50px;'>
 		<?= tag('Error 404! Page not found!', [], 'h1') ?>
 		<?= tag('Error URI: ' . $_SERVER['REQUEST_URI'], [], 'p') ?>
-		<?= tag($message, ['class'=>'text-7'], 'p') ?>
+		<?= tag($message, ['class'=>'fg-7'], 'p') ?>
 	</div>
 </body>
 </html>

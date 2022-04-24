@@ -64,11 +64,11 @@ Plain block example. Supports *bold*, **italic** etc.
 ### Table
 
 ```table
-Alphabets, Numbers
-A, 1
-B, 2
-C, 3
-"""D""", 4
+Alphabets	|	Numbers
+A	|	1
+B	|	2
+C	|	3
+"""D"""	|	4
 ```
 
 ### Horizontal Rule - hr

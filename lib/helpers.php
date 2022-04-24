@@ -151,6 +151,7 @@ function _filter_routes_method($current_method_action_names)
 {
 	$current_action_name = $_REQUEST['CURRENT_ACTION'];
 	$current_method_name = $_REQUEST['CURRENT_METHOD'];
+	$action_id = preg_replace("/[^a-zA-Z0-9]/", '_', $current_action_name);
 
 	if( !array_key_exists($current_action_name, $current_method_action_names) ) return false;
 
@@ -160,14 +161,13 @@ function _filter_routes_method($current_method_action_names)
 			$_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'] = [$current_method_name, $current_method_action_names[$current_action_name], 'render'];
 		}
 
-		$_REQUEST['ACTION_ID'] = 'render';
+		$_REQUEST['ACTION_ID'] = $action_id;
 		$_REQUEST['TEMPLATE'] = $current_method_action_names[$current_action_name];
 		return render();
 	}
 
 	// Required params for action
 	$required_params = $current_method_action_names[$current_action_name];
-	$action_id = preg_replace("/[^a-zA-Z0-9]/", '_', $current_action_name);
 	$action_function_name = $current_method_name . '_' . $action_id;
 
 	if($current_method_name == 'get'){

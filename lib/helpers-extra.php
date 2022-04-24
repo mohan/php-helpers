@@ -146,8 +146,8 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 		}
 
 		if($is_codeblock && _str_contains($codeblock_attr, 'table')){
-			if($data_table_i == 0) $data_table_header = str_getcsv(trim($line));
-			else $data_table[] = str_getcsv(trim($line));
+			if($data_table_i == 0) $data_table_header = str_getcsv(trim($line), '|');
+			else $data_table[] = str_getcsv(trim($line), '|');
 
 			$data_table_i++;
 			continue;

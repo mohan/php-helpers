@@ -29,17 +29,17 @@ popen,curl_exec,curl_multi_exec,parse_ini_file,show_source,fopen,file_put_conten
 These are some additional customizations to `php.ini`. `php.ini` contains comments about each of these.
 
 ```table
-directive, value
-max_input_time, 3
-max_execution_time, 3
-memory_limit, 64M
-error_reporting, E_ALL
-display_errors, off in production
-error_prepend_string, """<pre style='background:#ccc;padding:20px;border-radius:3px;word-break:break-word;font-size:0.95em;'>"""
-error_append_string, """</pre>"""
-post_max_size, 1M
-file_uploads, On
-allow_url_fopen, Off
+directive	|	value
+max_input_time	|	3
+max_execution_time	|	3
+memory_limit	|	64M
+error_reporting	|	E_ALL
+display_errors	|	off in production
+error_prepend_string	|	"""<pre style='background:#ccc;padding:20px;border-radius:3px;word-break:break-word;font-size:0.95em;'>"""
+error_append_string	|	"""</pre>"""
+post_max_size	|	1M
+file_uploads	|	On
+allow_url_fopen	|	Off
 ```
 
 

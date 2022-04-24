@@ -59,6 +59,7 @@ touch public/index.php public/assets/style.css app.php template-helpers.php temp
 - [ ] Code Review
 - [ ] Test
 - [ ] More layouts
+- [ ] Redirect shortcut for action name
 - [x] Example application
 - [x] URL param names in url
 	- Use web server rewrites
