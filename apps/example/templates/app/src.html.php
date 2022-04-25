@@ -2,8 +2,8 @@
 
 <?php
 	if(
-		(isset($defined_constants) || isset($function_names)) &&
-		(sizeof($defined_constants) > 0 || sizeof($function_names) > 0)
+		(isset($defined_constants) || isset($function_names) || isset($internal_function_names)) &&
+		(sizeof($defined_constants) > 0 || sizeof($function_names) > 0 || sizeof($internal_function_names) > 0)
 	):
 ?>
 	<div class='panel'>
