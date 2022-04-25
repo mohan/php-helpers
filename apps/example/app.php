@@ -15,7 +15,7 @@ function initialize(){
 	if(!filter_permitted_params(
 		// GET params with regex
 		[
-			'a'				=> '/^(root|docs|docs\/view|posts|new-post|post|search|src)$/',
+			'a'				=> '/^(root|docs|docs\/view|posts|new-post|post|search|src|example_redirect)$/',
 			'post_action'	=> '/^(create-post)$/',
 			'id'			=> '/^\d+$/',
 			'path'			=> '/^(markdown|specification|database-layer|notes|colors|docs)$/',
@@ -55,7 +55,8 @@ function initialize(){
 			'docs'		=> [],
 			'docs/view'	=> ['path'],
 			'src'		=> ['src_path'],
-			'search'	=> []
+			'search'	=> [],
+			'example_redirect'	=>	'/?a=posts'
 		],
 		// Post action, with required params from $_GET, $_POST
 		[
@@ -128,11 +129,11 @@ function get_post()
 	extract(_arr_get($_GET, ['id'=>'', 'title'=>'', 'body'=>'']));
 	
 	return render([
-		'_template' => 'app/posts.html.php',
-		'_pagetitle'=>"Post #$id",
-		'id'=>$id,
-		'title'=>$title,
-		'body'=>$body
+		'_template'		=>		'app/posts.html.php',
+		'_pagetitle'	=>		"Post #$id",
+		'id'			=>		$id,
+		'title'			=>		$title,
+		'body'			=>		$body
 	]);
 }
 
@@ -162,6 +163,10 @@ function get_docs_view()
 		'_pagetitle'	=>	ucfirst($path),
 		'raw'			=>	$raw,
 		'text'			=>	file_get_contents( _path_join(APP_DIR, '/../../docs/', "$path.md") )
+	],
+	$path == 'markdown' ? [
+		'_template'		=>	'app/src.html.php'
+	] : [
 	]);
 }
 
@@ -170,12 +175,33 @@ function get_src()
 {
 	extract(_arr_get($_GET, ['src_path'=>false]));
 
+	$text = file_get_contents( _path_join(APP_DIR, '/../../lib/', $src_path) );
+	
+	preg_match_all('/function\s(?P<name>[^_][a-zA-Z0-9_-]+)\((?P<args>[^)]*)\)/', $text, $function_names);
+	preg_match_all('/function\s(?P<name>[_][a-zA-Z0-9_-]+)\((?P<args>[^)]*)\)/', $text, $internal_function_names);
+	preg_match_all("/defined?\('(?P<name>[A-Z_]+)'/", $text, $defined_constants);
+
+	asort($function_names['name']);
+	asort($function_names['args']);
+	asort($internal_function_names['name']);
+	asort($internal_function_names['args']);
+
+	$function_names = array_combine($function_names['name'], $function_names['args']);
+	asort($function_names);
+	$internal_function_names = array_combine($internal_function_names['name'], $internal_function_names['args']);
+	asort($internal_function_names);
+
+	$defined_constants = array_unique($defined_constants['name']);
+	$text = highlight_string($text, true);
+
 	return render([
-		'_layout'		=>	'layouts/docs.html.php',
-		'_template'		=>	'app/docs_view.html.php',
-		'_pagetitle'	=>	$src_path,
-		'raw'			=>	true,
-		'text'			=>	file_get_contents( _path_join(APP_DIR, '/../../lib/', $src_path) )
+		'_layout'					=>	'layouts/docs.html.php',
+		'function_names'			=>	$function_names,
+		'internal_function_names'	=>	$internal_function_names,
+		'defined_constants'			=>	$defined_constants,
+		'_pagetitle'				=>	$src_path,
+		'text'						=>	$text,
+		'raw'						=>	false,
 	]);
 }
 

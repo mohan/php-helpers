@@ -151,34 +151,39 @@ function _filter_routes_method($current_method_action_names)
 {
 	$current_action_name = $_REQUEST['CURRENT_ACTION'];
 	$current_method_name = $_REQUEST['CURRENT_METHOD'];
+	$current_method_required_params = $current_method_action_names[$current_action_name];
 	$action_id = preg_replace("/[^a-zA-Z0-9]/", '_', $current_action_name);
 
 	if( !array_key_exists($current_action_name, $current_method_action_names) ) return false;
 
 	// Render template directly
-	if(is_string($current_method_action_names[$current_action_name])){
+	if(is_string($current_method_required_params)){
 		if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-			$_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'] = [$current_method_name, $current_method_action_names[$current_action_name], 'render'];
+			$_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'] = [$current_method_name, $current_method_required_params, 'render'];
 		}
 
+		// Redirect
+		if($current_method_required_params[0] == '/'){
+			return redirectto($current_method_required_params);
+		}
+
+		// Render template directly
 		$_REQUEST['ACTION_ID'] = $action_id;
-		$_REQUEST['TEMPLATE'] = $current_method_action_names[$current_action_name];
+		$_REQUEST['TEMPLATE'] = $current_method_required_params;
 		return render();
 	}
 
-	// Required params for action
-	$required_params = $current_method_action_names[$current_action_name];
 	$action_function_name = $current_method_name . '_' . $action_id;
 
 	if($current_method_name == 'get'){
-		if( array_intersect($required_params, array_keys($_GET)) != $required_params) return false;
+		if( array_intersect($current_method_required_params, array_keys($_GET)) != $current_method_required_params) return false;
 	} else {
-		if( array_intersect($required_params[0], array_keys($_GET)) != $required_params[0]) return false;
-		if( array_intersect($required_params[1], array_keys($_POST)) != $required_params[1]) return false;
+		if( array_intersect($current_method_required_params[0], array_keys($_GET)) != $current_method_required_params[0]) return false;
+		if( array_intersect($current_method_required_params[1], array_keys($_POST)) != $current_method_required_params[1]) return false;
 	}
 
 	if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-		$_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'] = [$current_method_name, $required_params, $action_function_name];
+		$_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'] = [$current_method_name, $current_method_required_params, $action_function_name];
 	}
 
 	$_REQUEST['ACTION_ID'] = $action_id;
@@ -309,6 +314,8 @@ function urlto_public_dir($uri)
 
 function urltoget($action, $args=[], $arg_separator='&', $skip_action_arg=false)
 {
+	if($action == '' && isset($args['_hash'])) return "#{$args['_hash']}";
+
 	if(!$args) $args = [];
 	if(isset($args['ROOT_URL'])){
 		$root_url = $args['ROOT_URL'] . (_str_contains($args['ROOT_URL'], '?') ? '' : '?');

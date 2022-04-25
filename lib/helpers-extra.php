@@ -14,8 +14,11 @@ define('APP_ENV_IS_DEVELOPMENT', getenv('APP_ENV_IS_DEVELOPMENT') == 'true');
 // Simple debug
 // Remember to remove all debugs
 if(APP_ENV_IS_DEVELOPMENT){
-	function _print_debugpanel(){
-		if(isset($_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'])) _print_debug_current_action(...$_REQUEST['_REQUEST_ARGS_CURRENT_ACTION']);
+	function _print_debugpanel($args){
+		if(isset($_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'])) {
+			_print_debug_current_action(...$_REQUEST['_REQUEST_ARGS_CURRENT_ACTION']);
+		}
+		_print_debug_args('Current Action Render $args', $args);
 
 		if(sizeof($_GET) > 0) _print_debug_args('$_GET params', $_GET);
 		if(sizeof($_POST) > 0) _print_debug_args('$_POST params', $_POST);
@@ -35,22 +38,31 @@ if(APP_ENV_IS_DEVELOPMENT){
 			"\$_REQUEST['TEMPLATE']" => $_REQUEST['TEMPLATE'],
 			"\$_REQUEST['ACTION_ID']" => $_REQUEST['ACTION_ID'],
 			'Action function' => $action_name,
-			'Required params for action' => json_encode($required_params)
+			'Required params for action' => print_r($required_params, true)
 		];
 
 		_print_debug_args('Current Action', $args);
 	}
 
 
-	function _print_debug_args($name, $args, $table_headers=['Param', 'Value'])
+	function _print_debug_args($name, $args)
 	{
-		$data = [];
-		foreach ($args as $key => $value) {
-			$data[] = [$key, $value];
-		}
 		if($name) echo tag($name, [], 'h3');
 
-		echo tag_table($table_headers, $data);
+		echo tag_table(['Param', 'Value'], $args, [], function($row_value, $header_key, $row_key){
+			switch ($header_key) {
+				case 0:
+					return $row_key;
+				
+				case 1:
+					return is_string($row_value) ? tag($row_value, ['rows'=>30], strlen($row_value) > 500 ? 'textarea' : 'div') :
+						tag(
+							 print_r($row_value, true),
+							[],
+							'pre'
+						);
+			}
+		});
 	}
 }
 

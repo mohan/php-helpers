@@ -20,6 +20,7 @@ call_tests_for(
 	'get_post',
 	'get_docs_view',
 	'get_docs',
+	'get_example_redirect',
 
 	'post_create_post'
 );
@@ -81,7 +82,7 @@ function test_get_post()
 
 function test_get_docs_view()
 {
-	$resp = do_get(urltoget('/docs/markdown'));
+	$resp = do_get(urltoget('/docs/specification'));
 	
 	t('docs_view page renders', is_not_redirect($resp)
 					&& contains($resp, '<!-- Markdown start -->')
@@ -96,6 +97,14 @@ function test_get_docs()
 	t('docs page renders', is_not_redirect($resp)
 					&& contains($resp, '<!-- Markdown start -->', 'PHP Helpers')
 	);
+}
+
+
+function test_get_example_redirect()
+{
+	$resp = do_get(urltoget('example_redirect'));
+
+	t('Example redirect', is_redirect('/?a=posts', $resp));
 }
 
 

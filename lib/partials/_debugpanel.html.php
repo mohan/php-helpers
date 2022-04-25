@@ -1,7 +1,7 @@
 <?php if(defined('APP_ENV_IS_DEVELOPMENT') && APP_ENV_IS_DEVELOPMENT && defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && _PHP_HELPERS_EXTRA_IS_DEFINED): ?>
 	<a id='toggle-debug-info' href='#toggle-debug-info'>Show/Hide Debug Panel</a>
 	<div id='debug-info-container'>
-		<?= _print_debugpanel() ?>
+		<?= _print_debugpanel($args) ?>
 	</div>
 
 	<style type="text/css">
@@ -17,7 +17,7 @@
 			background:#efefef;
 			font-size:12px;
 			font-family: 'arial';
-			padding: 20px 40px;
+			padding: 20px;
 		}
 		#debug-info-container table{
 			width: 100%;

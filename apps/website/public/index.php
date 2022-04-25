@@ -20,7 +20,7 @@ if(!filter_routes([
 // Internal
 // 
 
-function _pagetitle($args)
+function _pagetitle($_pagetitle, $args)
 {
 	switch ($_REQUEST['ACTION_ID']) {
 		case 'root':
