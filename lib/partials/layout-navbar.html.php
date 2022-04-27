@@ -1,14 +1,16 @@
 <?php
-	$layout_options = _arr_get(
-						isset($_REQUEST['LAYOUT_OPTIONS']) ? $_REQUEST['LAYOUT_OPTIONS'] : [],
-						[
-							'HEAD'			=>	false,
-							'BODY_CLASS'	=>	''
-						]
-					);
+// php-helpers
+// 23 functions for building a PHP application.
+// License: GPL
+// Status: Work in progress
 
-
-
+$layout_options = _arr_get(
+					isset($_REQUEST['LAYOUT_OPTIONS']) ? $_REQUEST['LAYOUT_OPTIONS'] : [],
+					[
+						'HEAD'			=>	false,
+						'BODY_CLASS'	=>	''
+					]
+				);
 	
 ?>
 <!DOCTYPE html>

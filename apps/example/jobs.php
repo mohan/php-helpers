@@ -1,10 +1,9 @@
 <?php
 // 
-// Example of a cli application
+// Example of a background jobs application. (Ex: sending email, cascading delete)
 // 
-// This can be used for writing CLI applications or background jobs.
 // 
-// Usage: php cli.php [args]
+// Usage: php jobs.php [args]
 // Args will be available in $_GET
 //
 

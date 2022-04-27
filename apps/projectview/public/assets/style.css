@@ -102,10 +102,10 @@ body#action-files #files-form-dir{
 
 #action-viewer pre{
 	width: 93%;
-	padding: 10px 3% 10px 3%;
-	font-size: 0.9em;
+	padding: 0px 3% 10px 3%;
+	font-size: 1.2em;
 	background: #eee;
-	line-height: 2.1em;
+	line-height: 1.9em;
 	font-family: monaco, consolas, "lucida console", "courier new", courier, monospace;
 	tab-size: 4;
 	border: 0;

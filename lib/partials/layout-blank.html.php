@@ -1,21 +1,23 @@
 <?php
-	$layout_options = _arr_get(
-						isset($_REQUEST['LAYOUT_OPTIONS']) ? $_REQUEST['LAYOUT_OPTIONS'] : [],
-						[
-							'HEAD'			=>	false,
-							'BODY_CLASS'	=>	''
-						]
-					);
+// php-helpers
+// 23 functions for building a PHP application.
+// License: GPL
+// Status: Work in progress
 
-
-
+$layout_options = _arr_get(
+					isset($_REQUEST['LAYOUT_OPTIONS']) ? $_REQUEST['LAYOUT_OPTIONS'] : [],
+					[
+						'HEAD'			=>	false,
+						'BODY_CLASS'	=>	''
+					]
+				);
 
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<title><?= _pagetitle(isset($_pagetitle) ? $_pagetitle : '') ?></title>
+	<title><?= _pagetitle(isset($_pagetitle) ? $_pagetitle : '', $args) ?></title>
 	<link rel="stylesheet" type="text/css" href="<?= urlto_public_dir('assets/style.css'); ?>">
 	<?php if($layout_options['HEAD']) render_partial("partials/head_" . basename($layout), $args); ?>
 </head>

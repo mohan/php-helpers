@@ -1,3 +1,9 @@
+<?php
+// php-helpers
+// 23 functions for building a PHP application.
+// License: GPL
+// Status: Work in progress
+?>
 <!DOCTYPE html>
 <html>
 <head>

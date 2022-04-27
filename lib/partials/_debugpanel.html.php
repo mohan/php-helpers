@@ -1,4 +1,11 @@
-<?php if(defined('APP_ENV_IS_DEVELOPMENT') && APP_ENV_IS_DEVELOPMENT && defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && _PHP_HELPERS_EXTRA_IS_DEFINED): ?>
+<?php
+// php-helpers
+// 23 functions for building a PHP application.
+// License: GPL
+// Status: Work in progress
+
+if(defined('APP_ENV_IS_DEVELOPMENT') && APP_ENV_IS_DEVELOPMENT && defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && _PHP_HELPERS_EXTRA_IS_DEFINED):
+?>
 	<a id='toggle-debug-info' href='#toggle-debug-info'>Show/Hide Debug Panel</a>
 	<div id='debug-info-container'>
 		<?= _print_debugpanel($args) ?>

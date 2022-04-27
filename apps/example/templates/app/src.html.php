@@ -60,7 +60,7 @@
 <?php endif; ?>
 
 <?=
-	tag($text, [
+	pre_($text, [
 			'class' => 'border-top',
 			'style' =>
 				($raw ? '' : 'font-size:1.25em;') .
@@ -68,7 +68,6 @@
 				'padding-left:20px;' .
 				($raw ? '' : 'padding-top:0;') .
 				'margin-top:20px;'
-		],
-		'pre', true, false
+		]
 	)
 ?>

@@ -1,7 +1,7 @@
-<?= tag("List of all Posts", [], 'h1') ?>
+<?= h1("List of all Posts") ?>
 
 <div class='panel'>
-	<?= tag($title, [], 'h3') ?>
-	<?= tag($id ? "Post #$id" : "", [], 'p') ?>
-	<?= tag($body, [], 'p') ?>
+	<?= h3($title) ?>
+	<?= p($id ? "Post #$id" : "") ?>
+	<?= p($body) ?>
 </div>

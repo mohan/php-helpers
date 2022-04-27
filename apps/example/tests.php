@@ -47,7 +47,7 @@ function test_get_new_post()
 	t('new-post page renders', is_not_redirect($resp)
 								&& contains($resp,
 										formto('create-post'),
-										tag('', ['type'=>'text', 'name'=>'title', 'placeholder'=>'title'], 'input'),
+										input('', ['type'=>'text', 'name'=>'title', 'placeholder'=>'title']),
 										'</form>'
 									)
 	);
@@ -60,8 +60,8 @@ function test_get_posts()
 	
 	t('posts page renders', is_not_redirect($resp)
 					&& contains($resp,
-							tag('List of all Posts', [], 'h1'),
-							tag('Posts - Example', [], 'title')
+							h1('List of all Posts'),
+							title('Posts - Example')
 						)
 	);
 }
@@ -73,8 +73,8 @@ function test_get_post()
 	
 	t('post page renders', is_not_redirect($resp)
 					&& contains($resp,
-							tag('List of all Posts', [], 'h1'),
-							tag('Post #1 - Example', [], 'title')
+							h1('List of all Posts'),
+							title('Post #1 - Example')
 						)
 	);
 }

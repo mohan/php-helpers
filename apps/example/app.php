@@ -177,7 +177,7 @@ function get_src()
 
 	$text = file_get_contents( _path_join(APP_DIR, '/../../lib/', $src_path) );
 	
-	preg_match_all('/function\s(?P<name>[^_][a-zA-Z0-9_-]+)\((?P<args>[^)]*)\)/', $text, $function_names);
+	preg_match_all('/function\s(?P<name>[^_][a-zA-Z0-9_-]*)\((?P<args>[^)]*)\)/', $text, $function_names);
 	preg_match_all('/function\s(?P<name>[_][a-zA-Z0-9_-]+)\((?P<args>[^)]*)\)/', $text, $internal_function_names);
 	preg_match_all("/defined?\('(?P<name>[A-Z_]+)'/", $text, $defined_constants);
 
