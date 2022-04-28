@@ -10,36 +10,35 @@ define('APP_ENV_IS_DEVELOPMENT', getenv('APP_ENV_IS_DEVELOPMENT') == 'true');
 // 
 // Tag helpers
 // 
-function h1($html, $attrs=[])                {   return tag( $html, $attrs, 'h1',    true, true );            }
-function h1_($html, $attrs=[])               {   return tag( $html, $attrs, 'h1',    true, false );           }
-function h2($html, $attrs=[])                {   return tag( $html, $attrs, 'h2',    true, true );            }
-function h2_($html, $attrs=[])               {   return tag( $html, $attrs, 'h2',    true, false );           }
-function h3($html, $attrs=[])                {   return tag( $html, $attrs, 'h3',    true, true );            }
-function h3_($html, $attrs=[])               {   return tag( $html, $attrs, 'h3',    true, false );           }
-function h4($html, $attrs=[])                {   return tag( $html, $attrs, 'h4',    true, true );            }
-function h4_($html, $attrs=[])               {   return tag( $html, $attrs, 'h4',    true, false );           }
-function h5($html, $attrs=[])                {   return tag( $html, $attrs, 'h5',    true, true );            }
-function h5_($html, $attrs=[])               {   return tag( $html, $attrs, 'h5',    true, false );           }
-function h6($html, $attrs=[])                {   return tag( $html, $attrs, 'h6',    true, true );            }
-function h6_($html, $attrs=[])               {   return tag( $html, $attrs, 'h6',    true, false );           }
-function p($html, $attrs=[])                 {   return tag( $html, $attrs, 'p',    true, true );             }
-function p_($html, $attrs=[])                {   return tag( $html, $attrs, 'p',    true, false );            }
-function div($html, $attrs=[])               {   return tag( $html, $attrs, 'div',  true, true );             }
-function div_($html, $attrs=[])              {   return tag( $html, $attrs, 'div',  true, false );            }
-function span($html, $attrs=[])              {   return tag( $html, $attrs, 'span', true, true );             }
-function span_($html, $attrs=[])             {   return tag( $html, $attrs, 'span', true, false );            }
-function pre($html, $attrs=[])               {   return tag( $html, $attrs, 'pre',  true, true );             }
-function pre_($html, $attrs=[])              {   return tag( $html, $attrs, 'pre',  true, false );            }
-function blockquote($html, $attrs=[])        {   return tag( $html, $attrs, 'blockquote',    true, true );    }
-function blockquote_($html, $attrs=[])       {   return tag( $html, $attrs, 'blockquote',    true, false );   }
-function img($html, $attrs=[])               {   return tag( $html, $attrs, 'img',  true, true );             }
-function img_($html, $attrs=[])              {   return tag( $html, $attrs, 'img',  true, false );            }
-function li($html, $attrs=[])                {   return tag( $html, $attrs, 'li',   true, true );             }
-function li_($html, $attrs=[])               {   return tag( $html, $attrs, 'li',   true, false );            }
-function input($html, $attrs=[])             {   return tag( $html, $attrs, 'input',   true, false );         }
-function label($html, $attrs=[])             {   return tag( $html, $attrs, 'label',   true, true );          }
-function label_($html, $attrs=[])            {   return tag( $html, $attrs, 'label',   true, false );         }
-function title($html)                        {   return tag( $html, [],     'title',   true, true );          }
+function h1             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h1',           true, true  );   }
+function h1_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h1',           true, false );   }
+function h2             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h2',           true, true  );   }
+function h2_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h2',           true, false );   }
+function h3             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h3',           true, true  );   }
+function h3_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h3',           true, false );   }
+function h4             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h4',           true, true  );   }
+function h4_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h4',           true, false );   }
+function h5             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h5',           true, true  );   }
+function h5_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h5',           true, false );   }
+function h6             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h6',           true, true  );   }
+function h6_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h6',           true, false );   }
+function p              ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'p',            true, true  );   }
+function p_             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'p',            true, false );   }
+function div            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'div',          true, true  );   }
+function div_           ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'div',          true, false );   }
+function span           ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'span',         true, true  );   }
+function span_          ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'span',         true, false );   }
+function pre            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'pre',          true, true  );   }
+function pre_           ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'pre',          true, false );   }
+function blockquote     ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'blockquote',   true, true  );   }
+function blockquote_    ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'blockquote',   true, false );   }
+function img            ( $attrs=[] )              {   return tag( '',    $attrs, 'img',          false, true );   }
+function li             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'li',           true, true  );   }
+function li_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'li',           true, false );   }
+function input          ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'input',        true, false );   }
+function textarea       ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'textarea',     true, false );   }
+function label          ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'label',        true, true  );   }
+function label_         ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'label',        true, false );   }
 
 
 

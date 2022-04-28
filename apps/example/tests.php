@@ -61,7 +61,7 @@ function test_get_posts()
 	t('posts page renders', is_not_redirect($resp)
 					&& contains($resp,
 							h1('List of all Posts'),
-							title('Posts - Example')
+							'<title>Posts - Example</title>'
 						)
 	);
 }
@@ -74,7 +74,7 @@ function test_get_post()
 	t('post page renders', is_not_redirect($resp)
 					&& contains($resp,
 							h1('List of all Posts'),
-							title('Post #1 - Example')
+							'<title>Post #1 - Example</title>'
 						)
 	);
 }

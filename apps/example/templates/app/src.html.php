@@ -25,8 +25,8 @@
 			<?php foreach($function_names as $name => $args): ?>
 				<?php
 					$text = str_replace(
-						"function&nbsp;</span><span style=\"color: #0000BB\">{$name}</span>",
-						"function&nbsp;</span><span style=\"color: #0000BB\" id='{$name}'>{$name}</span>",
+						"function&nbsp;</span><span style=\"color: #0000BB\">{$name}",
+						"function&nbsp;</span><span style=\"color: #0000BB\" id='{$name}'>{$name}",
 						$text
 					);
 				?>
