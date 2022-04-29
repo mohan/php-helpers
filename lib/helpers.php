@@ -18,13 +18,13 @@ function _php_helpers_init()
     else                                    $_REQUEST['CURRENT_ACTION'] = $_GET['a'] = 'root';
 
     if(isset($_GET['a'])){
-        $_REQUEST['CURRENT_METHOD'] = 'get';
+        $_REQUEST['CURRENT_METHOD'] = 'GET';
     } else if($_SERVER['REQUEST_METHOD'] == 'POST'){
-        if($_GET['post_action'])            $_REQUEST['CURRENT_METHOD'] = 'post';
-        else if($_GET['patch_action'])      $_REQUEST['CURRENT_METHOD'] = 'patch';
-        else if($_GET['delete_action'])     $_REQUEST['CURRENT_METHOD'] = 'delete';
+        if($_GET['post_action'])            $_REQUEST['CURRENT_METHOD'] = 'POST';
+        else if($_GET['patch_action'])      $_REQUEST['CURRENT_METHOD'] = 'PATCH';
+        else if($_GET['delete_action'])     $_REQUEST['CURRENT_METHOD'] = 'DELETE';
     } else {
-        $_REQUEST['CURRENT_METHOD'] = 'get';
+        $_REQUEST['CURRENT_METHOD'] = 'GET';
     }
 
     if(!defined('SECURE_HASH')) define('SECURE_HASH', md5(
@@ -137,10 +137,10 @@ function filter_routes($get_action_names, $post_action_names=[], $patch_action_n
     if(isset($_REQUEST['TEMPLATE_HAS_RENDERED'])) return false;
 
     switch ($_REQUEST['CURRENT_METHOD']) {
-        case 'post':    return _filter_routes_method($post_action_names);
-        case 'patch':   return _filter_routes_method($patch_action_names);
-        case 'delete':  return _filter_routes_method($delete_action_names);
-        case 'get':     return _filter_routes_method($get_action_names);
+        case 'POST':    return _filter_routes_method($post_action_names);
+        case 'PATCH':   return _filter_routes_method($patch_action_names);
+        case 'DELETE':  return _filter_routes_method($delete_action_names);
+        case 'GET':     return _filter_routes_method($get_action_names);
     }
 
     return false;
@@ -175,7 +175,7 @@ function _filter_routes_method($current_method_action_names)
 
     $action_function_name = $current_method_name . '_' . $action_id;
 
-    if($current_method_name == 'get'){
+    if($current_method_name == 'GET'){
         if( array_intersect($current_method_required_params, array_keys($_GET)) != $current_method_required_params) return false;
     } else {
         if( array_intersect($current_method_required_params[0], array_keys($_GET)) != $current_method_required_params[0]) return false;
@@ -350,7 +350,7 @@ function urltoget($action, $args=[], $arg_separator='&', $skip_action_arg=false)
 
 function urltopost($action, $args=[], $arg_separator='&')
 {
-    if( isset($args['_method']) && ($args['_method'] == 'patch' || $args['_method'] == 'delete') ){
+    if( isset($args['_method']) && ($args['_method'] == 'PATCH' || $args['_method'] == 'DELETE') ){
         $_args = [$args['_method'] . '_action' => $action];
     } else {
         $_args = ['post_action' => $action];
@@ -397,8 +397,8 @@ function formto($action, $args=[], $attrs=[], $fields=[])
 {
     _arr_defaults($attrs, [
         'id' => '',
-        'method'=>'post',
-        'action'=> isset($attrs['method']) && $attrs['method'] == 'get' ? urltoget($action, $args) : urltopost($action, $args)
+        'method'=>'POST',
+        'action'=> isset($attrs['method']) && $attrs['method'] == 'GET' ? urltoget($action, $args) : urltopost($action, $args)
     ]);
 
     $form_id = $attrs['id'] ? $attrs['id'] : _to_id($action) . '-form';
@@ -458,7 +458,7 @@ function linkto($action, $html, $args=[], $attrs=[])
     $url = urltoget($action, $args, '&amp;');
 
     if(
-        $_REQUEST['CURRENT_METHOD'] == 'get' &&
+        $_REQUEST['CURRENT_METHOD'] == 'GET' &&
         $_SERVER['REQUEST_URI'] == urltoget($action, $args)
     ) {
         _arr_defaults($attrs, ['class'=>'']);

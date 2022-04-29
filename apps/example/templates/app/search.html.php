@@ -1,5 +1,5 @@
 <h2>Search</h2>
-<?= formto('search', [], ['method'=>'get'], [
+<?= formto('search', [], ['method'=>'GET'], [
 	'a'		=> ['value'=>'search', 'type'=>'hidden'],
 	'query' => ['value'=>$query, 'placeholder'=>'Seach Query']
 ]) ?>

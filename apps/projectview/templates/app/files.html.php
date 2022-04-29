@@ -7,7 +7,7 @@
 </ul>
 
 <?=
-formto('files', [], ['method'=>'get'], [
+formto('files', [], ['method'=>'GET'], [
 	'a' => [ 'type' => 'hidden', 'value' => 'files' ],
 	'dir' => [ 'tag' => 'textarea', 'value'=>$dir, 'placeholder'=>'Project Directory' ],
 	'submit' => [ 'type' => 'submit', 'value' => 'Refresh Files', 'class'=>'d-block w-100' ]
