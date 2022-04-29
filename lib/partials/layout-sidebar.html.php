@@ -29,6 +29,8 @@ $layout_options = _arr_get(
 	<div id='main'>
 		<?= isset($_REQUEST['flash']) ? tag($_REQUEST['flash'], ['class'=>'panel text-center']) : '' ?>
 		<?php render_partial($template, $args); ?>
+
+		<?php require '_debugpanel.html.php'; ?>
 	</div>
 
 	<?php render_partial("partials/footer_" . basename($layout), $args); ?>

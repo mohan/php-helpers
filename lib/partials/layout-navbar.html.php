@@ -32,5 +32,6 @@ $layout_options = _arr_get(
 	</div>
 
 	<?php render_partial("partials/footer_" . basename($layout), $args); ?>
+	<?php require '_debugpanel.html.php'; ?>
 </body>
 </html>

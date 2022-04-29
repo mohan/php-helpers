@@ -22,6 +22,8 @@ $layout_options = _arr_get(
 	<?php if($layout_options['HEAD']) render_partial("partials/head_" . basename($layout), $args); ?>
 </head>
 <body id='<?= "action-" . $_REQUEST['ACTION_ID'] ?>' class='layout-blank <?= $layout_options['BODY_CLASS'] ?>'>
+<?php require '_debugpanel.html.php'; ?>
 <?php render_partial($template, $args); ?>
+<?php require '_debugpanel.html.php'; ?>
 </body>
 </html>

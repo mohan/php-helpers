@@ -10,11 +10,11 @@
 		<?php if(sizeof($defined_constants) > 0): ?>
 			<h3 style='font-size:0.9em;'>Constants</h3>
 			<ol style='font-size:0.9em;'>
-			<?php foreach($defined_constants as $i => $defined_constant): ?>
+			<?php foreach($defined_constants as $defined_constant): ?>
 				<?php
 					$text = str_replace($defined_constant, "<span id='$defined_constant'>$defined_constant</span>", $text);
 				?>
-				<li><?= linkto('', $defined_constant, ['_hash'=>$defined_constant]) ?></li>
+				<li><?= linkto('', $defined_constant, ['_hash'=>$defined_constant], ['class'=>'d-block']) ?></li>
 			<?php endforeach; ?>
 			</ol>
 		<?php endif; ?>
@@ -26,12 +26,12 @@
 				<?php
 					$text = str_replace(
 						"function&nbsp;</span><span style=\"color: #0000BB\">{$name}",
-						"function&nbsp;</span><span style=\"color: #0000BB\" id='{$name}'>{$name}",
+						"<a id='{$name}' href='#link-$name' style='display:block;position:absolute;right:100px;'>^</a>function&nbsp;</span><span style=\"color: #0000BB\">{$name}",
 						$text
 					);
 				?>
 				<li>
-					<?= linkto('', $name, ['_hash'=>$name]) ?>
+					<?= linkto('', $name, ['_hash'=>$name], ['id'=>"link-$name", 'class'=>'d-block']) ?>
 					<p class='fg-5'><?= $args ? $args : 'No Arguments' ?></p>
 				</li>
 			<?php endforeach; ?>
@@ -45,12 +45,12 @@
 				<?php
 					$text = str_replace(
 						"function&nbsp;</span><span style=\"color: #0000BB\">{$name}</span>",
-						"function&nbsp;</span><span style=\"color: #0000BB\" id='{$name}'>{$name}</span>",
+						"<a id='{$name}' href='#link-$name' style='display:block;position:absolute;right:100px;'>^</a>function&nbsp;</span><span style=\"color: #0000BB\">{$name}</span>",
 						$text
 					);
 				?>
 				<li>
-					<?= linkto('', $name, ['_hash'=>$name]) ?>
+					<?= linkto('', $name, ['_hash'=>$name], ['id'=>"link-$name", 'class'=>'d-block']) ?>
 					<p class='fg-5'><?= $args ? $args : 'No Arguments' ?></p>
 				</li>
 			<?php endforeach; ?>

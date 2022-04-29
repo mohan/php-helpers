@@ -10,45 +10,46 @@ define('APP_ENV_IS_DEVELOPMENT', getenv('APP_ENV_IS_DEVELOPMENT') == 'true');
 // 
 // Tag helpers
 // 
-function h1             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h1',           true, true  );   }
-function h1_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h1',           true, false );   }
-function h2             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h2',           true, true  );   }
-function h2_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h2',           true, false );   }
-function h3             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h3',           true, true  );   }
-function h3_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h3',           true, false );   }
-function h4             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h4',           true, true  );   }
-function h4_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h4',           true, false );   }
-function h5             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h5',           true, true  );   }
-function h5_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h5',           true, false );   }
-function h6             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h6',           true, true  );   }
-function h6_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h6',           true, false );   }
-function p              ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'p',            true, true  );   }
-function p_             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'p',            true, false );   }
-function div            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'div',          true, true  );   }
-function div_           ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'div',          true, false );   }
-function span           ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'span',         true, true  );   }
-function span_          ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'span',         true, false );   }
-function pre            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'pre',          true, true  );   }
-function pre_           ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'pre',          true, false );   }
-function blockquote     ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'blockquote',   true, true  );   }
-function blockquote_    ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'blockquote',   true, false );   }
-function img            ( $attrs=[] )              {   return tag( '',    $attrs, 'img',          false, true );   }
-function li             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'li',           true, true  );   }
-function li_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'li',           true, false );   }
-function input          ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'input',        true, false );   }
-function textarea       ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'textarea',     true, false );   }
-function label          ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'label',        true, true  );   }
-function label_         ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'label',        true, false );   }
+function h1             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h1',           true  );   }
+function h1_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h1',           false );   }
+function h2             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h2',           true  );   }
+function h2_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h2',           false );   }
+function h3             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h3',           true  );   }
+function h3_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h3',           false );   }
+function h4             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h4',           true  );   }
+function h4_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h4',           false );   }
+function h5             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h5',           true  );   }
+function h5_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h5',           false );   }
+function h6             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h6',           true  );   }
+function h6_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'h6',           false );   }
+function p              ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'p',            true  );   }
+function p_             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'p',            false );   }
+function div            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'div',          true  );   }
+function div_           ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'div',          false );   }
+function span           ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'span',         true  );   }
+function span_          ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'span',         false );   }
+function pre            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'pre',          true  );   }
+function pre_           ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'pre',          false );   }
+function blockquote     ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'blockquote',   true  );   }
+function blockquote_    ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'blockquote',   false );   }
+function img            ( $attrs=[] )              {   return tag( '',    $attrs, 'img',          false );   }
+function li             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'li',           true  );   }
+function li_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'li',           false );   }
+function input          ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'input',        true  );   }
+function textarea       ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'textarea',     true  );   }
+function label          ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'label',        true  );   }
+function label_         ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'label',        false );   }
 
 
 
 
 if(APP_ENV_IS_DEVELOPMENT){
     function _print_debugpanel($args){
+        _print_debug_args('Render $args', $args);
+
         if(isset($_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'])) {
             _print_debug_current_action(...$_REQUEST['_REQUEST_ARGS_CURRENT_ACTION']);
         }
-        _print_debug_args('Current Action Render $args', $args);
 
         if(sizeof($_GET) > 0) _print_debug_args('$_GET params', $_GET);
         if(sizeof($_POST) > 0) _print_debug_args('$_POST params', $_POST);
@@ -79,14 +80,14 @@ if(APP_ENV_IS_DEVELOPMENT){
     {
         if($name) echo h3($name);
 
-        echo tag_table(['Param', 'Value'], $args, [], function($row_value, $header_key, $row_key){
-            switch ($header_key) {
-                case 0:
+        echo tag_table(['Param', 'Value'], $args, [], function($row, $header_name, $row_key){
+            switch ($header_name) {
+                case 'Param':
                     return $row_key;
                 
-                case 1:
-                    return is_string($row_value) ? tag($row_value, ['rows'=>30], strlen($row_value) > 500 ? 'textarea' : 'div') :
-                        pre( print_r($row_value, true) );
+                case 'Value':
+                    return is_string($row) ? tag($row, ['rows'=>30], strlen($row) > 500 ? 'textarea' : 'div') :
+                        pre( print_r($row, true) );
             }
         });
     }

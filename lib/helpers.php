@@ -5,6 +5,7 @@
 // Status: Work in progress
 
 
+// Sets $_REQUEST variables based on $_GET, defines constants and sets flash.
 function _php_helpers_init()
 {
     // Set action to 'root' if no params
@@ -52,7 +53,7 @@ function _php_helpers_init()
 
 
 
-
+// Rewrites URI into $_GET variables
 function filter_rewrite_uri($paths)
 {
     $request_path = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : $_SERVER['REQUEST_URI'];
@@ -94,7 +95,7 @@ function filter_rewrite_uri($paths)
 // Permitted Params
 // 
 
-
+// Allows only given parameters and discards anything else.
 function filter_permitted_params($get_param_names, $post_param_names=[], $cookie_param_names=[], $get_typecasts=[], $post_typecasts=[])
 {
     if(
@@ -132,6 +133,7 @@ function filter_permitted_params($get_param_names, $post_param_names=[], $cookie
 // Router
 // 
 
+// Maps action names to action functions. Also sets template variables based on request.
 function filter_routes($get_action_names, $post_action_names=[], $patch_action_names=[], $delete_action_names=[])
 {
     if(isset($_REQUEST['TEMPLATE_HAS_RENDERED'])) return false;
@@ -213,6 +215,7 @@ function _filter_routes_method($current_method_action_names)
 // 
 
 
+// Renders (using include) template with given arguments as local variables. Accepts multiple argument arrays.
 function render(...$all_render_args)
 {
     if(isset($_REQUEST['TEMPLATE_HAS_RENDERED']))   trigger_error('Template has already rendered for this request.', E_USER_ERROR);
@@ -246,6 +249,7 @@ function render(...$all_render_args)
 
 
 
+// Renders (using include) template partial with given arguments as local variables. Accepts multiple argument arrays.
 function render_partial($template, ...$all_render_args)
 {
     foreach ($all_render_args as $arg)  extract($arg);
@@ -257,6 +261,7 @@ function render_partial($template, ...$all_render_args)
 
 
 
+// Adds redirect header to action
 function redirectto($action, $args=[])
 {
     $_REQUEST['TEMPLATE_HAS_RENDERED'] = true;
@@ -267,6 +272,7 @@ function redirectto($action, $args=[])
 
 
 if(!defined('CUSTOM_GET_404')){
+    // Built-in 404-not-found action function
     function get_404($message='')
     {
         _header("HTTP/1.1 404 Not Found");
@@ -301,6 +307,8 @@ if(!defined('CUSTOM_GET_404')){
 // 
 
 
+
+// Returns URL to public dir asset
 function urlto_public_dir($uri)
 {
     if(defined('PUBLIC_URL')){
@@ -312,6 +320,7 @@ function urlto_public_dir($uri)
 
 
 
+// Returns URL to get action. Set $args['_hash'] to set hash fragment.
 function urltoget($action, $args=[], $arg_separator='&', $skip_action_arg=false)
 {
     if($action == '' && isset($args['_hash'])) return "#{$args['_hash']}";
@@ -348,6 +357,7 @@ function urltoget($action, $args=[], $arg_separator='&', $skip_action_arg=false)
 
 
 
+// Returns URL to post action. Set $args['_method'] to 'PATCH'/'DELETE' for patch or delete URLs.
 function urltopost($action, $args=[], $arg_separator='&')
 {
     if( isset($args['_method']) && ($args['_method'] == 'PATCH' || $args['_method'] == 'DELETE') ){
@@ -393,6 +403,7 @@ function urltopost($action, $args=[], $arg_separator='&')
 // 
 
 
+// Returns a form with fields
 function formto($action, $args=[], $attrs=[], $fields=[])
 {
     _arr_defaults($attrs, [
@@ -422,6 +433,7 @@ function formto($action, $args=[], $attrs=[], $fields=[])
 
 
 
+// Returns a form field
 function form_field($form_id, $field_name, $field_options)
 {
     $out = '';
@@ -453,6 +465,7 @@ function form_field($form_id, $field_name, $field_options)
 
 
 
+// Returns a link tag to given action. Adds 'current-uri-link' classname to if action is current active link.
 function linkto($action, $html, $args=[], $attrs=[])
 {
     $url = urltoget($action, $args, '&amp;');
@@ -473,45 +486,56 @@ function linkto($action, $html, $args=[], $attrs=[])
 
 
 
-function tag($html, $attrs=[], $name='div', $closing=true, $escape=true)
+// Returns html for a given tag name.
+function tag($html, $attrs=[], $name='div', $escape=true)
 {
     if(!$name) return;
 
     $attrs_str = '';
     foreach ($attrs as $key => $value) $attrs_str .= "$key=\"" . htmlentities($value) . "\" ";
+    $html = $escape ? htmlentities($html) : $html;
     
     $out = "<$name $attrs_str";
 
-    if($name != 'input'){
-        $out .= ">" . ($escape ? htmlentities($html) : $html);
-        if($closing) $out .= "</$name>";
-    } else {
-        $out .= ' value="' . htmlentities($html) . '"';
-        $out .= " />";
-    }
+    switch ($name) {
+        case 'input':
+            return $out . " value=\"$html\"/>";
+        
+        case 'img':
+            return $out . " src=\"$html\"/>";
 
-    return $out;
+        case 'br':
+        case 'hr':
+        case 'link':
+            return $out . "/>";
+
+        default:
+            return $out . ">$html</$name>";
+    }
 }
 
 
 
+// Returns HTML for table.
 function tag_table($headers, $data, $attrs=[], $cb=false)
 {
     $attrs_str = '';
     foreach ($attrs as $key => $value) $attrs_str .= "$key='" . htmlentities($value) . "' ";
 
     $out = "<table $attrs_str><thead>\n<tr>";
-    foreach ($headers as $key => $value) {
-        $out .= '<th>' . htmlentities($value) . '</th>';
+    foreach ($headers as $header) {
+        $out .= '<th>' . htmlentities($header) . '</th>';
     }
     $out .= "</tr>\n</thead>\n<tbody>\n";
 
-    $header_keys = array_keys($headers);
-    foreach ($data as $row_key => $row_value) {
+    foreach ($data as $row_key => $row) {
         $out .= "<tr>\n";
-        foreach ($header_keys as $header_key) {
-            if($cb) $out .= '<td>' . call_user_func($cb, $row_value, $header_key, $row_key) . '</td>';
-            else $out .= '<td>' . htmlentities($row_value[$header_key]) . "</td>\n";
+        foreach ($headers as $header_key => $header) {
+            if($cb) {
+                $out .= "<td>" . call_user_func($cb, $row, $header, $row_key, $header_key) . "</td>\n";
+            } else {
+                $out .= '<td>' . htmlentities( isset($row[$header]) ? $row[$header] : $row[$header_key] ) . "</td>\n";
+            }
         }
         $out .= "</tr>\n";
     }
@@ -532,6 +556,7 @@ function tag_table($headers, $data, $attrs=[], $cb=false)
 // 
 
 
+// Sets flash message, for current request or in cookie for next request use.
 function flash_set($html, $in_current_request=false)
 {
     if($html) {
@@ -542,13 +567,15 @@ function flash_set($html, $in_current_request=false)
 
 
 
+// Clears flash cookie
 function flash_clear()
 {
-    cookie_delete('flash');
+    if(isset($_COOKIE['flash'])) cookie_delete('flash');
 }
 
 
 
+// Reads flash into $_REQUEST['flash'] from cookie
 function _filter_set_flash()
 {
     $flash = md5_cookie_get('flash');
@@ -586,15 +613,17 @@ function _filter_set_flash()
 // 
 
 
+// Set cookie with extra md5 token
 function md5_cookie_set($name, $value)
 {
-    $authenticity = _md5_cookie_authenticity_token($name, $value, time());
+    $authenticity = _md5_authenticity_token($name, $value, time());
 
     // Expires end of session/browser close
     _setcookie($name, base64_encode("$value%$authenticity"), 0, ROOT_URL, '', false, true);
 }
 
 
+// Gets value of md5 cookie
 function md5_cookie_get($name)
 {
     if(!isset($_COOKIE[$name])) return false;
@@ -604,11 +633,11 @@ function md5_cookie_get($name)
     $given_authenticity = $parts[1];
 
     $timestamp = time();
-    $authenticity = _md5_cookie_authenticity_token($name, $value, $timestamp);
+    $authenticity = _md5_authenticity_token($name, $value, $timestamp);
 
     if($given_authenticity != $authenticity) {
         // Check 1 day before, for continuation;
-        $authenticity = _md5_cookie_authenticity_token($name, $value, $timestamp - (24 * 60 * 60));
+        $authenticity = _md5_authenticity_token($name, $value, $timestamp - (24 * 60 * 60));
         if($given_authenticity != $authenticity) {
             return false;
         }
@@ -618,13 +647,15 @@ function md5_cookie_get($name)
 }
 
 
+// Adds a cookie delete header
 function cookie_delete($name)
 {
     _setcookie($name, '', time() - 3600, ROOT_URL, '', false, true);
 }
 
 
-function _md5_cookie_authenticity_token($name, $value, $timestamp)
+// Returns md5 token for given name, value and timestamp
+function _md5_authenticity_token($name, $value, $timestamp)
 {
     return md5(
         $name . '#' .
@@ -678,6 +709,7 @@ function __d(...$args)
 }
 
 
+// Print debug and exit
 function __d_(...$args)
 {
     __d(func_get_args());
@@ -693,19 +725,21 @@ function __d_(...$args)
 // Internal functions
 // 
 
+// String to id
 function _to_id($str, $replace_with='-')
 {
     return strtolower(preg_replace("/[^a-zA-Z\d-]/", $replace_with, $str));
 }
 
 
+// Join file paths
 function _path_join(...$parts)
 {
     return preg_replace('/\/+/', '/', implode('/', array_filter($parts)));
 }
 
 
-// Returns only specified keys, with defaults if not set
+// Returns new array with only specified keys, with defaults if not set from values in $keys
 function _arr_get($arr, $keys, $prefix='')
 {
     $arr_out = [];

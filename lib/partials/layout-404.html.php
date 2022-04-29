@@ -19,5 +19,7 @@
 		<?= tag('Error URI: ' . $_SERVER['REQUEST_URI'], [], 'p') ?>
 		<?= tag($message, ['class'=>'fg-7'], 'p') ?>
 	</div>
+
+	<?php require '_debugpanel.html.php'; ?>
 </body>
 </html>
