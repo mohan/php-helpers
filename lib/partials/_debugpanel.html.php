@@ -33,7 +33,7 @@ if(defined('APP_ENV_IS_DEVELOPMENT') && APP_ENV_IS_DEVELOPMENT && defined('_PHP_
 				font-size: 13px;
 			}
 			#debug-panel table th:first-child{
-				width: 350px;
+				width: 300px;
 			}
 			#debug-panel table th{
 				background: #f6c457;

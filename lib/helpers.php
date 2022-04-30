@@ -501,6 +501,7 @@ function tag($html, $attrs=[], $name='div', $escape=true)
         case 'input':
             return $out . " value=\"$html\"/>";
         
+        case 'iframe':
         case 'img':
             return $out . " src=\"$html\"/>";
 

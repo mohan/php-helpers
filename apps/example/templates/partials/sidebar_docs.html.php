@@ -17,6 +17,9 @@
 		<li><?= linkto('src', 'helpers-extra.php', ['src_path'=>'helpers-extra.php']) ?></li>
 		<li><?= linkto('src', 'test-helpers.php', ['src_path'=>'test-helpers.php']) ?></li>
 		<li><?= linkto('src', 'utils.php', ['src_path'=>'utils.php']) ?></li>
+	</ul>
+	<h3>Partials</h3>
+	<ul>
 		<li><?= linkto('src', 'layout-404.html.php', ['src_path'=>'partials/layout-404.html.php']) ?></li>
 		<li><?= linkto('src', 'layout-blank.html.php', ['src_path'=>'partials/layout-blank.html.php']) ?></li>
 		<li><?= linkto('src', 'layout-navbar.html.php', ['src_path'=>'partials/layout-navbar.html.php']) ?></li>
