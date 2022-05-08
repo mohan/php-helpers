@@ -55,8 +55,7 @@ function initialize(){
 			'docs'		=> [],
 			'docs/view'	=> ['path'],
 			'src'		=> ['src_path'],
-			'search'	=> [],
-			'example_redirect'	=>	'/?a=posts'
+			'search'	=> []
 		],
 		// Post action, with required params from $_GET, $_POST
 		[

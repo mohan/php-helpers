@@ -55,6 +55,7 @@ if(APP_ENV_IS_DEVELOPMENT){
         if(sizeof($_GET) > 0) _print_debug_args('$_GET params', $_GET);
         if(sizeof($_POST) > 0) _print_debug_args('$_POST params', $_POST);
         if(sizeof($_COOKIE) > 0) _print_debug_args('$_COOKIE params', $_COOKIE);
+        _print_debug_args('$_REQUEST params', $_REQUEST);
         if(md5_cookie_get('flash')) _print_debug_args('$_REQUEST[\'flash\']', ['flash'=>md5_cookie_get('flash')]);
 
         _print_debug_args('PHP Variables $_SERVER',$_SERVER);

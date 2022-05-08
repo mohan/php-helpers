@@ -65,13 +65,21 @@ function t($test_name, $result)
 
 function is_redirect($expected_redirect_url, $response)
 {
-	return (array_search("Location: $expected_redirect_url", $response['headers']) !== false);
+	if(array_search("Location: $expected_redirect_url", $response['headers']) === false){
+		// var_dump($response);
+		return false;
+	}
+
+	return true;
 }
 
 function is_not_redirect($response)
 {
 	foreach ($response['headers'] as $h) {
-		if(strpos($h, 'Location: ') !== false) return false;
+		if(strpos($h, 'Location: ') !== false) {
+			// var_dump($response);
+			return false;
+		}
 	}
 
 	return true;
@@ -79,17 +87,32 @@ function is_not_redirect($response)
 
 function is_flash($expected_message, $response)
 {
-	return $response['cookies']['flash'] == $expected_message;
+	if($response['cookies']['flash'] != $expected_message){
+		// var_dump($response);
+		return false;
+	}
+
+	return true;
 }
 
 function contains($response, ...$expected_html_substrs)
 {
-	return _str_contains($response['body'], ...$expected_html_substrs);
+	if(!_str_contains($response['body'], ...$expected_html_substrs)){
+		// var_dump($response);
+		return false;
+	}
+
+	return true;
 }
 
 function pagetitle_is($str, $response)
 {
-	return _str_contains($response['body'], $str);
+	if(!_str_contains($response['body'], $str)){
+		// var_dump($response);
+		return false;
+	}
+
+	return true;
 }
 
 
@@ -105,7 +128,7 @@ function do_get($uri_str, $cookies=[])
 	_clear_request();
 	$uri = parse_url($uri_str);
 	parse_str(isset($uri['query']) ? $uri['query'] : '', $_GET);
-	$_SERVER['REQUEST_METHOD'] = 'GET';
+	$_SERVER['REQUEST_METHOD'] = 'get';
 	if($uri_str[0] == '/') $_SERVER['REQUEST_URI'] = $uri_str;
 	_set_params($_COOKIE, $cookies);
 	_set_params($_REQUEST, $_GET);
@@ -124,7 +147,7 @@ function do_post($uri_str, $post_params=[], $cookies=[])
 	_clear_request();
 	$uri = parse_url($uri_str);
 	parse_str($uri['query'], $_GET);
-	$_SERVER['REQUEST_METHOD'] = 'POST';
+	$_SERVER['REQUEST_METHOD'] = 'post';
 	if($uri_str[0] == '/') $_SERVER['REQUEST_URI'] = $uri_str;
 	_set_params($_COOKIE, $cookies);
 	_set_params($_POST, $post_params);

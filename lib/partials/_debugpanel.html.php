@@ -7,13 +7,6 @@
 if(defined('APP_ENV_IS_DEVELOPMENT') && APP_ENV_IS_DEVELOPMENT && defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && _PHP_HELPERS_EXTRA_IS_DEFINED):
 ?>
 	<?php if(!defined('DEBUG_PANEL_LINK_ECHOED')): define('DEBUG_PANEL_LINK_ECHOED', true) ?>
-		<a id='show-debug-panel' href='#debug-panel'>Debug Panel</a>
-	<?php else: ?>
-		<div id='debug-panel'>
-			<h2>Debug Panel</h2>
-			<?= _print_debugpanel($args) ?>
-		</div>
-
 		<style type="text/css">
 			#show-debug-panel{
 				display:block;
@@ -48,5 +41,11 @@ if(defined('APP_ENV_IS_DEVELOPMENT') && APP_ENV_IS_DEVELOPMENT && defined('_PHP_
 				padding: 5px;
 			}
 		</style>
+		<a id='show-debug-panel' href='#debug-panel'>Debug Panel</a>
+	<?php else: ?>
+		<div id='debug-panel'>
+			<h2>Debug Panel</h2>
+			<?= _print_debugpanel($args) ?>
+		</div>
 	<?php endif; ?>
 <?php endif; ?>

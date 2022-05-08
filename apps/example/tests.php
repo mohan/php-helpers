@@ -20,7 +20,6 @@ call_tests_for(
 	'get_post',
 	'get_docs_view',
 	'get_docs',
-	'get_example_redirect',
 
 	'post_create_post'
 );
@@ -99,13 +98,6 @@ function test_get_docs()
 	);
 }
 
-
-function test_get_example_redirect()
-{
-	$resp = do_get(urltoget('example_redirect'));
-
-	t('Example redirect', is_redirect('/?a=posts', $resp));
-}
 
 
 // 

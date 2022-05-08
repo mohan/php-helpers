@@ -8,25 +8,24 @@
 // Sets $_REQUEST variables based on $_GET, defines constants and sets flash.
 function _php_helpers_init()
 {
-    // Set action to 'root' if no params
-    if(isset($_GET['a']) && $_GET['a'] == '') $_GET['a'] = 'root';
-    _arr_defaults($_GET, ['a'=>NULL]);
-
-    if(isset($_GET['a']))                   $_REQUEST['CURRENT_ACTION'] = $_GET['a'];
-    else if(isset($_GET['post_action']))    $_REQUEST['CURRENT_ACTION'] = $_GET['post_action'];
-    else if(isset($_GET['patch_action']))   $_REQUEST['CURRENT_ACTION'] = $_GET['patch_action'];
-    else if(isset($_GET['delete_action']))  $_REQUEST['CURRENT_ACTION'] = $_GET['delete_action'];
-    else                                    $_REQUEST['CURRENT_ACTION'] = $_GET['a'] = 'root';
-
-    if(isset($_GET['a'])){
-        $_REQUEST['CURRENT_METHOD'] = 'GET';
-    } else if($_SERVER['REQUEST_METHOD'] == 'POST'){
-        if($_GET['post_action'])            $_REQUEST['CURRENT_METHOD'] = 'POST';
-        else if($_GET['patch_action'])      $_REQUEST['CURRENT_METHOD'] = 'PATCH';
-        else if($_GET['delete_action'])     $_REQUEST['CURRENT_METHOD'] = 'DELETE';
+    if(isset($_GET['post_action'])) {
+        $_REQUEST['CURRENT_ACTION'] = $_GET['post_action'];
+        $_REQUEST['CURRENT_METHOD'] = 'post';
+    } else if(isset($_GET['patch_action'])) {
+        $_REQUEST['CURRENT_ACTION'] = $_GET['patch_action'];
+        $_REQUEST['CURRENT_METHOD'] = 'patch';
+    } else if(isset($_GET['delete_action'])) {
+        $_REQUEST['CURRENT_ACTION'] = $_GET['delete_action'];
+        $_REQUEST['CURRENT_METHOD'] = 'delete';
+    } else if(isset($_GET['a']) && $_GET['a']) {
+        $_REQUEST['CURRENT_ACTION'] = $_GET['a'];
+        $_REQUEST['CURRENT_METHOD'] = 'get';
     } else {
-        $_REQUEST['CURRENT_METHOD'] = 'GET';
+        $_REQUEST['CURRENT_ACTION'] = $_GET['a'] = 'root';
+        $_REQUEST['CURRENT_METHOD'] = 'get';
     }
+
+    if(!isset($_GET['a'])) $_GET['a'] = NULL;
 
     if(!defined('SECURE_HASH')) define('SECURE_HASH', md5(
         __FILE__ .
@@ -139,10 +138,10 @@ function filter_routes($get_action_names, $post_action_names=[], $patch_action_n
     if(isset($_REQUEST['TEMPLATE_HAS_RENDERED'])) return false;
 
     switch ($_REQUEST['CURRENT_METHOD']) {
-        case 'POST':    return _filter_routes_method($post_action_names);
-        case 'PATCH':   return _filter_routes_method($patch_action_names);
-        case 'DELETE':  return _filter_routes_method($delete_action_names);
-        case 'GET':     return _filter_routes_method($get_action_names);
+        case 'post':    return _filter_routes_method($post_action_names);
+        case 'patch':   return _filter_routes_method($patch_action_names);
+        case 'delete':  return _filter_routes_method($delete_action_names);
+        case 'get':     return _filter_routes_method($get_action_names);
     }
 
     return false;
@@ -153,20 +152,16 @@ function _filter_routes_method($current_method_action_names)
 {
     $current_action_name = $_REQUEST['CURRENT_ACTION'];
     $current_method_name = $_REQUEST['CURRENT_METHOD'];
-    $current_method_required_params = $current_method_action_names[$current_action_name];
     $action_id = preg_replace("/[^a-zA-Z0-9]/", '_', $current_action_name);
 
     if( !array_key_exists($current_action_name, $current_method_action_names) ) return false;
+
+    $current_method_required_params = $current_method_action_names[$current_action_name];
 
     // Render template directly
     if(is_string($current_method_required_params)){
         if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
             $_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'] = [$current_method_name, $current_method_required_params, 'render'];
-        }
-
-        // Redirect
-        if($current_method_required_params[0] == '/'){
-            return redirectto($current_method_required_params);
         }
 
         // Render template directly
@@ -177,7 +172,7 @@ function _filter_routes_method($current_method_action_names)
 
     $action_function_name = $current_method_name . '_' . $action_id;
 
-    if($current_method_name == 'GET'){
+    if($current_method_name == 'get'){
         if( array_intersect($current_method_required_params, array_keys($_GET)) != $current_method_required_params) return false;
     } else {
         if( array_intersect($current_method_required_params[0], array_keys($_GET)) != $current_method_required_params[0]) return false;
@@ -190,6 +185,7 @@ function _filter_routes_method($current_method_action_names)
 
     $_REQUEST['ACTION_ID'] = $action_id;
     $_REQUEST['TEMPLATE'] = APP_NAME . '/' . $action_id . '.html.php';
+
     return call_user_func( $action_function_name );
 }
 
@@ -357,10 +353,10 @@ function urltoget($action, $args=[], $arg_separator='&', $skip_action_arg=false)
 
 
 
-// Returns URL to post action. Set $args['_method'] to 'PATCH'/'DELETE' for patch or delete URLs.
+// Returns URL to post action. Set $args['_method'] to 'patch'/'delete' for patch or delete URLs.
 function urltopost($action, $args=[], $arg_separator='&')
 {
-    if( isset($args['_method']) && ($args['_method'] == 'PATCH' || $args['_method'] == 'DELETE') ){
+    if( isset($args['_method']) && ($args['_method'] == 'patch' || $args['_method'] == 'delete') ){
         $_args = [$args['_method'] . '_action' => $action];
     } else {
         $_args = ['post_action' => $action];
@@ -408,8 +404,8 @@ function formto($action, $args=[], $attrs=[], $fields=[])
 {
     _arr_defaults($attrs, [
         'id' => '',
-        'method'=>'POST',
-        'action'=> isset($attrs['method']) && $attrs['method'] == 'GET' ? urltoget($action, $args) : urltopost($action, $args)
+        'method'=>'post',
+        'action'=> isset($attrs['method']) && $attrs['method'] == 'get' ? urltoget($action, $args) : urltopost($action, $args)
     ]);
 
     $form_id = $attrs['id'] ? $attrs['id'] : _to_id($action) . '-form';
@@ -471,7 +467,7 @@ function linkto($action, $html, $args=[], $attrs=[])
     $url = urltoget($action, $args, '&amp;');
 
     if(
-        $_REQUEST['CURRENT_METHOD'] == 'GET' &&
+        $_REQUEST['CURRENT_METHOD'] == 'get' &&
         $_SERVER['REQUEST_URI'] == urltoget($action, $args)
     ) {
         _arr_defaults($attrs, ['class'=>'']);
@@ -692,7 +688,8 @@ function __d(...$args)
 {
     if(!defined('APP_ENV_IS_TEST')) echo "<pre style='width:94%;margin:1%;padding:2%;background:#fff;border:2px solid #aa0000;'>";
     $_debug = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
-    echo "<strong>&gt; [" . basename($_debug[0]['file']) . "#{$_debug[0]['line']}]</strong>\n";
+    if(!defined('APP_ENV_IS_TEST')) echo "<strong>&gt; [" . basename($_debug[0]['file']) . "#{$_debug[0]['line']}]</strong>\n";
+    else  echo "> [" . basename($_debug[0]['file']) . "#{$_debug[0]['line']}]\n";
     foreach($args as $arg) {
         if(defined('APP_ENV_IS_TEST')) {
             print_r($arg);
