@@ -3,6 +3,8 @@
 // 
 // To run tests use build command in your programming editor, to execute this file
 // or `php tests.php`
+// or `php tests.php get_post`
+// or `php tests.php get_post get_docs`
 // 
 
 define('APP_DIR', __DIR__ . '/');

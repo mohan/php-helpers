@@ -44,70 +44,6 @@ function label_         ( $html, $attrs=[] )       {   return tag( $html, $attrs
 
 
 
-if(APP_ENV_IS_DEVELOPMENT){
-    function _print_debugpanel($args){
-        _print_debug_args('Render $args', $args);
-
-        if(isset($_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'])) {
-            _print_debug_current_action(...$_REQUEST['_REQUEST_ARGS_CURRENT_ACTION']);
-        }
-
-        if(sizeof($_GET) > 0) _print_debug_args('$_GET params', $_GET);
-        if(sizeof($_POST) > 0) _print_debug_args('$_POST params', $_POST);
-        if(sizeof($_COOKIE) > 0) _print_debug_args('$_COOKIE params', $_COOKIE);
-        _print_debug_args('$_REQUEST params', $_REQUEST);
-        if(md5_cookie_get('flash')) _print_debug_args('$_REQUEST[\'flash\']', ['flash'=>md5_cookie_get('flash')]);
-
-        _print_debug_args('PHP Variables $_SERVER',$_SERVER);
-    }
-
-    function _print_debug_current_action($method_name, $required_params, $action_name)
-    {
-        $args = [
-            'ROOT_URL' => ROOT_URL,
-            "\$_REQUEST['CURRENT_METHOD']" => $_REQUEST['CURRENT_METHOD'],
-            "\$_REQUEST['CURRENT_ACTION']" => $_REQUEST['CURRENT_ACTION'],
-            "\$_REQUEST['LAYOUT']" => $_REQUEST['LAYOUT'],
-            "\$_REQUEST['TEMPLATE']" => $_REQUEST['TEMPLATE'],
-            "\$_REQUEST['ACTION_ID']" => $_REQUEST['ACTION_ID'],
-            'Action function' => $action_name,
-            'Required params for action' => $required_params
-        ];
-
-        _print_debug_args('Current Action', $args);
-    }
-
-
-    function _print_debug_args($name, $args)
-    {
-        if($name) echo h3($name);
-
-        echo tag_table(['Param', 'Value'], $args, [], function($row, $header_name, $row_key){
-            switch ($header_name) {
-                case 'Param':
-                    return $row_key;
-                
-                case 'Value':
-                    return is_string($row) ? tag($row, ['rows'=>30], strlen($row) > 500 ? 'textarea' : 'div') :
-                        pre( print_r($row, true) );
-            }
-        });
-    }
-}
-
-// 
-// END Debug helpers
-// 
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -335,3 +271,66 @@ function filter_set_config($filepath, $prefix='CONFIG_')
 // 
 // END Config file helpers
 //
+
+
+
+
+
+
+
+
+if(APP_ENV_IS_DEVELOPMENT){
+    function _print_debugpanel($args){
+        foreach ($args as $key => $value) $_args["\$$key"] = $value;
+        $_args['$args'] = $args;
+        _print_debug_args('Render variables for template', $_args);
+
+        if(isset($_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'])) {
+            _print_debug_current_action(...$_REQUEST['_REQUEST_ARGS_CURRENT_ACTION']);
+        }
+
+        if(sizeof($_GET) > 0) _print_debug_args('$_GET params', $_GET);
+        if(sizeof($_POST) > 0) _print_debug_args('$_POST params', $_POST);
+        if(sizeof($_COOKIE) > 0) _print_debug_args('$_COOKIE params', $_COOKIE);
+        _print_debug_args('$_REQUEST params', $_REQUEST);
+        if(md5_cookie_get('flash')) _print_debug_args('$_REQUEST[\'flash\']', ['flash'=>md5_cookie_get('flash')]);
+
+        _print_debug_args('PHP Variables $_SERVER',$_SERVER);
+    }
+
+    function _print_debug_current_action($method_name, $required_params, $action_name)
+    {
+        $args = [
+            "Method" => $_REQUEST['CURRENT_METHOD'],
+            "Action" => $_REQUEST['CURRENT_ACTION'],
+            "Layout" => $_REQUEST['LAYOUT'],
+            "Template" => $_REQUEST['TEMPLATE'],
+            "Action id" => $_REQUEST['ACTION_ID'],
+            'Action function' => $action_name,
+            'Required params for action' => $required_params
+        ];
+
+        _print_debug_args('Current Action', $args);
+    }
+
+
+    function _print_debug_args($name, $args)
+    {
+        if($name) echo h3($name);
+
+        echo tag_table(['Param', 'Value'], $args, [], function($row, $header_name, $row_key){
+            switch ($header_name) {
+                case 'Param':
+                    return $row_key;
+                
+                case 'Value':
+                    $out = is_string($row) ? $row : print_r($row, true);
+                    return pre($out, ['style' => 'overflow:scroll; max-height:' . (strlen($out) > 100 ? '200px' : 'auto')]);
+            }
+        });
+    }
+}
+
+// 
+// END Debug helpers
+// 

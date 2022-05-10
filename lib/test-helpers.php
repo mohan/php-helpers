@@ -29,6 +29,8 @@ function call_tests_for(...$function_names)
 
 	echo str_repeat('-', 60);
 	foreach ($function_names as $name) {
+		if($GLOBALS['argc'] >= 2 && array_search($name, $GLOBALS['argv']) === false) continue;
+
 		$test_name = "test_$name";
 		if(function_exists($test_name)) {
 			echo "\n# $test_name\n";
@@ -38,6 +40,9 @@ function call_tests_for(...$function_names)
 		}
 	}
 	echo str_repeat('-', 60) . "\n";
+
+	if($GLOBALS['argc'] >= 2) return;
+	
 	echo "  = All " . (sizeof($function_names) - sizeof($functions_to_implement)) . "/" . sizeof($function_names) . " tests passed.\n";
 
 	if(sizeof($functions_to_implement)){
@@ -128,7 +133,7 @@ function do_get($uri_str, $cookies=[])
 	_clear_request();
 	$uri = parse_url($uri_str);
 	parse_str(isset($uri['query']) ? $uri['query'] : '', $_GET);
-	$_SERVER['REQUEST_METHOD'] = 'get';
+	$_SERVER['REQUEST_METHOD'] = 'GET';
 	if($uri_str[0] == '/') $_SERVER['REQUEST_URI'] = $uri_str;
 	_set_params($_COOKIE, $cookies);
 	_set_params($_REQUEST, $_GET);
@@ -147,7 +152,7 @@ function do_post($uri_str, $post_params=[], $cookies=[])
 	_clear_request();
 	$uri = parse_url($uri_str);
 	parse_str($uri['query'], $_GET);
-	$_SERVER['REQUEST_METHOD'] = 'post';
+	$_SERVER['REQUEST_METHOD'] = 'POST';
 	if($uri_str[0] == '/') $_SERVER['REQUEST_URI'] = $uri_str;
 	_set_params($_COOKIE, $cookies);
 	_set_params($_POST, $post_params);

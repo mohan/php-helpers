@@ -22,6 +22,7 @@ if(defined('APP_ENV_IS_DEVELOPMENT') && APP_ENV_IS_DEVELOPMENT && defined('_PHP_
 				padding: 20px 10px;
 			}
 			#debug-panel table{
+				margin-bottom: 30px;
 				width: 100%;
 				font-size: 13px;
 			}

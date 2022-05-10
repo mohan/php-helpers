@@ -1,26 +1,32 @@
 # helpers.php
 
-## _php_helpers_init
+## Function _php_helpers_init
 
-Sets vars
-* $_REQUEST['CURRENT_METHOD'] - GET/POST/PATCH/DELETE
-* $_REQUEST['CURRENT_ACTION'] - Name of current filtered action
-* $_REQUEST['LAYOUT'] - current layout - "templates/layouts/APP_NAME.html.php"
-* $_REQUEST['flash'] - flash message
+Sets the below values
+```table
+Name | Value
+$_REQUEST['CURRENT_METHOD'] | get/post/patch/delete
+$_REQUEST['CURRENT_ACTION'] | Name of current filtered action
+$_REQUEST['LAYOUT'] | current layout - "templates/layouts/APP_NAME.html.php"
+$_REQUEST['flash'] | flash message
+```
 
 Sets constants, if not defined
-* SECURE_HASH - Based on file name and other constants. Manually set if you need more random string.
-* APP_DIR - "."
-* APP_NAME - "app"
-* ROOT_URL - "/"
-* TEMPLATES_DIR - "./templates"
+```table
+Name | Value
+SECURE_HASH | Based on file name and other constants. Manually set if you need more random string.
+APP_DIR | "."
+APP_NAME | "app"
+ROOT_URL | "/"
+TEMPLATES_DIR | "./templates"
+```
 
-This internal function is called at the end of this file. No need to call it manually.
+This internal function is called at the end of this file. It is not needed to call manually.
 If you modified any REQUEST values, call this to reset above vars.
 
 
 
-## filter_rewrite_uri
+## Function filter_rewrite_uri
 
 Rewrite current $_SERVER['REQUEST_URI'] or PATH_INFO into $_GET variables, based on rewrite rules.
 It ignores ROOT_URL.
@@ -28,24 +34,29 @@ It ignores ROOT_URL.
 Regular expression can contain capture groups with names, which will also be added to $_GET.
 
 Example:
+```table
+URI | Rewrites to
+/post/1 | /?a=post&id=1
+/docs/example | /?a=docs/view&path=example
+/docs/ | /?a=docs
+```
+
+```php raw
 filter_rewrite_uri([
 	"/^\/post\/(?P<id>\d+)$/" 			=> ['a'=>'post'],
 	"/^\/docs\/(?P<path>[a-z0-9-]+)$/" 	=> ['a'=>'docs/view'],
 	"/^\/docs$/" 						=> ['a'=>'docs']
 ]);
-
-Translates to $_GET represented as below:
-/post/1			->	/?a=post&id=1
-/docs/example	->	/?a=docs/view&path=example
-/docs/			->	/?a=docs
+```
 
 
 
-## filter_permitted_params
+## Function filter_permitted_params
 
 Permitted GET, POST, cookie params, with strlen/regex check and typecasting
 
 Example:
+```php raw
 filter_permitted_params(
 	// GET params with maxlen/regex
 	[
@@ -72,10 +83,10 @@ filter_permitted_params(
 	[
 	]
 )
+```
 
 
-
-## router
+## Function router
 
 Map action names to functions and call current action function.
 Action name function must be named METHODNAME_ACTIONNAME without special characters, ex: function get_list()
@@ -104,7 +115,7 @@ Notes:
 
 
 
-## render
+## Function render
 
 Renders a template from TEMPLATES_DIR. Accepts 1 or more arrays of arguments to render.
 
@@ -112,11 +123,13 @@ Default template is $_REQUEST['TEMPLATE'] -> templates/app/actionid.html.php
 Default layout is $_REQUEST['LAYOUT'] -> templates/layouts/app.html.php
 
 Example:
+```php raw
 return render([
 	'id'=>1,
 	'title'=>$title,
 	'body'=>$body
 ]);
+```
 
 Default template can be overriden by setting
 '_template' => 'app/article-style-2.html.php',
@@ -124,31 +137,33 @@ and layout by setting
 '_layout' => 'layouts/article.html.php'.
 
 
-## render_partial
+## Function render_partial
 
 Same as render, but renders a partial from templates directory.
 Can be used to render a partial template from within a layout/template.
 
 Example:
+```php raw
 <?= render('partials/sidebar.html.php') ?>
+```
 
-
-## redirectto
+## Function redirectto
 
 Redirects to an action.
 
 Example:
+```php raw
 redirectto('article', ['id'=>1]);
+```
 
-
-## get_404
+## Function get_404
 
 Built-in 404 error action.
 Define CUSTOM_GET_404 to replace it with your own action.
 
 
 
-## urlto_public_dir
+## Function urlto_public_dir
 
 URL to an css/image/other asset in public directory.
 
@@ -156,58 +171,59 @@ Uses ROOT_URL as the URL prefix.
 Define PUBLIC_URL, to override.
 
 Example:
+```php raw
 urlto_public_dir('assets/style.css');
+```
 
-
-## urltoget
+## Function urltoget
 
 Returns URL to a GET action.
 
 
-## urltopost
+## Function urltopost
 
 Returns URL to a post action.
 
 
-## formto
+## Function formto
 
 Returns HTML for a form with fields.
 
 
-## form_field
+## Function form_field
 
 Returns HTML for a form field.
 
 
-## linkto
+## Function linkto
 
 Returns HTML for a link to a GET action.
 
 
-## tag
+## Function tag
 
 Returns HTML for a tag.
 
 It auto htmlentities for safe user input.
 
 
-## tag_table
+## Function tag_table
 
 Returns HTML for a table, for given headers and data.
 
 
-## flash_set
+## Function flash_set
 
 Sets flash cookie flash message.
 For post requests, or flash in current request, set $in_current_request to true.
 
 
-## flash_clear
+## Function flash_clear
 
 Clears flash message.
 
 
-## _filter_set_flash
+## Function _filter_set_flash
 
 Sets $_REQUEST['flash'] message set from previous request, and deletes the cookie.
 

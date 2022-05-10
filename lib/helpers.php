@@ -8,15 +8,19 @@
 // Sets $_REQUEST variables based on $_GET, defines constants and sets flash.
 function _php_helpers_init()
 {
-    if(isset($_GET['post_action'])) {
-        $_REQUEST['CURRENT_ACTION'] = $_GET['post_action'];
-        $_REQUEST['CURRENT_METHOD'] = 'post';
-    } else if(isset($_GET['patch_action'])) {
-        $_REQUEST['CURRENT_ACTION'] = $_GET['patch_action'];
-        $_REQUEST['CURRENT_METHOD'] = 'patch';
-    } else if(isset($_GET['delete_action'])) {
-        $_REQUEST['CURRENT_ACTION'] = $_GET['delete_action'];
-        $_REQUEST['CURRENT_METHOD'] = 'delete';
+    if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'){
+        $_GET['a'] = NULL;
+
+        if(isset($_GET['post_action'])) {
+            $_REQUEST['CURRENT_ACTION'] = $_GET['post_action'];
+            $_REQUEST['CURRENT_METHOD'] = 'post';
+        } else if(isset($_GET['patch_action'])) {
+            $_REQUEST['CURRENT_ACTION'] = $_GET['patch_action'];
+            $_REQUEST['CURRENT_METHOD'] = 'patch';
+        } else if(isset($_GET['delete_action'])) {
+            $_REQUEST['CURRENT_ACTION'] = $_GET['delete_action'];
+            $_REQUEST['CURRENT_METHOD'] = 'delete';
+        }
     } else if(isset($_GET['a']) && $_GET['a']) {
         $_REQUEST['CURRENT_ACTION'] = $_GET['a'];
         $_REQUEST['CURRENT_METHOD'] = 'get';
@@ -25,25 +29,23 @@ function _php_helpers_init()
         $_REQUEST['CURRENT_METHOD'] = 'get';
     }
 
-    if(!isset($_GET['a'])) $_GET['a'] = NULL;
-
-    if(!defined('SECURE_HASH')) define('SECURE_HASH', md5(
-        __FILE__ .
-        filemtime(__FILE__) .
-        filesize(__FILE__) .
-        join('-', _arr_get($_SERVER, [
-                'HTTP_HOST' => '',
-                'DOCUMENT_ROOT' => '',
-                'SERVER_SOFTWARE' => '',
-                'REMOTE_ADDR' => '',
-                'HTTP_USER_AGENT' => ''
-        ])) .
-        sys_get_temp_dir()
-    ));
     if(!defined('APP_DIR'))         define('APP_DIR', '.');
     if(!defined('APP_NAME'))        define('APP_NAME', 'app');
     if(!defined('ROOT_URL'))        define('ROOT_URL', '/');
     if(!defined('TEMPLATES_DIR'))   define('TEMPLATES_DIR', _path_join( APP_DIR, 'templates' ));
+    if(!defined('SECURE_HASH'))     define('SECURE_HASH', md5(
+                                                            __FILE__ .
+                                                            filemtime(__FILE__) .
+                                                            filesize(__FILE__) .
+                                                            join('-', _arr_get($_SERVER, [
+                                                                    'HTTP_HOST' => '',
+                                                                    'DOCUMENT_ROOT' => '',
+                                                                    'SERVER_SOFTWARE' => '',
+                                                                    'REMOTE_ADDR' => '',
+                                                                    'HTTP_USER_AGENT' => ''
+                                                            ])) .
+                                                            sys_get_temp_dir()
+                                                        ));
     
     $_REQUEST['LAYOUT'] = 'layouts/' . APP_NAME . '.html.php';
 
@@ -133,54 +135,52 @@ function filter_permitted_params($get_param_names, $post_param_names=[], $cookie
 // 
 
 // Maps action names to action functions. Also sets template variables based on request.
-function filter_routes($get_action_names, $post_action_names=[], $patch_action_names=[], $delete_action_names=[])
+function filter_routes($get_actions, $post_actions=[], $patch_actions=[], $delete_actions=[])
 {
     if(isset($_REQUEST['TEMPLATE_HAS_RENDERED'])) return false;
 
     switch ($_REQUEST['CURRENT_METHOD']) {
-        case 'post':    return _filter_routes_method($post_action_names);
-        case 'patch':   return _filter_routes_method($patch_action_names);
-        case 'delete':  return _filter_routes_method($delete_action_names);
-        case 'get':     return _filter_routes_method($get_action_names);
+        case 'post':    return _filter_route($post_actions,    $_REQUEST['CURRENT_ACTION'], $_REQUEST['CURRENT_METHOD']);
+        case 'patch':   return _filter_route($patch_actions,   $_REQUEST['CURRENT_ACTION'], $_REQUEST['CURRENT_METHOD']);
+        case 'delete':  return _filter_route($delete_actions,  $_REQUEST['CURRENT_ACTION'], $_REQUEST['CURRENT_METHOD']);
+        case 'get':     return _filter_route($get_actions,     $_REQUEST['CURRENT_ACTION'], $_REQUEST['CURRENT_METHOD']);
     }
 
     return false;
 }
 
 
-function _filter_routes_method($current_method_action_names)
+function _filter_route($action_names, $action_name, $method_name)
 {
-    $current_action_name = $_REQUEST['CURRENT_ACTION'];
-    $current_method_name = $_REQUEST['CURRENT_METHOD'];
-    $action_id = preg_replace("/[^a-zA-Z0-9]/", '_', $current_action_name);
+    if( !array_key_exists($action_name, $action_names) ) return false;
 
-    if( !array_key_exists($current_action_name, $current_method_action_names) ) return false;
-
-    $current_method_required_params = $current_method_action_names[$current_action_name];
+    $action_id = preg_replace("/[^a-zA-Z0-9]/", '_', $action_name);
+    $required_params = $action_names[$action_name];
 
     // Render template directly
-    if(is_string($current_method_required_params)){
+    if(is_string($required_params)){
         if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-            $_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'] = [$current_method_name, $current_method_required_params, 'render'];
+            $_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'] = [$method_name, $required_params, 'render'];
         }
 
         // Render template directly
         $_REQUEST['ACTION_ID'] = $action_id;
-        $_REQUEST['TEMPLATE'] = $current_method_required_params;
+        $_REQUEST['TEMPLATE'] = $required_params;
         return render();
     }
 
-    $action_function_name = $current_method_name . '_' . $action_id;
+    // Action function
+    $action_function_name = $method_name . '_' . $action_id;
 
-    if($current_method_name == 'get'){
-        if( array_intersect($current_method_required_params, array_keys($_GET)) != $current_method_required_params) return false;
+    if($method_name == 'get'){
+        if( array_intersect($required_params, array_keys($_GET)) != $required_params) return false;
     } else {
-        if( array_intersect($current_method_required_params[0], array_keys($_GET)) != $current_method_required_params[0]) return false;
-        if( array_intersect($current_method_required_params[1], array_keys($_POST)) != $current_method_required_params[1]) return false;
+        if( array_intersect($required_params[0], array_keys($_GET)) != $required_params[0]) return false;
+        if( array_intersect($required_params[1], array_keys($_POST)) != $required_params[1]) return false;
     }
 
     if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-        $_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'] = [$current_method_name, $current_method_required_params, $action_function_name];
+        $_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'] = [$method_name, $required_params, $action_function_name];
     }
 
     $_REQUEST['ACTION_ID'] = $action_id;
