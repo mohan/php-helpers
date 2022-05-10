@@ -14,7 +14,7 @@
 				<?php
 					$text = str_replace($defined_constant, "<span id='$defined_constant'>$defined_constant</span>", $text);
 				?>
-				<li><?= linkto('', $defined_constant, ['_hash'=>$defined_constant], ['class'=>'d-block']) ?></li>
+				<li><?= linkto('', ['_hash'=>$defined_constant], $defined_constant, ['class'=>'d-block']) ?></li>
 			<?php endforeach; ?>
 			</ol>
 		<?php endif; ?>
@@ -31,7 +31,7 @@
 					);
 				?>
 				<li>
-					<?= linkto('', $name, ['_hash'=>$name], ['id'=>"link-$name", 'class'=>'d-block']) ?>
+					<?= linkto('', ['_hash'=>$name], $name, ['id'=>"link-$name", 'class'=>'d-block']) ?>
 					<p class='fg-5'><?= $args ? $args : 'No Arguments' ?></p>
 				</li>
 			<?php endforeach; ?>
@@ -50,7 +50,7 @@
 					);
 				?>
 				<li>
-					<?= linkto('', $name, ['_hash'=>$name], ['id'=>"link-$name", 'class'=>'d-block']) ?>
+					<?= linkto('', ['_hash'=>$name], $name, ['id'=>"link-$name", 'class'=>'d-block']) ?>
 					<p class='fg-5'><?= $args ? $args : 'No Arguments' ?></p>
 				</li>
 			<?php endforeach; ?>

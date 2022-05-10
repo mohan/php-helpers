@@ -180,18 +180,9 @@ function get_src()
     preg_match_all('/function\s+(?P<name>[_][a-zA-Z0-9_]+)\s*\((?P<args>[^)]*)\)/', $text, $internal_function_names);
     preg_match_all("/defined?\('(?P<name>[A-Z_]+)'/", $text, $defined_constants);
 
-    asort($function_names['name']);
-    asort($function_names['args']);
-    asort($internal_function_names['name']);
-    asort($internal_function_names['args']);
-
     $function_names = array_combine($function_names['name'], $function_names['args']);
-    asort($function_names);
     $internal_function_names = array_combine($internal_function_names['name'], $internal_function_names['args']);
-    asort($internal_function_names);
-
     $defined_constants = array_unique($defined_constants['name']);
-    $text = highlight_string($text, true);
 
     return render([
         '_layout'                   =>  'layouts/docs.html.php',
@@ -199,7 +190,7 @@ function get_src()
         'internal_function_names'   =>  $internal_function_names,
         'defined_constants'         =>  $defined_constants,
         '_pagetitle'                =>  $src_path,
-        'text'                      =>  $text,
+        'text'                      =>  highlight_string($text, true),
         'raw'                       =>  false
     ]);
 }

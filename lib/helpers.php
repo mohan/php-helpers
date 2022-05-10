@@ -462,7 +462,7 @@ function form_field($form_id, $field_name, $field_options)
 
 
 // Returns a link tag to given action. Adds 'current-uri-link' classname to if action is current active link.
-function linkto($action, $html, $args=[], $attrs=[])
+function linkto($action, $args, $html, $attrs=[])
 {
     $url = urltoget($action, $args, '&amp;');
 
