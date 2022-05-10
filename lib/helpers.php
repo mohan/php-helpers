@@ -72,7 +72,7 @@ function filter_rewrite_uri($paths)
     if(!$current_rewrite_args) return false;
 
     // Capture group vars
-    foreach ($matches as $key => $value)                $_GET[$key] = $value;
+    foreach ($matches as $key => $value) if(is_string($key)) $_GET[$key] = $value;
     // Given parameters for current_rewrite
     foreach ($current_rewrite_args as $key => $value)   $_GET[$key] = $value;
 
@@ -97,16 +97,13 @@ function filter_rewrite_uri($paths)
 // 
 
 // Allows only given parameters and discards anything else.
-function filter_permitted_params($get_param_names, $post_param_names=[], $cookie_param_names=[], $get_typecasts=[], $post_typecasts=[])
+function filter_permitted_params($get_param_names, $post_param_names=[], $cookie_param_names=[])
 {
     if(
         !_arr_validate($_GET, $get_param_names, false) ||
         !_arr_validate($_POST, $post_param_names, false) ||
         !_arr_validate($_COOKIE, $cookie_param_names, false)
     ) return false;
-
-    _arr_typecast($_GET, $get_typecasts);
-    _arr_typecast($_POST, $post_typecasts);
 
     return true;
 }
@@ -159,10 +156,6 @@ function _filter_route($action_names, $action_name, $method_name)
 
     // Render template directly
     if(is_string($required_params)){
-        if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-            $_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'] = [$method_name, $required_params, 'render'];
-        }
-
         // Render template directly
         $_REQUEST['ACTION_ID'] = $action_id;
         $_REQUEST['TEMPLATE'] = $required_params;
@@ -177,10 +170,6 @@ function _filter_route($action_names, $action_name, $method_name)
     } else {
         if( array_intersect($required_params[0], array_keys($_GET)) != $required_params[0]) return false;
         if( array_intersect($required_params[1], array_keys($_POST)) != $required_params[1]) return false;
-    }
-
-    if(defined('_PHP_HELPERS_EXTRA_IS_DEFINED') && APP_ENV_IS_DEVELOPMENT) {
-        $_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'] = [$method_name, $required_params, $action_function_name];
     }
 
     $_REQUEST['ACTION_ID'] = $action_id;

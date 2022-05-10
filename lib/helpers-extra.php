@@ -285,10 +285,6 @@ if(APP_ENV_IS_DEVELOPMENT){
         $_args['$args'] = $args;
         _print_debug_args('Render variables for template', $_args);
 
-        if(isset($_REQUEST['_REQUEST_ARGS_CURRENT_ACTION'])) {
-            _print_debug_current_action(...$_REQUEST['_REQUEST_ARGS_CURRENT_ACTION']);
-        }
-
         if(sizeof($_GET) > 0) _print_debug_args('$_GET params', $_GET);
         if(sizeof($_POST) > 0) _print_debug_args('$_POST params', $_POST);
         if(sizeof($_COOKIE) > 0) _print_debug_args('$_COOKIE params', $_COOKIE);
@@ -325,7 +321,7 @@ if(APP_ENV_IS_DEVELOPMENT){
                 
                 case 'Value':
                     $out = is_string($row) ? $row : print_r($row, true);
-                    return pre($out, ['style' => 'overflow:scroll; max-height:' . (strlen($out) > 100 ? '200px' : 'auto')]);
+                    return textarea($out, ['rows'=>1, 'readonly'=>true, 'class'=>substr_count($out, "\n")>2 ? 'autoexpand':'']);
             }
         });
     }

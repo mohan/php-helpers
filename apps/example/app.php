@@ -35,11 +35,6 @@ function initialize(){
         // COOKIE params with max_length
         [
             'flash' => 256
-        ],
-        // GET typecast
-        [
-            'id'    => 'int',
-            'raw'   => 'bool'
         ]
     )) return get_404('Invalid URL params');
 

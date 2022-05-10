@@ -26,6 +26,9 @@ if(defined('APP_ENV_IS_DEVELOPMENT') && APP_ENV_IS_DEVELOPMENT && defined('_PHP_
 				width: 100%;
 				font-size: 13px;
 			}
+			#debug-panel textarea.autoexpand:focus{
+				min-height: 300px;
+			}
 			#debug-panel table th:first-child{
 				width: 300px;
 			}
