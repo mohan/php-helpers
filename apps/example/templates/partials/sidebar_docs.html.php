@@ -9,6 +9,7 @@
 		<li><?= linkto('/docs/markdown', ['raw'=>true], 'Markdown') ?></li>
 		<li><?= linkto('/docs/colors', [], 'Colors') ?></li>
 		<li><?= linkto('/docs/notes', [], 'Notes') ?></li>
+		<li><?= linkto('/docs/php', [], 'PHP') ?></li>
 	</ul>
 
 	<h3>Sourcecode</h3>
