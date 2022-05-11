@@ -2,6 +2,7 @@
 1. [HTML](#html)
 2. [CSS](#css)
 3. [PHP](#php)
+4. [Handy Code Snippets](#handy-code-snippets)
 
 ---
 
@@ -325,3 +326,121 @@ Arrays		|	List of values - $examples = [1, 2, 3];
 Associative arrays |	List of property value pairs - $examples = ["a"=>1, "b"=>2, "c"=>3];
 Functions	|	PHP Code that can be used to process variables. - array_sum($examples) == 6;
 ```
+
+
+
+
+
+
+---
+
+# Handy Code Snippets
+
+### HTML Layout: Left sidebar
+```php raw
+<html>
+<head>
+	<title>Left sidebar</title>
+	<style type="text/css">
+		#sidebar{
+			float: left;
+			width: 20%;
+			background: yellow;
+			color: white;
+		}
+
+		#main{
+			float: left;
+			width: 80%;
+			background: lightgray;
+			color: black;
+		}
+
+		/* Note: Invisible tag to clear float left */
+		.clear:after{
+			content: " ";
+			clear: both;
+			display: block;
+		}
+	</style>
+</head>
+<body>
+
+	<div class='clear'>
+		
+		<div id='sidebar'>
+			<!-- ul - unordered list, ol - ordered number list -->
+			<ul>
+				<!-- li - List item -->
+				<li>
+					<a href='page1.html'>Page 1</a>
+				</li>
+				<li>
+					<a href='page2.html'>Page 2</a>
+				</li>
+			</ul>
+		</div>
+
+		<div id='main'>
+			<h1>This is page 1.</h1>
+		</div>
+
+	</div>
+
+</body>
+</html>
+```
+
+### HTML Layout: Navigation Bar
+```php raw
+<html>
+<head>
+	<title>Navigation bar</title>
+	<style type="text/css">
+		#navbar{
+			background: yellow;
+			color: white;
+			/* padding: top-pixels right-pixels bottom-pixels left-pixels ; */
+			padding: 20px 20px 20px 20px;
+		}
+
+		#navbar ul li{
+			float: left;
+			padding: 20px 20px 20px 20px;
+		}
+
+		#main{
+			background: lightgray;
+			color: black;
+			margin: 20px 20px 20px 20px;
+		}
+
+		/* Note: Invisible tag to clear float left */
+		.clear:after{
+			content: " ";
+			clear: both;
+			display: block;
+		}
+	</style>
+</head>
+<body>
+		
+	<div id='navbar'>
+		<ul class='clear'>
+			<li>
+				<a href='page1.html'>Page 1</a>
+			</li>
+			<li>
+				<a href='page2.html'>Page 2</a>
+			</li>
+		</ul>
+	</div>
+
+	<div id='main'>
+		<h1>This is page 1.</h1>
+	</div>
+
+</body>
+</html>
+```
+

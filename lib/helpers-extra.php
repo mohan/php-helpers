@@ -154,7 +154,7 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
         }
 
         $_tag = _str_contains($line, '<hr/>') ? 'div' : 'p';
-        $line = strlen($line) == 0 ? "<p class='md-br'></p>\n" : "<$_tag$tabs>\n" . $line . "\n</$_tag>\n";
+        $line = strlen(trim($line)) == 0 ? "<p class='md-br'></p>\n" : "<$_tag$tabs>\n" . $line . "\n</$_tag>\n";
 
         if($enable_shortcodes && $shortcode_line = process_shortcodes($line)){
             $line = $shortcode_line;
