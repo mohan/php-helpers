@@ -318,11 +318,12 @@ function urltoget($action, $args=[], $arg_separator='&', $skip_action_arg=false)
         $root_url = ROOT_URL . (_str_contains(ROOT_URL, '?') ? '' : '?');
     }
 
+
     $hash = isset($args['_hash']) ? '#' . $args['_hash'] : '';
     unset($args['_hash']);
 
     if(strpos($action, '/') === 0){
-        $out = explode('?', ROOT_URL)[0] . ltrim($action, '/');
+        $out = explode('?', $root_url)[0] . ltrim($action, '/');
         if(sizeof($args) > 0) $out .= '?' . http_build_query($args, '', $arg_separator);
         if($hash) $out .= $hash;
         return $out;
@@ -464,9 +465,9 @@ function linkto($action, $args, $html, $attrs=[])
     }
     
     $attrs_str = '';
-    foreach ($attrs as $key => $value) $attrs_str .= "$key='" . htmlentities($value) . "' ";
+    foreach ($attrs as $key => $value) $attrs_str .= " $key='" . htmlentities($value) . "'";
 
-    return "<a href='$url' $attrs_str>" . htmlentities($html) . "</a>";
+    return "<a href=\"$url\"$attrs_str>" . htmlentities($html) . "</a>";
 }
 
 

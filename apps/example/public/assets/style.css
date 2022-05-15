@@ -142,6 +142,8 @@ pre{
 .markdown .md-codeblock-table table { min-width: 50%; text-align: left; font-size: 1em; border: 1px solid #ccc; background: #fff; border-spacing: 0; border-collapse: collapse; }
 .markdown .md-codeblock-table table thead th { background: #FFCC00; padding: 7px 20px; }
 .markdown .md-codeblock-table table tbody td{ border-top: 1px solid #ddd; padding: 7px 20px; }
+.markdown .md-codeblock-textarea{ padding: 10px; }
+.markdown .md-codeblock-textarea textarea{ font-family: inherit; tab-size:4; border: 0; background: transparent; line-height: 1.85em; outline: 0; }
 .markdown .md-list-bullet, .markdown .md-list-number, .markdown .md-list-dash{ color: #888; }
 .markdown .md-task-list{ display: block; }
 .markdown .md-task-list-checked{ background: #004400; color: #fff; padding: 0 5px; border-radius: 3px; }

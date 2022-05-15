@@ -93,12 +93,16 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
     $is_codeblock = false;
     $tab_size_for_current_block = 0;
     $codeblock_attr = 'raw';
+    $codeblock_data = '';
     $data_table_header = [];
     $data_table = [];
     $data_table_i = 0;
+    // Read line by line
     foreach ($lines as $i => $line) {
         $matches = [];
+        // Check if codeblock - both start and end
         if(preg_match("/^(\t*)```([[:alnum:]\s]*)$/", $line, $matches)){
+            // If close of codeblock
             if($is_codeblock){
                 if(_str_contains($codeblock_attr, 'table')){
                     $out .= tag_table($data_table_header, $data_table);
@@ -107,11 +111,16 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
                     $data_table_i = 0;
                 }
 
+                if(_str_contains($codeblock_attr, 'textarea')){
+                    $out .= textarea($codeblock_data, [ 'readonly'=>true, 'rows' => substr_count($codeblock_data, "\n") + 1 ]);
+                }
+
                 $is_codeblock = false;
                 $tab_size_for_current_block = 0;
                 $codeblock_attr = 'raw';
                 $out .= "</div>\n";
             } else {
+                // 2nd clodeblock = close of code block
                 $is_codeblock = true;
                 $tab_size_for_current_block = strlen($matches[1]);
                 $codeblock_attr = str_replace(' ', ' md-codeblock-', $matches[2]);
@@ -122,6 +131,7 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
             continue;
         }
 
+        // Collect everything between codeblocks for table
         if($is_codeblock && _str_contains($codeblock_attr, 'table')){
             if($data_table_i == 0) $data_table_header = str_getcsv(trim($line), '|');
             else $data_table[] = str_getcsv(trim($line), '|');
@@ -130,8 +140,17 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
             continue;
         }
 
+        // Collect everything between codeblocks for textarea
+        if($is_codeblock && _str_contains($codeblock_attr, 'textarea')){
+            $codeblock_data .= $line . "\n";
+            continue;
+        }
+
+        // If codeblock not table or textarea, use normal formatting
+
         $line = htmlentities($line);
 
+        // If codeblock has raw attr, apply formatting
         if($is_codeblock && !_str_contains($codeblock_attr, 'raw')){
             $line = preg_replace($patterns[0], $patterns[1], $line);
         }

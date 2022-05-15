@@ -1,0 +1,1 @@
+dashboard/posts.html.php

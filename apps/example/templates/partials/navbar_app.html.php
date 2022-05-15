@@ -7,6 +7,7 @@
 		<li><?= linkto('new-post', [], 'New Post') ?></li>
 		<li><?= linkto('search', [], 'Search') ?></li>
 		<li><?= linkto('/post/1', [], 'Post 1') ?></li>
+		<li><?= linkto('/dashboard', [], 'Dashboard') ?></li>
 		<li><?= linkto('404', [], '404') ?></li>
 	</ul>
 </div>

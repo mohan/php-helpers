@@ -1,3 +1,38 @@
+# PHP Helpers
+
+23 functions for building PHP applications.
+
+A PHP application built using php-helpers library, may follow this directory structure -
+
+```textarea
+- application-name					-> Directory name of the application
+	* app.php						-> Router action functions
+	* template-helpers.php			-> Functions for use within templates
+	* tests.php						-> Test cases
+	- public						-> Web server document root for the application
+		* index.php					-> Index file of the application
+		- assets					-> Contains images, css and other assets
+			* style.css				-> Stylesheet
+	- templates						-> Templates for the application
+		- app						-> Action templates for the `app` sub-application
+			* root.html.php			-> get_root action template
+			* posts.html.php		-> get_posts action template
+		- layouts					-> Layouts for action templates
+			* 404.html.php			-> 404 page
+			* app.html.php			-> layout for `app` sub-application
+		- partials					-> Any partials for use within templates
+```
+
+In development environment, the application can be started using the below command.
+
+```php
+cd application-name/public
+php -S localhost:8000
+```
+
+
+
+
 # helpers.php
 
 ## Function _php_helpers_init
