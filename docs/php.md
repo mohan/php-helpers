@@ -291,14 +291,25 @@ Example:
 	?>
 
 	<p>This is a simple calculation. 1+2+3 = 6.</p>
+
+	<?php include "footer.php"; ?>
 </body>
 </html>
 ```
+footer.php
+```
+<p>This is an example PHP page.</p>
+<p>Use php include to include repeating HTML from a file.</p>
+```
+
 Output in Web Browser:
 ```
 Hello from PHP.
 6
 This is a simple calculation. 1+2+3 = 6.
+
+This is an example PHP page.
+Use php include to include repeating HTML from a file.
 ```
 
 1. Type the above code in a text editor like `notepad`.
