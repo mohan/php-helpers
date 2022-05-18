@@ -18,7 +18,7 @@ function initialize(){
             'a'             =>  '/^(root|docs|docs\/view|posts|new-post|post|search|src|example_redirect)$/',
             'post_action'   =>  '/^(create-post)$/',
             'id'            =>  '/^\d+$/',
-            'path'          =>  '/^(markdown|specification|database-layer|notes|colors|docs|php)$/',
+            'path'          =>  '/^(markdown|specification|database-layer|notes|colors|docs|php|php-helpers-catalyst-book)$/',
             'src_path'      =>  '/^(helpers|helpers-extra|test-helpers|utils|partials\/_debugpanel.html|' .
                                 'partials\/layout-404.html|partials\/layout-blank.html|partials\/layout-navbar.html|' .
                                 'partials\/layout-sidebar.html)\.php$/',

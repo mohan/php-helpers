@@ -10,6 +10,7 @@
 		<li><?= linkto('/docs/colors', [], 'Colors') ?></li>
 		<li><?= linkto('/docs/notes', [], 'Notes') ?></li>
 		<li><?= linkto('/docs/php', [], 'PHP') ?></li>
+		<li><?= linkto('/docs/php-helpers-catalyst-book', [], 'Book') ?></li>
 	</ul>
 
 	<h3>Sourcecode</h3>
