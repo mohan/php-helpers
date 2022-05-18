@@ -129,21 +129,21 @@ pre{
 .markdown .tab-count-6{ margin-left: 180px; }
 .markdown .tab-count-7{ margin-left: 210px; }
 .markdown .tab-count-8{ margin-left: 240px; }
-.markdown .md-codeblock.tab-count-1{ margin-left: 35px; }
-.markdown .md-codeblock.tab-count-2{ margin-left: 65px; }
-.markdown .md-codeblock.tab-count-3{ margin-left: 95px; }
-.markdown .md-codeblock.tab-count-5{ margin-left: 125px; }
-.markdown .md-codeblock.tab-count-6{ margin-left: 155px; }
-.markdown .md-codeblock.tab-count-7{ margin-left: 185px; }
-.markdown .md-code{ display: inline-block; background: #ddd; padding:0 7px; border-radius: 4px; font-size: 0.85em; }
-.markdown .md-codeblock{ font-size: 0.9em; background: #ddd; border: 1px solid #ccc; color: #000; padding:25px 25px 20px 25px; border-radius: 4px; margin-bottom: 5px; }
-.markdown .md-codeblock-php, .markdown .md-codeblock-dark{ background: #494949; border-color: #555; color: #fff; }
-.markdown .md-codeblock-table{ background: transparent; border-color: transparent; color: inherit; padding: 0; }
-.markdown .md-codeblock-table table { min-width: 50%; text-align: left; font-size: 1em; border: 1px solid #ccc; background: #fff; border-spacing: 0; border-collapse: collapse; }
-.markdown .md-codeblock-table table thead th { background: #FFCC00; padding: 7px 20px; }
-.markdown .md-codeblock-table table tbody td{ border-top: 1px solid #ddd; padding: 7px 20px; }
-.markdown .md-codeblock-textarea{ padding: 10px; }
-.markdown .md-codeblock-textarea textarea{ font-family: inherit; tab-size:4; border: 0; background: transparent; line-height: 1.85em; outline: 0; }
+.markdown .md-block.tab-count-1{ margin-left: 35px; }
+.markdown .md-block.tab-count-2{ margin-left: 65px; }
+.markdown .md-block.tab-count-3{ margin-left: 95px; }
+.markdown .md-block.tab-count-5{ margin-left: 125px; }
+.markdown .md-block.tab-count-6{ margin-left: 155px; }
+.markdown .md-block.tab-count-7{ margin-left: 185px; }
+.markdown .md-highlight{ display: inline-block; background: #ddd; padding:0 7px; border-radius: 4px; font-size: 0.85em; }
+.markdown .md-block{ font-size: 0.9em; background: #ddd; border: 1px solid #ccc; color: #000; padding:25px 25px 20px 25px; border-radius: 4px; margin-bottom: 5px; }
+.markdown .md-block-php, .markdown .md-block-dark{ background: #494949; border-color: #555; color: #fff; }
+.markdown .md-block-table{ background: transparent; border-color: transparent; color: inherit; padding: 0; }
+.markdown .md-block-table table { min-width: 50%; text-align: left; font-size: 1em; border: 1px solid #ccc; background: #fff; border-spacing: 0; border-collapse: collapse; }
+.markdown .md-block-table table thead th { background: #FFCC00; padding: 7px 20px; }
+.markdown .md-block-table table tbody td{ border-top: 1px solid #ddd; padding: 7px 20px; }
+.markdown .md-block-textarea{ padding: 10px; }
+.markdown .md-block-textarea textarea{ font-family: inherit; tab-size:4; border: 0; background: transparent; line-height: 1.85em; outline: 0; }
 .markdown .md-list-bullet, .markdown .md-list-number, .markdown .md-list-dash{ color: #888; }
 .markdown .md-task-list{ display: block; }
 .markdown .md-task-list-checked{ background: #004400; color: #fff; padding: 0 5px; border-radius: 3px; }
@@ -156,6 +156,7 @@ pre{
 .markdown h4{ font-size: 1.0em; }
 .markdown h5{ font-size: 0.9em; }
 .markdown .md-heading a.md-hash-link{ text-decoration: none; color: inherit; display: block; }
+.markdown .md-auto-index{ padding: 0 20px; }
 
 
 

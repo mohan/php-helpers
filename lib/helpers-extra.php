@@ -53,7 +53,7 @@ function label_         ( $html, $attrs=[] )       {   return tag( $html, $attrs
 
 function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 {
-    static $patterns = [[
+    $patterns = [[
         "/^(\t*)---$/",                                                 // hr
         "/\*\*\*([^*]+)\*\*\*/",                                        // bold italic
         "/\*\*([^*]+)\*\*/",                                            // italic
@@ -77,7 +77,7 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
         "<strike>$1</strike>",
         "<a href='$2$3'>$1</a>",
         "<a href='$1$2'>$1$2</a>",
-        "<span class='md-code'>$1</span>",
+        "<span class='md-highlight'>$1</span>",
         "$1<span class='md-task-list md-task-list-checked'><input type='checkbox' checked='checked' disabled='true' /> $2</span>",
         "$1<span class='md-task-list md-task-list-checked-striked'><input type='checkbox' checked='checked' disabled='true' /> <strike>$2</strike></span>",
         "$1<span class='md-task-list md-task-list-unchecked-striked'><input type='checkbox' disabled='true' /> <strike>$2</strike></span>",
@@ -88,99 +88,118 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
     ]];
     
     $out = '';
-    // Todo: Optimize, use substr.
-    $lines = explode("\n", $text);
-    $is_codeblock = false;
+    $is_block = false;
     $tab_size_for_current_block = 0;
-    $codeblock_attr = 'raw';
-    $codeblock_data = '';
+    $block_attr = 'raw';
+    $block_data = '';
     $data_table_header = [];
     $data_table = [];
     $data_table_i = 0;
+    $index = [];
+
     // Read line by line
-    foreach ($lines as $i => $line) {
+    $lines = explode("\n", $text);
+    foreach ($lines as $line) {
         $matches = [];
-        // Check if codeblock - both start and end
+        // Check if block - both start and end
         if(preg_match("/^(\t*)```([[:alnum:]\s]*)$/", $line, $matches)){
-            // If close of codeblock
-            if($is_codeblock){
-                if(_str_contains($codeblock_attr, 'table')){
+            // If close of block
+            if($is_block){
+                if(_str_contains($block_attr, 'table')){
                     $out .= tag_table($data_table_header, $data_table);
                     $data_table_header = [];
                     $data_table = [];
                     $data_table_i = 0;
                 }
 
-                if(_str_contains($codeblock_attr, 'textarea')){
-                    $out .= textarea($codeblock_data, [ 'readonly'=>true, 'rows' => substr_count($codeblock_data, "\n") + 1 ]);
+                if(_str_contains($block_attr, 'textarea')){
+                    $out .= textarea($block_data, [ 'readonly'=>true, 'rows' => substr_count($block_data, "\n") + 1 ]);
                 }
 
-                $is_codeblock = false;
+                $is_block = false;
                 $tab_size_for_current_block = 0;
-                $codeblock_attr = 'raw';
+                $block_attr = 'raw';
                 $out .= "</div>\n";
             } else {
                 // 2nd clodeblock = close of code block
-                $is_codeblock = true;
+                $is_block = true;
                 $tab_size_for_current_block = strlen($matches[1]);
-                $codeblock_attr = str_replace(' ', ' md-codeblock-', $matches[2]);
-                if(!$codeblock_attr) $codeblock_attr = 'plain';
-                $class_list = "tab-count-$tab_size_for_current_block md-codeblock-" . $codeblock_attr;
-                $out .= "<div class='md-codeblock $class_list'>\n";
+                $block_attr = str_replace(' ', ' md-block-', $matches[2]);
+                if(!$block_attr) $block_attr = 'plain';
+                $class_list = "tab-count-$tab_size_for_current_block md-block-" . $block_attr;
+                $out .= "<div class='md-block $class_list'>\n";
             }
             continue;
         }
 
-        // Collect everything between codeblocks for table
-        if($is_codeblock && _str_contains($codeblock_attr, 'table')){
-            if($data_table_i == 0) $data_table_header = str_getcsv(trim($line), '|');
-            else $data_table[] = str_getcsv(trim($line), '|');
+        // Collect everything between blocks
+        if($is_block){
+            if(_str_contains($block_attr, 'table')) {
+                if($data_table_i == 0) $data_table_header = str_getcsv(trim($line), '|');
+                else $data_table[] = str_getcsv(trim($line), '|');
 
-            $data_table_i++;
+                $data_table_i++;
+                continue;
+            } else if(_str_contains($block_attr, 'textarea')) {
+                $block_data .= "$line\n";
+                continue;
+            }
+
+            $line = htmlentities($line);
+
+            // If block does not contain raw attr, apply formatting
+            if(!_str_contains($block_attr, 'raw')){
+                $line = preg_replace($patterns[0], $patterns[1], $line);
+            }
+        } else if($enable_shortcodes && $shortcode_line = process_shortcodes($line)){
+            $out .= $shortcode_line;
             continue;
+        } else {
+            $line = preg_replace($patterns[0], $patterns[1], htmlentities($line));
         }
 
-        // Collect everything between codeblocks for textarea
-        if($is_codeblock && _str_contains($codeblock_attr, 'textarea')){
-            $codeblock_data .= $line . "\n";
-            continue;
-        }
-
-        // If codeblock not table or textarea, use normal formatting
-
-        $line = htmlentities($line);
-
-        // If codeblock has raw attr, apply formatting
-        if($is_codeblock && !_str_contains($codeblock_attr, 'raw')){
-            $line = preg_replace($patterns[0], $patterns[1], $line);
-        }
-
-        if(!$is_codeblock){
-            $line = preg_replace($patterns[0], $patterns[1], $line);
-        }
-
+        // # Headings
         if(preg_match("/^\t*(#{1,5})\s(.+)$/", $line, $matches)){
-            // headings
-            $_tag = 'h' . strlen($matches[1]);
-            $_id = strtolower(preg_replace("/[^a-zA-Z\d]/", '-', $matches[2]));
-            $out .= "<$_tag id='$_id' class='md-heading'><a class='md-hash-link' href='#$_id'>\n" . htmlentities($matches[2]) . "\n</a></$_tag>\n";
-            continue;
+            $_level = strlen($matches[1]);
+            $_tag = 'h' . $_level;
+            $_text = $matches[2];
+            $_id =  strtolower(preg_replace("/[^a-zA-Z\d]/", '-', trim($_text)));
+            if(array_key_exists($_id, $index)) $_id .= '-' . sizeof($index);
+
+            $index[$_id] = [
+                'level' => $_level,
+                'text'  => $_text,
+                'id'    => $_id
+            ];
+
+            $out .= "<$_tag id='$_id' class='md-heading'><a class='md-hash-link' href='#$_id'>\n" . htmlentities($_text) . "\n</a></$_tag>\n";
+        } else {
+            // Paragraphs
+            $tabs = '';
+            if(preg_match("/^\t+/", $line, $matches)){
+                $tabs = " class='tab-count-" . (strlen($matches[0]) - $tab_size_for_current_block) . "'";
+            }
+
+            $_tag = _str_contains($line, '<hr/>') ? 'div' : 'p';
+            $line = strlen(trim($line)) == 0 ? p('', ['class'=>'md-br']) : "<$_tag$tabs>\n" . $line . "\n</$_tag>\n";
+
+            $out .= $line;
         }
-
-        $tabs = '';
-        if(preg_match("/^\t+/", $line, $matches)){
-            $tabs = " class='tab-count-" . (strlen($matches[0]) - $tab_size_for_current_block) . "'";
-        }
-
-        $_tag = _str_contains($line, '<hr/>') ? 'div' : 'p';
-        $line = strlen(trim($line)) == 0 ? "<p class='md-br'></p>\n" : "<$_tag$tabs>\n" . $line . "\n</$_tag>\n";
-
-        if($enable_shortcodes && $shortcode_line = process_shortcodes($line)){
-            $line = $shortcode_line;
-        }
-
-        $out .= $line;
     }
+
+    // Index
+    $index_html = "<ul class='md-auto-index'>";
+    foreach ($index as $h) {
+        $index_html .= "<li class='tab-count-" . ($h['level'] - 1) . "'><a href='#{$h['id']}'>{$h['text']}</a></li>\n";
+    }
+    $index_html .= '</ul>';
+
+    $out = preg_replace(
+        [ '/\[markdown-auto-index\]/', '/\[markdown-auto-index heading\=&quot;(.+)&quot;\]/' ],
+        [ $index_html, "<h2>$1</h2>$index_html" ],
+        $out
+    );
+    // End Index
 
     $attrs_str = sizeof($attrs) == 0 ? "class='markdown'" : '';
     foreach ($attrs as $key => $value) $attrs_str .= "$key='" . htmlentities($value) . "' ";
@@ -247,7 +266,6 @@ function process_shortcodes($text)
             }
         }
 
-        // Todo: Optimize, insert using substr.
         $shortcodes_matches[] = '/' . preg_quote($full_shortcode) . '/';
         $shortcode_replacements[] = call_user_func("shortcode_" . str_replace('-', '_', $name), $args);
     }

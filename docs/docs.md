@@ -1,3 +1,5 @@
+[markdown-auto-index heading="Index"]
+
 # PHP Helpers
 
 23 functions for building PHP applications.
@@ -167,9 +169,13 @@ return render([
 ```
 
 Default template can be overriden by setting
+```
 '_template' => 'app/article-style-2.html.php',
+```
 and layout by setting
+```
 '_layout' => 'layouts/article.html.php'.
+```
 
 
 ## Function render_partial

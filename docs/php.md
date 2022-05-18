@@ -1,8 +1,4 @@
-# Index
-1. [HTML](#html)
-2. [CSS](#css)
-3. [PHP](#php)
-4. [Handy Code Snippets](#handy-code-snippets)
+[markdown-auto-index heading="Index"]
 
 ---
 
@@ -328,7 +324,7 @@ Use php include to include repeating HTML from a file.
 * Payment forms
 * Database applications
 
-# Keywords
+## Keywords
 ```table
 Name	|	Description
 Constants	|	Property values that don't change. - define('RADIUS', 100);
@@ -347,7 +343,7 @@ Functions	|	PHP Code that can be used to process variables. - array_sum($example
 
 # Handy Code Snippets
 
-### HTML Layout: Left sidebar
+## HTML Layout: Left sidebar
 ```php raw
 <html>
 <head>
@@ -402,7 +398,7 @@ Functions	|	PHP Code that can be used to process variables. - array_sum($example
 </html>
 ```
 
-### HTML Layout: Navigation Bar
+## HTML Layout: Navigation Bar
 ```php raw
 <html>
 <head>

@@ -1,3 +1,5 @@
+[markdown-auto-index heading="Index"]
+
 # Notes
 
 ## Tips for php.ini 
