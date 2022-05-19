@@ -30,7 +30,7 @@ popen,curl_exec,curl_multi_exec,parse_ini_file,show_source,fopen,file_put_conten
 
 These are some additional customizations to `php.ini`. `php.ini` contains comments about each of these.
 
-```table
+```table with-header
 directive	|	value
 max_input_time	|	3
 max_execution_time	|	3

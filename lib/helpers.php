@@ -515,6 +515,8 @@ function tag_table($headers, $data, $attrs=[], $cb=false)
     }
     $out .= "</tr>\n</thead>\n<tbody>\n";
 
+    if(sizeof($headers) == 0 && sizeof($data) > 0) $headers = array_keys($data[0]);
+
     foreach ($data as $row_key => $row) {
         $out .= "<tr>\n";
         foreach ($headers as $header_key => $header) {

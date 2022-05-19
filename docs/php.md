@@ -92,7 +92,7 @@ p{
 
 ## CSS Properties
 
-```table
+```table with-header
 Name		|	Description
 color		|	Text color (Color name or Hex color - #RGB - Red Green Blue)
 background	|	background color
@@ -113,7 +113,7 @@ font-weight	|	font-weight: bold; for bold text
 
 ### Color Names
 
-```table
+```table with-header
 Name   |    #RGB
 black  |    #000000 
 silver |    #c0c0c0 
@@ -325,7 +325,7 @@ Use php include to include repeating HTML from a file.
 * Database applications
 
 ## Keywords
-```table
+```table with-header
 Name	|	Description
 Constants	|	Property values that don't change. - define('RADIUS', 100);
 Variables	|	Property values that may be changed as needed. - $example = 6;

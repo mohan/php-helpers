@@ -40,7 +40,7 @@ php -S localhost:8000
 ## Function _php_helpers_init
 
 Sets the below values
-```table
+```table with-header
 Name | Value
 $_REQUEST['CURRENT_METHOD'] | get/post/patch/delete
 $_REQUEST['CURRENT_ACTION'] | Name of current filtered action
@@ -49,7 +49,7 @@ $_REQUEST['flash'] | flash message
 ```
 
 Sets constants, if not defined
-```table
+```table with-header
 Name | Value
 SECURE_HASH | Based on file name and other constants. Manually set if you need more random string.
 APP_DIR | "."
@@ -71,7 +71,7 @@ It ignores ROOT_URL.
 Regular expression can contain capture groups with names, which will also be added to $_GET.
 
 Example:
-```table
+```table with-header
 URI | Rewrites to
 /post/1 | /?a=post&id=1
 /docs/example | /?a=docs/view&path=example

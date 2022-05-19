@@ -102,7 +102,7 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
     foreach ($lines as $line) {
         $matches = [];
         // Check if block - both start and end
-        if(preg_match("/^(\t*)```([[:alnum:]\s]*)$/", $line, $matches)){
+        if(preg_match("/^(\t*)```([[:alnum:]\s-]*)$/", $line, $matches)){
             // If close of block
             if($is_block){
                 if(_str_contains($block_attr, 'table')){
@@ -135,7 +135,7 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
         // Collect everything between blocks
         if($is_block){
             if(_str_contains($block_attr, 'table')) {
-                if($data_table_i == 0) $data_table_header = str_getcsv(trim($line), '|');
+                if($data_table_i == 0 && _str_contains($block_attr, 'with-header')) $data_table_header = str_getcsv(trim($line), '|');
                 else $data_table[] = str_getcsv(trim($line), '|');
 
                 $data_table_i++;
