@@ -13,7 +13,6 @@ Reading Age	|	21 years and up
 Book about programming computer applications with HTML, CSS and PHP.
 
 * Everything about HTML, CSS and PHP.
-* A quick introduction to Information Technology.
 * An introduction to Relational Database Management Systems (RDBMS).
 * An introduction to Dynamic HTML with Javascript (DHTML).
 
@@ -28,11 +27,8 @@ About the author:
 
 ---
 
-## Information Technology
+Computer programming is about...
 
-Computer programming has been a growing field. With increased job opportunities, people are choosing computer programming as a career choice. A few people who have studied non-computer science fields have also choosen computer programming.
-
-Presently there are over a 500 firms in the IT sector. 
 
 
 Work in progress...
