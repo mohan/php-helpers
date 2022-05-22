@@ -38,11 +38,11 @@ function _php_helpers_init()
                                                             filemtime(__FILE__) .
                                                             filesize(__FILE__) .
                                                             join('-', _arr_get($_SERVER, [
-                                                                    'HTTP_HOST' => '',
-                                                                    'DOCUMENT_ROOT' => '',
-                                                                    'SERVER_SOFTWARE' => '',
-                                                                    'REMOTE_ADDR' => '',
-                                                                    'HTTP_USER_AGENT' => ''
+                                                                    'HTTP_HOST',
+                                                                    'DOCUMENT_ROOT',
+                                                                    'SERVER_SOFTWARE',
+                                                                    'REMOTE_ADDR',
+                                                                    'HTTP_USER_AGENT'
                                                             ])) .
                                                             sys_get_temp_dir()
                                                         ));
@@ -652,8 +652,8 @@ function _md5_authenticity_token($name, $value, $timestamp)
         base64_encode($value) . '-' .
         date('y-m-d', $timestamp) . '#' .
         join(' ', _arr_get($_SERVER, [
-                'SERVER_SOFTWARE' => '',
-                'REMOTE_ADDR' => ''
+                'SERVER_SOFTWARE',
+                'REMOTE_ADDR'
         ])) .
         SECURE_HASH
     );
@@ -733,8 +733,13 @@ function _path_join(...$parts)
 function _arr_get($arr, $keys, $prefix='')
 {
     $arr_out = [];
-    foreach ($keys as $key=>$default) {
-        $arr_out[$prefix.$key] = isset($arr[$key]) ? $arr[$key] : $default;
+    foreach ($keys as $key=>$value) {
+        if(is_int($key)){
+            $arr_out[$prefix.$value] = isset($arr[$value]) ? $arr[$value] : '';
+        } else {
+            // default is $value;
+            $arr_out[$prefix.$key] = isset($arr[$key]) ? $arr[$key] : $value;
+        }
     }
 
     return $arr_out;

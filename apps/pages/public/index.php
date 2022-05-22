@@ -17,7 +17,7 @@ if(!filter_routes([
 
 function get_page()
 {
-    extract(_arr_get($_GET, ['name'=>'']));
+    extract(_arr_get($_GET, ['name']));
 
     $path = APP_DIR . "data/$name.txt";
 

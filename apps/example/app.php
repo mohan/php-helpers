@@ -71,7 +71,7 @@ function initialize(){
 
 function get_search()
 {
-    extract(_arr_get($_GET, ['query'=>'']));
+    extract(_arr_get($_GET, ['query']));
 
     $results = false;
     if($query){
@@ -94,7 +94,7 @@ function get_search()
 
 function get_new_post()
 {
-    extract(_arr_get($_POST, ['title'=>'', 'body'=>'']));
+    extract(_arr_get($_POST, ['title', 'body']));
 
     return render([
         '_template'  => 'app/new_post.html.php',
@@ -107,7 +107,7 @@ function get_new_post()
 
 function get_posts()
 {
-    extract(_arr_get($_GET, ['title'=>'', 'body'=>'']));
+    extract(_arr_get($_GET, ['title', 'body']));
 
     return render([
         '_pagetitle' => 'Posts',
@@ -120,7 +120,7 @@ function get_posts()
 
 function get_post()
 {
-    extract(_arr_get($_GET, ['id'=>'', 'title'=>'', 'body'=>'']));
+    extract(_arr_get($_GET, ['id', 'title', 'body']));
     
     return render([
         '_template'  => 'app/posts.html.php',
