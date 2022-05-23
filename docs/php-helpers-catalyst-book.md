@@ -28,11 +28,47 @@ About the author:
 ---
 
 ```quote
-“ Computer programming is about writing software applications for own use, or for a team's use, or for use by everyone in a business. ”
+“ Computer programming is about writing software applications for own use, or for a team's use, or for use by everyone in an organization. ”
 ```
 
 
 Work in progress...
+
+
+## Exercises
+
+Here are a few exercise projects for practice. Choose three or more to gain more skill on HTML, CSS and PHP programming.
+
+1. Your personal website
+	Create your own personal website on your computer with five or more HTML pages.
+2. Contact form
+	Create a PHP contact form with `Name`, `Email`, and `Question` fields. Save the responses to a file or a database table.
+3. Notes application
+	Create a PHP application with a text form field, and save the results to a text file.
+4. Calculator application
+	Create a PHP application to add, substract, multiply or divide two numbers.
+5. Calendar application
+	Create a HTML or PHP application with calendar for current year.
+6. Comments application
+	Create a PHP application for users to read and write comments. Save the results to a text file or a database table.
+7. Photos application
+	Create a HTML or PHP application to display photos in a folder in gallery format.
+8. Music/Songs listing
+	Create a HTML page with your favorite music or songs list.
+7. Dictionary listing
+	Create a HTML page with a few words and their meanings from the dictionary.
+8. Todo List
+	Create a HTML page with a list of todo items.
+9. Font listing
+	Create a HTML page with a list of all fonts along with sample text.
+10. PHP Info
+	Create a PHP page with `php_info()` function and review the output.
+11. Color palettes
+	Create a HTML or PHP page with a list of color names, hex color codes and `background-color` blocks.
+
+
+
+
 
 ---
 
