@@ -111,6 +111,21 @@ font-weight	|	font-weight: bold; for bold text
 * CSS ID selector -	`#poem`
 	- An identifier can be applied to only one HTML tag.
 
+### Font Family
+
+```table with-header
+Type | font-family
+Serif | """Times New Roman""", Times, serif
+Serif | Georgia, serif
+Serif | Garamond, serif
+Sans-Serif | Arial, Helvetica, sans-serif
+Sans-Serif | Tahoma, Verdana, sans-serif
+Sans-Serif | """Trebuchet MS""", Helvetica, sans-serif
+Sans-Serif | Geneva, Verdana, sans-serif
+Monospace | """Courier New""", Courier, monospace
+Cursive | """Brush Script MT""", cursive
+```
+
 ### Color Names
 
 ```table with-header

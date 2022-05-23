@@ -62,7 +62,7 @@ touch public/index.php public/assets/style.css templates/layouts/app.html.php te
 ```
 
 * For API style application, refer to `apps/example/public/api.php`.
-* For background jobs, refer to `apps/example/cli.php`.
+* For background jobs, refer to `apps/example/jobs.php`.
 
 ---
 

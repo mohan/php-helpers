@@ -27,8 +27,10 @@ About the author:
 
 ---
 
-Computer programming is about...
-
+```quote
+“ Computer programming is about writing software applications for own use or for everyones use,
+or simply to learn computer programming. ”
+```
 
 
 Work in progress...
@@ -39,6 +41,7 @@ Work in progress...
 1. World Wide Web Consortium (W3C)
 	- http://www.w3.org/html
 	- http://www.w3.org/css
+	- http://www.w3.org/wiki/Common_HTML_entities_used_for_typography
 2. Official Apache Web Server Documentation
 	- http://httpd.apache.org
 3. Official MySQL Documentation

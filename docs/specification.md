@@ -1,6 +1,6 @@
 # Why PHP
 
-1. Open Source domain specific language for **web programming**.
+1. Free and Open Source domain specific language for **web programming**.
 	- HTML/CSS is an easy and good user interface alternative.
 	- `php -S localhost:8000` is available for desktop applications.
 2. PHP syntax is similar to C.

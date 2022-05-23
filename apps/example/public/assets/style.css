@@ -138,6 +138,7 @@ pre{
 .markdown .md-highlight{ display: inline-block; background: #ddd; padding:0 7px; border-radius: 4px; font-size: 0.85em; }
 .markdown .md-block{ font-size: 0.9em; background: #ddd; border: 1px solid #ccc; color: #000; padding:25px 25px 20px 25px; border-radius: 4px; margin-bottom: 5px; }
 .markdown .md-block-php, .markdown .md-block-dark{ background: #494949; border-color: #555; color: #fff; }
+.markdown .md-block-quote{ background: transparent; border: 0; border-left: 4px solid #00CC99; color: #333; font-family: "Times New Roman", Times, serif; font-size: 1.8em; line-height: 1.7em;}
 .markdown .md-block-table{ background: transparent; border-color: transparent; color: inherit; padding: 0; }
 .markdown .md-block-table table { min-width: 50%; text-align: left; font-size: 1em; border: 1px solid #ccc; background: #fff; border-spacing: 0; border-collapse: collapse; }
 .markdown .md-block-table table thead th { background: #FFCC00; padding: 7px 20px; }
