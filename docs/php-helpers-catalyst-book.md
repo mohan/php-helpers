@@ -28,8 +28,7 @@ About the author:
 ---
 
 ```quote
-“ Computer programming is about writing software applications for own use or for everyones use,
-or simply to learn computer programming. ”
+“ Computer programming is about writing software applications for own use, or for a team's use, or for use by everyone in a business. ”
 ```
 
 
