@@ -1,6 +1,6 @@
 # Project Management Tips
 
-1. Small team (<10) is a happy team.
+1. A small team (<10) is a happy team.
 2. Everyone in the team uses pen and paper for self `todo lists`.
 3. For a small centralized team, project management on paper is superior than computer project management.
 4. `Slow is good`. Allocate extra grace time for completion of todo items.

@@ -1,13 +1,17 @@
 <?php
 
-function _pagetitle($_pagetitle)
+function _pagetitle($_pagetitle, $args)
 {
-	switch($_REQUEST['CURRENT_ACTION']){
-		case 'root': $out = 'Example'; break;
-		case 'docs': $out = 'Docs - Example'; break;
-		case 'docs/view': $out = $_pagetitle . " - Docs - Example"; break;
-		default: $out = isset($_pagetitle) ? "$_pagetitle - Example" : 'Example'; break;
-	}
+    if($_pagetitle == 'Php-helpers-catalyst-book'){
+        return "PHP Helpers Catalyst - Book";
+    }
 
-	return $out;
+    switch($_REQUEST['CURRENT_ACTION']){
+        case 'root': $out = 'Example'; break;
+        case 'docs': $out = 'Docs - Example'; break;
+        case 'docs/view': $out = $_pagetitle . " - Docs - Example"; break;
+        default: $out = isset($_pagetitle) ? "$_pagetitle - Example" : 'Example'; break;
+    }
+
+    return $out;
 }

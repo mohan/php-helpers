@@ -280,3 +280,38 @@ layouts
 	float: left;
 	background: #f0f0f0;
 }
+
+
+
+@media print {
+	body{
+		background: #fff;
+		font-size: 7.5pt;
+		line-height: 1.55;
+	}
+
+	.layout-navbar #navbar, .layout-sidebar #sidebar, .layout-navbar, .layout-sidebar{
+		page-break-after: always;
+		margin-top: 0;
+		padding-top: 0;
+		background: #fff;
+	}
+
+	.layout-navbar #navbar, .layout-sidebar #sidebar{
+		display: none;
+	}
+
+	.layout-navbar #main, .layout-sidebar #main{
+		background: #fff;
+		width: 95%;
+	}
+
+	.markdown .md-block{
+		background: transparent;
+	}
+
+	.markdown .md-highlight{
+		background: transparent;
+		border: 1px solid #ddd;
+	}
+}
