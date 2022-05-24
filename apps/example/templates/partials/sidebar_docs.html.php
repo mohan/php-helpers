@@ -11,6 +11,7 @@
 		<li><?= linkto('/docs/notes', [], 'Notes') ?></li>
 		<li><?= linkto('/docs/php', [], 'PHP') ?></li>
 		<li><?= linkto('/docs/php-helpers-catalyst-book', [], 'Book') ?></li>
+		<li><?= linkto('/docs/project-management', [], 'Project Management Tips') ?></li>
 	</ul>
 
 	<h3>Sourcecode</h3>
