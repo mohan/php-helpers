@@ -652,8 +652,10 @@ function _md5_authenticity_token($name, $value, $timestamp)
         base64_encode($value) . '-' .
         date('y-m-d', $timestamp) . '#' .
         join(' ', _arr_get($_SERVER, [
+                'DOCUMENT_ROOT',
                 'SERVER_SOFTWARE',
-                'REMOTE_ADDR'
+                'REMOTE_ADDR',
+                'HTTP_USER_AGENT'
         ])) .
         SECURE_HASH
     );

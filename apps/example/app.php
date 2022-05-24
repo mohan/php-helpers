@@ -39,6 +39,9 @@ function initialize(){
     )) return get_404('Invalid URL params');
 
 
+    md5_cookie_set('user', '1');
+
+
     // Routes
     $response = filter_routes(
         // Get action, with required params from $_GET
