@@ -8,6 +8,8 @@
     - Example application to view project files in web browser.
 * Website
     - Example website.
+* Structure Only
+    - Example application without using php-helpers.
 
 
 ## To start an application, run

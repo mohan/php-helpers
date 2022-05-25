@@ -1,0 +1,317 @@
+html{
+    height: 100%;
+}
+
+body{
+    background: #f0f0f0;
+    padding: 0;
+    margin: 0;
+    font-family: monaco, consolas, "lucida console", "courier new", courier, monospace;
+    font-size: 0.8em;
+    line-height: 1.8em;
+    height: 100%;
+}
+a{
+    color: #0000AA;
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: underline;
+}
+
+input[type='text'], textarea{
+    width: 98%;
+    font-size: 1em;
+    padding: 10px 0.9%;
+    border-radius: 3px;
+    border: 1px solid #AAA;
+}
+label{
+    display: block;
+}
+pre{
+    tab-size:4;
+    font-family: inherit;
+    line-height: 1.5em;
+    overflow: scroll;
+}
+
+.panel{
+    background: #ddd;
+    padding: 15px 20px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.text-center{ text-align: center; }
+.text-left{ text-align: left; }
+.text-right{ text-align: right; }
+.text-justify{ text-align: justify; }
+
+.fg-0{ color: #000; }
+.fg-1{ color: #111; }
+.fg-2{ color: #222; }
+.fg-3{ color: #333; }
+.fg-4{ color: #444; }
+.fg-5{ color: #555; }
+.fg-6{ color: #666; }
+.fg-7{ color: #777; }
+.fg-8{ color: #888; }
+.fg-9{ color: #999; }
+.fg-A{ color: #AAA; }
+.fg-B{ color: #BBB; }
+.fg-C{ color: #CCC; }
+.fg-D{ color: #DDD; }
+.fg-E{ color: #EEE; }
+.fg-F{ color: #FFF; }
+
+.bg-0{ background-color: #000; }
+.bg-1{ background-color: #111; }
+.bg-2{ background-color: #222; }
+.bg-3{ background-color: #333; }
+.bg-4{ background-color: #444; }
+.bg-5{ background-color: #555; }
+.bg-6{ background-color: #666; }
+.bg-7{ background-color: #777; }
+.bg-8{ background-color: #888; }
+.bg-9{ background-color: #999; }
+.bg-A{ background-color: #AAA; }
+.bg-B{ background-color: #BBB; }
+.bg-C{ background-color: #CCC; }
+.bg-D{ background-color: #DDD; }
+.bg-E{ background-color: #EEE; }
+.bg-F{ background-color: #FFF; }
+
+.clear:after{
+    content: ' ';
+    clear: both;
+}
+
+.d-block{ display: block; }
+.d-inline-block{ display: inline-block; }
+.d-inline{ display: inline; }
+.w-100{ width: 100%; }
+.h-100{ height: 100%; }
+.border-top{ border-top: 1px solid #ccc; padding-top: 15px; }
+.border-bottom{ border-bottom: 1px solid #ccc; padding-bottom: 15px; }
+.list-style-none{ list-style: none; }
+.margin-0{ margin: 0; }
+.padding-0{ padding: 0; }
+
+
+.table{
+    margin-bottom: 20px;
+    border-spacing: 0;
+    border-collapse: collapse;;
+}
+
+.table.thead-text-left thead th{
+    text-align: left;
+}
+
+.table thead th{
+    border-bottom: 1px solid #777;
+    padding: 10px;
+}
+.table tbody td{
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+}
+
+
+.markdown p{ margin: 8px 0; }
+.markdown .md-br{ padding: 7px; }
+.markdown .tab-count-1{ margin-left: 30px; }
+.markdown .tab-count-2{ margin-left: 60px; }
+.markdown .tab-count-3{ margin-left: 90px; }
+.markdown .tab-count-4{ margin-left: 120px; }
+.markdown .tab-count-5{ margin-left: 150px; }
+.markdown .tab-count-6{ margin-left: 180px; }
+.markdown .tab-count-7{ margin-left: 210px; }
+.markdown .tab-count-8{ margin-left: 240px; }
+.markdown .md-block.tab-count-1{ margin-left: 35px; }
+.markdown .md-block.tab-count-2{ margin-left: 65px; }
+.markdown .md-block.tab-count-3{ margin-left: 95px; }
+.markdown .md-block.tab-count-5{ margin-left: 125px; }
+.markdown .md-block.tab-count-6{ margin-left: 155px; }
+.markdown .md-block.tab-count-7{ margin-left: 185px; }
+.markdown .md-highlight{ display: inline-block; background: #ddd; padding:0 7px; border-radius: 4px; font-size: 0.85em; }
+.markdown .md-block{ font-size: 0.9em; background: #ddd; border: 1px solid #ccc; color: #000; padding:25px 25px 20px 25px; border-radius: 4px; margin-bottom: 5px; }
+.markdown .md-block-php, .markdown .md-block-dark{ background: #494949; border-color: #555; color: #fff; }
+.markdown .md-block-quote{ background: transparent; border-radius:0; border: 0; border-left: 4px solid #FFCC00; color: #333; font-family: "Times New Roman", Times, serif; font-size: 1.65em; line-height: 1.7em;}
+.markdown .md-block-table{ background: transparent; border-color: transparent; color: inherit; padding: 0; }
+.markdown .md-block-table table { min-width: 50%; text-align: left; font-size: 1em; border: 1px solid #ccc; background: #fff; border-spacing: 0; border-collapse: collapse; }
+.markdown .md-block-table table thead th { background: #FFCC00; padding: 7px 20px; }
+.markdown .md-block-table table tbody td{ border-top: 1px solid #ddd; padding: 7px 20px; }
+.markdown .md-block-textarea{ padding: 10px; }
+.markdown .md-block-textarea textarea{ font-family: inherit; tab-size:4; border: 0; background: transparent; line-height: 1.85em; outline: 0; }
+.markdown .md-list-bullet, .markdown .md-list-number, .markdown .md-list-dash{ color: #888; }
+.markdown .md-task-list{ display: block; }
+.markdown .md-task-list-checked{ background: #004400; color: #fff; padding: 0 5px; border-radius: 3px; }
+.markdown .md-task-list-checked-striked{ background: #550000; color: #fff; padding: 0 5px; border-radius: 3px; }
+.markdown .md-task-list-unchecked-striked{ background: #550000; color: #fff; padding: 0 5px; border-radius: 3px; }
+.markdown .md-task-list-unchecked{ background: #ccc; padding: 0 5px; border-radius: 3px; }
+.markdown h1{ font-size: 1.6em; }
+.markdown h2{ font-size: 1.4em; }
+.markdown h3{ font-size: 1.2em; }
+.markdown h4{ font-size: 1.0em; }
+.markdown h5{ font-size: 0.9em; }
+.markdown .md-heading a.md-hash-link{ text-decoration: none; color: inherit;}
+.markdown .md-auto-index{ padding: 0 20px; }
+
+
+
+
+
+
+/***
+***
+
+layouts
+
+***
+***/
+
+/* navbar */
+.layout-navbar #navbar{
+    background: #FFCC00;
+    padding: 20px 0;
+    box-shadow: 1px 1px #cdb9b9;
+}
+.layout-navbar #navbar > h2{
+    text-align: center;
+    margin: 0 0 20px 0;
+}
+.layout-navbar #navbar ul{
+    text-align: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.layout-navbar #navbar ul li{
+    display: inline-block;
+    margin: 10px 1px;
+}
+.layout-navbar #navbar ul li a{
+    display: inline-block;
+    background: #CC9900;
+    padding: 5px 15px;
+    color: #FFFFFF;
+    text-decoration: none;
+    border-radius: 3px;
+    width: 110px;
+}
+.layout-navbar #navbar ul li a:hover{
+    background: #fff;
+    color: #000;
+}
+.layout-navbar #navbar ul li a.current-uri-link{
+    background: #fff;
+    color: #000;
+}
+
+.layout-navbar #main{
+    margin: 60px auto 0 auto;
+    padding: 0 30px 30px 30px;
+    max-width: 900px;
+}
+
+
+
+
+
+/* Sidebar */
+.layout-sidebar {
+    background: #FFCC00;
+}
+.layout-sidebar #sidebar{
+    float: left;
+    width: 15%;
+    min-width: 150px;
+    min-height: 100%;
+}
+.layout-sidebar #sidebar h2, .layout-sidebar #sidebar h3, .layout-sidebar #sidebar h4, .layout-sidebar #sidebar h5{
+    padding-left: 10px;
+    font-size: 1em;
+}
+.layout-sidebar #sidebar h3, .layout-sidebar #sidebar h4, .layout-sidebar #sidebar h5{
+    margin: 0;
+    background: #777;
+    color: #fff;
+    font-weight: normal;
+}
+.layout-sidebar #sidebar h3{ font-size: 0.85em; }
+.layout-sidebar #sidebar h4{ font-size: 0.75em; }
+.layout-sidebar #sidebar h5{ font-size: 0.65em; }
+
+.layout-sidebar #sidebar ul{
+    list-style: none;
+    padding-left: 14px;
+}
+.layout-sidebar #sidebar > ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.layout-sidebar #sidebar li{
+    /*border-bottom: 1px solid #DDAA14;*/
+}
+.layout-sidebar #sidebar li a{
+    display: block;
+    background: #CC9900;
+    padding: 5px 15px;
+    color: #FFFFFF;
+    text-decoration: none;
+    font-size: 0.85em;
+}
+.layout-sidebar #sidebar li a:hover{
+    background: #ddd;
+    color: #000;
+}
+.layout-sidebar #sidebar li a.current-uri-link{
+    background: #f0f0f0;
+    color: #000;
+}
+
+.layout-sidebar #main{
+    width: 80%;
+    min-height: 94.5%;
+    padding: 2% 2% 1% 3%;
+    float: left;
+    background: #f0f0f0;
+}
+
+
+
+@media print {
+    body{
+        background: #fff;
+        font-size: 7.5pt;
+        line-height: 1.55;
+    }
+
+    .layout-navbar #navbar, .layout-sidebar #sidebar, .layout-navbar, .layout-sidebar{
+        page-break-after: always;
+        margin-top: 0;
+        padding-top: 0;
+        background: #fff;
+    }
+
+    .layout-navbar #navbar, .layout-sidebar #sidebar{
+        display: none;
+    }
+
+    .layout-navbar #main, .layout-sidebar #main{
+        background: #fff;
+        width: 95%;
+    }
+
+    .markdown .md-block{
+        background: transparent;
+    }
+
+    .markdown .md-highlight{
+        background: transparent;
+        border: 1px solid #ddd;
+    }
+}
