@@ -4,6 +4,7 @@ Title		|	PHP Helpers Catalyst
 Author		|	M
 Year		|	2020
 Language	|	English
+Version		|	0.0.1
 Format		|	Digital Text
 Price		|	CCPL - Creative Commons Attribution (Free)
 Reading Age	|	21 years and up
@@ -14,7 +15,7 @@ Book about programming computer applications with HTML, CSS and PHP.
 
 * Everything about HTML, CSS and PHP.
 * An introduction to Relational Database Management Systems (RDBMS).
-* An introduction to Dynamic HTML with Javascript (DHTML).
+* A short introduction to Dynamic HTML with Javascript (DHTML).
 
 Dedicated to students looking for employment.
 
@@ -28,11 +29,11 @@ About the author:
 ---
 
 ```quote
-“ Computer programming is about writing software applications for own use, for team use, or for use by everyone in the organization. ”
+“ Computer programming is about writing software applications for own use, for team use, or for use by everyone in your organization. ”
 ```
 
 A computer has three parts -
-1. A display monitor
+1. A monitor for display
 2. A processing unit to run programs/software applications
 3. Input devices like a keyboard and a mouse
 
@@ -42,7 +43,9 @@ Software applications are written in a computer programming language. Examples a
 3. Java
 4. PHP
 
-## What is PHP
+---
+
+## 1. What is PHP
 PHP is one of the well known programming languages. It is designed specifically to be used with HTML, which is used for building graphical user interface (GUI) with XML (Extended Markup Language) like syntax.
 
 There are three languages related to PHP - 
@@ -58,14 +61,16 @@ There are three languages related to PHP -
 
 Before we study PHP, lets start with HTML, then CSS and finally PHP.
 
-## HTML
+---
+
+## 2. HTML
 Hyper Text Markup Language is used to build graphical user interfaces for a web browser. 
 
 A web browser is often associated with accessing the internet, websites and web pages. Looking closely, internet is not a requirement for building graphical user interfaces with HTML. An example of this is saving a webpage to your computer. It gets saved as file - `website.html`.
 
 Required tools for writing GUI with HTML
 1. Computer (without a network connection)
-2. Text editor like `Notepad++`
+2. Text editor like `Gedit`
 3. Web browser like `Firefox` to view the output
 
 Here is a sample of HTML code
@@ -83,7 +88,38 @@ Here is a sample of HTML code
 </html>
 ```
 
-### What is a web browser
+---
+
+### 2.1 What is a web browser
+
+A web browser is an application that is used to view web pages, it usually comes pre-installed on a computer. Web pages are built using HTML and CSS.
+
+```quote
+“ A web browser is the display canvas that renders graphical user interfaces built using HTML and CSS. ”
+```
+
+Additionally a web browser connects to the internet to fetch web pages, which are rendered in the display canvas.
+
+Steps a web browser follows
+1. User enters a URL (Uniform Resoure Locator) into the web browser's address bar.
+2. It connects to the internet and fetches the website/web page.
+3. It displays/renders the fetched web page HTML and CSS in the display canvas.
+	- Clicking a link in the display canvas, repeats the steps from 1, as if the user has entered the URL in the address bar.
+	- Which creates a flow from one HTML GUI screen to another.
+
+Internet is the networking component of a computer. Networking is of three kinds -
+1. Internet - World Wide Web (WWW)
+	- Examples are Internet websites, Internet email
+2. LAN - Local area network
+	- Examples are organization websites and web applications, organization email.
+3. localhost - Network that is internal to the computer, without needing a real network connection
+	- Examples are localhost web applications
+
+---
+### 2.2 HTML in-depth
+
+* Tags
+* Attributes
 
 
 Work in progress...
@@ -142,6 +178,6 @@ Here are a few exercise projects for practice. Choose three or more to gain more
 5. Mozilla Developer Network (MDN)
 	- http://developer.mozilla.org
 	- http://firefox.com
-6. Notepad++
-	- http://notepad-plus-plus.org
+6. Gedit
+	- https://wiki.gnome.org/Apps/Gedit
 
