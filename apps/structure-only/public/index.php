@@ -10,11 +10,8 @@ if(isset($_GET['post_action'])){
         case 'login':
             post_password();
             break;
-        case 'secure-page1':
-            get_page('secure-page1');
-            break;
-        case 'secure-page2':
-            get_page('secure-page2');
+        default:
+            get_404();
             break;
     }
 } else {
@@ -76,11 +73,18 @@ function post_password()
 {
     $action_name = $_GET['p'];
 
-    if(
-        md5($_POST['password']) == '202cb962ac59075b964b07152d234b70' &&
-        array_search($action_name, ['secure-page1', 'secure-page2']) !== false
-    ){
-        include '../templates/layouts/app.html.php';
+    if(md5($_POST['password']) == '202cb962ac59075b964b07152d234b70'){
+        switch ($action_name) {
+            case 'secure-page1':
+                get_page($action_name);
+                break;
+            case 'secure-page2':
+                get_page($action_name);
+                break;
+            default:
+                get_404();
+                break;
+        }
     } else {
         header("Location: /?" . http_build_query(['a'=>'login', 'p'=>$action_name]));
     }
