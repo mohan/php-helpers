@@ -28,6 +28,8 @@ About the author:
 
 ---
 
+## 1. Introduction
+
 ```quote
 “ Computer programming is about writing software applications for own use, for team use, or for use by everyone in your organization. ”
 ```
@@ -45,7 +47,7 @@ Software applications are written in a computer programming language. Examples a
 
 ---
 
-## 1. What is PHP
+## 2. What is PHP
 PHP is one of the well known programming languages. It is designed specifically to be used with HTML, which is used for building graphical user interface (GUI) with XML (Extended Markup Language) like syntax.
 
 There are three languages related to PHP - 
@@ -63,7 +65,7 @@ Before we study PHP, lets start with HTML, then CSS and finally PHP.
 
 ---
 
-## 2. HTML
+## 3. HTML
 Hyper Text Markup Language is used to build graphical user interfaces for a web browser. 
 
 A web browser is often associated with accessing the internet, websites and web pages. Looking closely, internet is not a requirement for building graphical user interfaces with HTML. An example of this is saving a webpage to your computer. It gets saved as file - `website.html`.
@@ -90,7 +92,7 @@ Here is a sample of HTML code
 
 ---
 
-### 2.1 What is a web browser
+### 3.1 What is a web browser
 
 A web browser is an application that is used to view web pages, it usually comes pre-installed on a computer. Web pages are built using HTML and CSS.
 
@@ -116,7 +118,7 @@ Internet is the networking component of a computer. Networking is of three kinds
 	- Examples are localhost web applications
 
 ---
-### 2.2 HTML in-depth
+### 3.2 HTML in-depth
 
 HTML is a markup language. It is designed to write formatted text, tables, graphics and layouts, by surrounding text with something called a `tag`.
 
@@ -142,7 +144,7 @@ HTML mainly contains two keywords
 
 ---
 
-#### 2.2.1 Tag
+#### 3.2.1 Tag
 A tag is one of the few pre-defined names specified by HTML specification, architectured by W3C - World Wide Web Consortium. It defines the formatting and specification of the enclosed text.
 
 Start tag - A tag starts with `less than (<)` symbol, `name` of the tag and `greater than (>)` symbol.
@@ -197,7 +199,7 @@ Here is a complete example
 
 ---
 
-#### 2.2.2 Attributes
+#### 3.2.2 Attributes
 An attribute is one of the few pre-defined names/properties applied to a HTML tag. It is encosled within quotes within the start tag.
 
 Here is the list of most used tags in HTML. Not all attributes apply to all tags.

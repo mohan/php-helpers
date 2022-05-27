@@ -172,7 +172,7 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
                 'id'    => $_id
             ];
 
-            $out .= "<$_tag id='$_id' class='md-heading'><a class='md-hash-link' href='#$_id'>\n" . htmlentities($_text) . "\n</a></$_tag>\n";
+            $out .= "</div><div id='md-section-$_id' class='md-section'><$_tag id='$_id' class='md-heading'><a class='md-hash-link' href='#$_id'>\n" . htmlentities($_text) . "\n</a></$_tag>\n";
         } else {
             // Paragraphs
             $tabs = '';
@@ -180,17 +180,23 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
                 $tabs = " class='tab-count-" . (strlen($matches[0]) - $tab_size_for_current_block) . "'";
             }
 
-            $_tag = _str_contains($line, '<hr/>') ? 'div' : 'p';
+            $_tag = _str_contains($line, '<hr/>') ? "div class='md-hr'" : 'p';
             $line = strlen(trim($line)) == 0 ? p('', ['class'=>'md-br']) : "<$_tag$tabs>\n" . $line . "\n</$_tag>\n";
 
             $out .= $line;
         }
     }
 
+    // Heading div proper enclosure
+    if(sizeof($index) > 0){
+        $out = "<div class='md-section'>$out</div>";
+        $out = str_replace("<div class='md-section'></div>", "", $out);
+    }
+
     // Index
     $index_html = "<ul class='md-auto-index'>";
     foreach ($index as $h) {
-        $index_html .= "<li class='tab-count-" . ($h['level'] - 1) . "'><a href='#{$h['id']}'>{$h['text']}</a></li>\n";
+        $index_html .= "<li class='tab-count-" . ($h['level'] - 1) . "'><a href='#md-section-{$h['id']}'>{$h['text']}</a></li>\n";
     }
     $index_html .= '</ul>';
 
