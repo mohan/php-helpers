@@ -189,8 +189,7 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 
     // Heading div proper enclosure
     if(sizeof($index) > 0){
-        $out = "<div class='md-section'>$out</div>";
-        $out = str_replace("<div class='md-section'></div>", "", $out);
+        $out = "<div>$out</div>";
     }
 
     // Index

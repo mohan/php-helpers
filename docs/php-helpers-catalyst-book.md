@@ -72,7 +72,7 @@ A web browser is often associated with accessing the internet, websites and web 
 
 Required tools for writing GUI with HTML
 1. Computer (without a network connection)
-2. Text editor like `GEdit`
+2. Text editor like `Gedit`
 3. Web browser like `Firefox` to view the output
 
 Here is a sample of HTML code
@@ -289,6 +289,6 @@ Here are a few exercise projects for practice. Choose three or more to gain more
 5. Mozilla Developer Network (MDN)
 	- http://developer.mozilla.org
 	- http://firefox.com
-6. GEdit
-	- https://wiki.gnome.org/Apps/Gedit
+6. Gedit
+	- http://wiki.gnome.org/Apps/Gedit
 
