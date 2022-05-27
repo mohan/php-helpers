@@ -1,6 +1,6 @@
 ```table with-header
 Property	|	Value
-Title		|	PHP Helpers Catalyst
+Book Title	|	PHP Helpers Catalyst
 Author		|	M
 Year		|	2020
 Language	|	English
@@ -70,21 +70,21 @@ A web browser is often associated with accessing the internet, websites and web 
 
 Required tools for writing GUI with HTML
 1. Computer (without a network connection)
-2. Text editor like `Gedit`
+2. Text editor like `GEdit`
 3. Web browser like `Firefox` to view the output
 
 Here is a sample of HTML code
 ```raw
 <html>
-<head>
-	<title>Sample HTML Page</title>
-</head>
-<body>
-	<h1>This is a Heading</h1>
-	<p>This is a paragraph</p>
-	<a href="example.html">Link to Example page</a>
-	<a href="example2.html">Link to Example 2 Page</a>
-</body>
+	<head>
+		<title>Sample HTML Page</title>
+	</head>
+	<body>
+		<h1>This is a Heading</h1>
+		<p>This is a paragraph</p>
+		<a href="example.html">Link to Example page</a>
+		<a href="example2.html">Link to Example 2 Page</a>
+	</body>
 </html>
 ```
 
@@ -118,9 +118,118 @@ Internet is the networking component of a computer. Networking is of three kinds
 ---
 ### 2.2 HTML in-depth
 
-* Tags
-* Attributes
+HTML is a markup language. It is designed to write formatted text, tables, graphics and layouts, by surrounding text with something called a `tag`.
 
+Here is an example
+```raw
+<h1>This is a Heading</h1>
+<p>This is a paragraph</p>
+```
+```table
+<h1>	|	h1 tag represents heading 1
+<p>	|	p tag represents paragraph
+```
+
+
+```quote
+“ HTML is a markup language for writing formatted text, tables, graphics and layouts. ”
+```
+
+
+HTML mainly contains two keywords
+1. Tag
+2. Attribute
+
+---
+
+#### 2.2.1 Tag
+A tag is one of the few pre-defined names specified by HTML specification, architectured by W3C - World Wide Web Consortium. It defines the formatting and specification of the enclosed text.
+
+Start tag - A tag starts with `less than (<)` symbol, `name` of the tag and `greater than (>)` symbol.
+Text - Then the text, followed by tag close,
+Close tag - which is `less than (<)` symbol, `forward slash ( /)`, `name` of the tag and `greater than (>)` symbol
+
+
+Here is the list of most used tags in HTML.
+
+```table with-headers
+Tag Name | Purpose
+h1	|	Heading 1 text
+h2	|	Heading 2 text
+h3	|	Heading 3 text
+h4	|	Heading 4 text
+h5	|	Heading 5 text
+p	|	Paragraph text
+strong	| Bold text
+em	| Italic/emphasized text
+a	|	Anchor tag, for linking to another HTML page
+img |	Image tag, for displaying images
+div	|	Enclosure tag to group multiple HTML tags. It appears in a new line.
+span	|	Enclosure tag to group multiple HTML tags. It does not create new line (inline).
+```
+
+Here is the list of additional tags used to define structure.
+
+```table with-headers
+Tag Name | Purpose
+html	|	Root tag that contains all HTML
+head	|	Head tag that contains information about the page, but not the content
+title	|	Title of the page, placed within the head tag
+body	|	Formatted text, tables, graphics must be placed within body tag
+link	|	Link to a CSS stylesheet
+style	|	CSS styles for the page
+```
+
+Here is a complete example
+```raw
+<html>
+	<head>
+		<title>Sample HTML Page</title>
+	</head>
+	<body>
+		<h1>This is a Heading</h1>
+		<p>This is a paragraph</p>
+		<a href="example.html">Link to Example page</a>
+		<a href="example2.html">Link to Example 2 Page</a>
+	</body>
+</html>
+```
+
+---
+
+#### 2.2.2 Attributes
+An attribute is one of the few pre-defined names/properties applied to a HTML tag. It is encosled within quotes within the start tag.
+
+Here is the list of most used tags in HTML. Not all attributes apply to all tags.
+
+```table with-headers
+Attribute Name | Purpose
+href	|	Applied on anchor tag, that specifies a link to page
+src		|	Source location of an image or graphic
+class	|	List of CSS style class names
+id		|	An identifier given to a tag
+```
+
+Here is a complete example
+```raw
+<html>
+	<head>
+		<title>Sample HTML Page</title>
+	</head>
+	<body>
+		<h1 id="main-heading">This is a Heading</h1>
+		<p class="color-green text-bold">This is a paragraph</p>
+		<a href="example.html">Link to Example page</a>
+		<a href="example2.html">Link to Example 2 Page</a>
+		<img src="graphic.jpg" />
+	</body>
+</html>
+```
+
+
+
+
+---
 
 Work in progress...
 
@@ -178,6 +287,6 @@ Here are a few exercise projects for practice. Choose three or more to gain more
 5. Mozilla Developer Network (MDN)
 	- http://developer.mozilla.org
 	- http://firefox.com
-6. Gedit
+6. GEdit
 	- https://wiki.gnome.org/Apps/Gedit
 
