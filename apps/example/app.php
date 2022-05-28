@@ -155,6 +155,8 @@ function get_docs_view()
         ]);
     }
 
+    $_REQUEST['LAYOUT_OPTIONS']['BODY_CLASS'] = _to_id($path);
+
     return render([
         '_layout'       =>  'layouts/docs.html.php',
         '_pagetitle'    =>  ucfirst($path),

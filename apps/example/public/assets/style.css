@@ -271,6 +271,7 @@ layouts
 	background: #FFCC00;
 }
 .layout-sidebar #sidebar{
+	background: #FFCC00;
 	float: left;
 	width: 15%;
 	min-width: 150px;
