@@ -504,14 +504,15 @@ function tag($html, $attrs=[], $name='div', $escape=true)
 
 
 // Returns HTML for table.
-function tag_table($headers, $data, $attrs=[], $cb=false)
+function tag_table($headers, $data, $attrs=[], $cb=false, $escape=true)
 {
     $attrs_str = '';
     foreach ($attrs as $key => $value) $attrs_str .= "$key='" . htmlentities($value) . "' ";
 
     $out = "<table $attrs_str><thead>\n<tr>";
     foreach ($headers as $header) {
-        $out .= '<th>' . htmlentities($header) . '</th>';
+        $value = $escape ? htmlentities($header) : $header;
+        $out .= "<th>$value</th>";
     }
     $out .= "</tr>\n</thead>\n<tbody>\n";
 
@@ -521,9 +522,12 @@ function tag_table($headers, $data, $attrs=[], $cb=false)
         $out .= "<tr>\n";
         foreach ($headers as $header_key => $header) {
             if($cb) {
-                $out .= "<td>" . call_user_func($cb, $row, $header, $row_key, $header_key) . "</td>\n";
+                $value = call_user_func($cb, $row, $header, $row_key, $header_key);
+                $out .= "<td>$value</td>\n";
             } else {
-                $out .= '<td>' . htmlentities( isset($row[$header]) ? $row[$header] : $row[$header_key] ) . "</td>\n";
+                $value = isset($row[$header]) ? $row[$header] : $row[$header_key];
+                $value = $escape ? htmlentities($value) : $value;
+                $out .= "<td>$value</td>\n";
             }
         }
         $out .= "</tr>\n";

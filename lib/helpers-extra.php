@@ -106,7 +106,7 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
             // If close of block
             if($is_block){
                 if(_str_contains($block_attr, 'table')){
-                    $out .= tag_table($data_table_header, $data_table);
+                    $out .= tag_table($data_table_header, $data_table, [], false, false);
                     $data_table_header = [];
                     $data_table = [];
                     $data_table_i = 0;
@@ -135,8 +135,19 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
         // Collect everything between blocks
         if($is_block){
             if(_str_contains($block_attr, 'table')) {
-                if($data_table_i == 0 && _str_contains($block_attr, 'with-header')) $data_table_header = str_getcsv(trim($line), '|');
-                else $data_table[] = str_getcsv(trim($line), '|');
+                if($data_table_i == 0 && _str_contains($block_attr, 'with-header')){
+                    $data_table_header = str_getcsv(trim($line), '|');
+                    foreach ($data_table_header as $key => $value) {
+                        $data_table_header[$key] = preg_replace($patterns[0], $patterns[1], htmlentities($value));
+                    }
+                } else {
+                    $table_row = str_getcsv(trim($line), '|');
+                    foreach ($table_row as $key => $value) {
+                        $table_row[$key] = preg_replace($patterns[0], $patterns[1], htmlentities($value));
+                    }
+
+                    $data_table[] = $table_row;
+                }
 
                 $data_table_i++;
                 continue;

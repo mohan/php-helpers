@@ -142,7 +142,8 @@ pre{
 .markdown .md-block-quote{ background: transparent; border-radius:0; border: 0; border-left: 4px solid #FFCC00; color: #333; font-family: "Times New Roman", Times, serif; font-size: 1.65em; line-height: 1.7em;}
 .markdown .md-block-table{ background: transparent; border-color: transparent; color: inherit; padding: 0; }
 .markdown .md-block-table table { min-width: 50%; text-align: left; font-size: 1em; border: 1px solid #ccc; background: #fff; border-spacing: 0; border-collapse: collapse; }
-.markdown .md-block-table table thead th { background: #FFCC00; padding: 7px 20px; }
+.markdown .md-block-table table thead { background: #FFCC00; }
+.markdown .md-block-table table thead th { padding: 7px 20px; }
 .markdown .md-block-table table tbody td{ border-top: 1px solid #ddd; padding: 7px 20px; }
 .markdown .md-block-textarea{ padding: 10px; }
 .markdown .md-block-textarea textarea{ font-family: inherit; tab-size:4; border: 0; background: transparent; line-height: 1.85em; outline: 0; }
@@ -167,6 +168,10 @@ pre{
     padding: 20px 2% 20px 3%;
 }
 
+.markdown.section-pages .md-highlight{
+    background: #cecece;
+}
+
 .markdown.section-pages .md-hr{
     display: none;
 }
@@ -176,9 +181,27 @@ pre{
 }
 
 @media print {
+	.markdown .md-block{
+		background: transparent;
+	}
+
+	.markdown .md-highlight{
+		background: transparent;
+		border: 1px solid #ddd;
+	}
+
+	.markdown .md-block-table table thead{
+		background: transparent;
+		border: 1px solid #FFCC00;
+	}
+
     .markdown.section-pages .md-section{
         background: transparent;
         border: 1px solid #ccc;
+    }
+
+    .markdown.section-pages .md-highlight{
+	    background: transparent;
     }
 }
 /* Markdown end */
@@ -327,14 +350,5 @@ layouts
 	.layout-navbar #main, .layout-sidebar #main{
 		background: #fff;
 		width: 95%;
-	}
-
-	.markdown .md-block{
-		background: transparent;
-	}
-
-	.markdown .md-highlight{
-		background: transparent;
-		border: 1px solid #ddd;
 	}
 }

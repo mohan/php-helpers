@@ -144,13 +144,30 @@ HTML mainly contains two keywords
 
 ---
 
-#### 3.2.1 Tag
+#### 3.2.1 HTML Tag
 A tag is one of the few pre-defined names specified by HTML specification, architectured by W3C - World Wide Web Consortium. It defines the formatting and specification of the enclosed text.
 
-Start tag - A tag starts with `less than (<)` symbol, `name` of the tag and `greater than (>)` symbol.
-Text - Then the text, followed by tag close,
-Close tag - which is `less than (<)` symbol, `forward slash ( /)`, `name` of the tag and `greater than (>)` symbol
+```table
+Start tag	|	A tag starts with `less than (<)` symbol, `name` of the tag and `greater than (>)` symbol.
+Text		|	Then the text, followed by tag close,
+Close tag	|	which is `less than (<)` symbol, `forward slash ( / )`, `name` of the tag and `greater than (>)` symbol
+```
 
+Here is an example
+```
+<`html`>
+	<`head`>
+		<`title`>Sample HTML Page<`/title`>
+	<`/head`>
+	<`body`>
+		<`h1`>This is a Heading<`/h1`>
+		<`p`>This is a paragraph<`/p`>
+		<`a` href="example.html">Link to Example page<`/a`>
+		<`a` href="example2.html">Link to Example 2 Page<`/a`>
+		<`img` src="graphic.jpg" />
+	<`/body`>
+<`/html`>
+```
 
 Here is the list of most used tags in HTML.
 
@@ -182,24 +199,11 @@ link	|	Link to a CSS stylesheet
 style	|	CSS styles for the page
 ```
 
-Here is a complete example
-```raw
-<html>
-	<head>
-		<title>Sample HTML Page</title>
-	</head>
-	<body>
-		<h1>This is a Heading</h1>
-		<p>This is a paragraph</p>
-		<a href="example.html">Link to Example page</a>
-		<a href="example2.html">Link to Example 2 Page</a>
-	</body>
-</html>
-```
+A few tags don't need a `close tag`, as in `<img>` tag in the example. These tags are called `self-closing` tags. They require a forward slash ( / ) at the end of the open tag.
 
 ---
 
-#### 3.2.2 Attributes
+#### 3.2.2 HTML Attributes
 An attribute is one of the few pre-defined names/properties applied to a HTML tag. It is encosled within quotes within the start tag.
 
 Here is the list of most used tags in HTML. Not all attributes apply to all tags.
@@ -213,17 +217,17 @@ id		|	An identifier given to a tag
 ```
 
 Here is a complete example
-```raw
+```
 <html>
 	<head>
 		<title>Sample HTML Page</title>
 	</head>
 	<body>
-		<h1 id="main-heading">This is a Heading</h1>
-		<p class="color-green text-bold">This is a paragraph</p>
-		<a href="example.html">Link to Example page</a>
-		<a href="example2.html">Link to Example 2 Page</a>
-		<img src="graphic.jpg" />
+		<h1 `id="main-heading"`>This is a Heading</h1>
+		<p `class="color-green text-bold"`>This is a paragraph</p>
+		<a `href="example.html"`>Link to Example page</a>
+		<a `class="color-yellow"` `href="example2.html"`>Link to Example 2 Page</a>
+		<img `src="graphic.jpg"` `width="100px"` `height="100px"` />
 	</body>
 </html>
 ```

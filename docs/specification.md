@@ -19,7 +19,7 @@
 
 # Project Specification for PHP Helpers
 
-* `PHP library` to build `http://localhost` and `Local Area Network (LAN)` applications for internal team use.
+* `PHP library` to build `http://localhost` and `Local Area Network (LAN)` applications for internal `team use`.
 	- Hosted using PHP built-in `php -S 127.0.0.1:8000` or `Apache`.
 	- VPN or similar is used for team member remote access, if needed.
 * Less secure is enough (for LAN).
