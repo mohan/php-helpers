@@ -4,13 +4,13 @@
 // License: GPL
 // Status: Work in progress
 
-$layout_options = _arr_get(
-					isset($_REQUEST['LAYOUT_OPTIONS']) ? $_REQUEST['LAYOUT_OPTIONS'] : [],
-					[
-						'HEAD'			=>	false,
-						'BODY_CLASS'	=>	''
-					]
-				);
+_arr_defaults(
+	$args,
+	[
+		'_render_head'	=>	false,
+		'_body_class'	=>	''
+	]
+);
 
 ?>
 <!DOCTYPE html>
@@ -19,9 +19,9 @@ $layout_options = _arr_get(
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<title><?= _pagetitle(isset($_pagetitle) ? $_pagetitle : '', $args) ?></title>
 	<link rel="stylesheet" type="text/css" href="<?= urlto_public_dir('assets/style.css'); ?>">
-	<?php if($layout_options['HEAD']) render_partial("partials/head_" . basename($layout), $args); ?>
+	<?php if($args['_render_head']) render_partial("partials/head_" . basename($layout), $args); ?>
 </head>
-<body id='<?= "action-" . $_REQUEST['ACTION_ID'] ?>' class='layout-blank <?= $layout_options['BODY_CLASS'] ?>'>
+<body id='<?= "action-" . $_REQUEST['ACTION_ID'] ?>' class='layout-blank <?= $args['_body_class'] ?>'>
 <?php require '_debugpanel.html.php'; ?>
 <?php render_partial($template, $args); ?>
 <?php require '_debugpanel.html.php'; ?>

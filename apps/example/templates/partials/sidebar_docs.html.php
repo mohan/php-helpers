@@ -9,8 +9,7 @@
 		<li><?= linkto('/docs/markdown', ['raw'=>true], 'Markdown') ?></li>
 		<li><?= linkto('/docs/colors', [], 'Colors') ?></li>
 		<li><?= linkto('/docs/notes', [], 'Notes') ?></li>
-		<li><?= linkto('/docs/php', [], 'PHP') ?></li>
-		<li><?= linkto('/docs/php-helpers-catalyst-book', [], 'Book') ?></li>
+		<li><?= linkto('/docs/php', [], 'PHP Tutorial') ?></li>
 		<li><?= linkto('/docs/project-management', [], 'Project Management Tips') ?></li>
 	</ul>
 

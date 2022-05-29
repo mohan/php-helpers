@@ -13,5 +13,6 @@
 	</ul>
 	<ul>
 		<li><?= linkto('/docs', [], 'Docs') ?></li>
+		<li><?= linkto('book', [], 'Book') ?></li>
 	</ul>
 </div>
