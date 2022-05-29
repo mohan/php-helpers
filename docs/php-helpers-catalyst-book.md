@@ -6,7 +6,7 @@ Year		|	2020
 Language	|	English
 Version		|	0.0.1
 Format		|	Digital Text
-Price		|	CCPL - Creative Commons Attribution (Free)
+Price		|	Free (CCPL License - Creative Commons Attribution)
 Reading Age	|	21 years and up
 ```
 
@@ -25,7 +25,7 @@ About the author:
 ## 1. Introduction
 
 ```quote
-“ Computer programming is about writing software applications for own use, for team use, or for use by everyone in your organization. ”
+Computer programming is about writing software applications for own use, for team use, or for use by everyone in your organization.
 ```
 
 A computer has three parts -
@@ -42,7 +42,7 @@ Software applications are written in a computer programming language. Examples a
 ---
 
 ## 2. What is PHP
-PHP is one of the many well known programming languages. It is designed specifically to be used with HTML, which is used for building graphical user interface (GUI) with XML (Extended Markup Language) like syntax.
+PHP is one of the many well known programming languages. It is designed specifically to be used with HTML, which is used for building `graphical user interface (GUI)` with XML (Extended Markup Language) like syntax.
 
 There are three languages related to PHP - 
 
@@ -52,9 +52,9 @@ There are three languages related to PHP -
 2. CSS - Cascading Style Sheets
 	* Colors, backgrounds and layouts part of an application
 3. PHP itself - PHP: Hypertext Preprocessor
+	* Interpreted programming language
 	* Executable part of an application
 	* Connects to a database for example
-	* Interpreted programming language
 
 Before we study PHP, lets start with `HTML`, then `CSS` and finally `PHP`.
 
@@ -70,7 +70,7 @@ Required tools for writing GUI with HTML
 2. Text editor like `Gedit`
 3. Web browser like `Firefox` to view the output
 
-Here is a sample of HTML code
+Here is a sample HTML code
 ```raw
 <html>
 	<head>
@@ -92,7 +92,7 @@ Here is a sample of HTML code
 A web browser is an application that is used to view web pages, it usually comes pre-installed on a computer. Web pages are built using HTML and CSS.
 
 ```quote
-“ A web browser is the display canvas that renders graphical user interfaces built using HTML and CSS. ”
+A web browser is the display canvas that renders graphical user interfaces built using HTML and CSS.
 ```
 
 Additionally a web browser connects to the internet to fetch web pages, which are rendered in the display canvas.
@@ -106,11 +106,15 @@ Steps a web browser follows
 
 Internet is the networking component of a computer. Networking is of three kinds -
 1. Internet - World Wide Web (WWW)
-	- Examples are Internet websites, Internet email
+	- Examples are internet websites and internet email
 2. LAN - Local area network
+	- Network that is within the `organization`, and not connected to the internet.
 	- Examples are organization websites and web applications, organization email.
 3. localhost - Network that is internal to the computer, without needing a real network connection
+	- Network that works only in the computer, not outside the computer.
 	- Examples are localhost web applications
+
+In this book we will focus on `localhost` PHP applications.
 
 ---
 ### 3.2 HTML in-depth
@@ -129,7 +133,7 @@ Here is an example
 
 
 ```quote
-“ HTML is a markup language for writing formatted text, tables, graphics and layouts. ”
+HTML is a markup language for writing formatted text, tables, graphics and layouts.
 ```
 
 
@@ -227,8 +231,109 @@ Here is a complete example
 </html>
 ```
 
+#### 3.2.3 HTML Practice
+
+This section combines everything you learned about HTML and shows you how to write a HTML page on your computer.
+
+Tools you need - 
+1. Text editor like Gedit
+2. Web browser like Firefox
+
+Follow the below steps to create your first HTML page -
+1. On your computer open the text editor and type the following HTML code.
+	```raw
+	<html>
+	<head>
+		<title>Example Page</title>
+	</head>
+	<body>
+		<h1>Heading 1</h1>
+		<p>This is a paragraph</p>
+		<h2>Heading 2</h2>
+		<p>Headings 1 to 6</p>
+		<a href="example1.html">Link to Example 1 page</a>
+		<a href="example2.html">Link to Example 2 Page</a>
+		<div>
+			<h3>More Paragraphs</h3>
+			<p>One more paragraph</p>
+		</div>
+	</body>
+	</html>
+	```
+2. Save the file as `example1.html`. Make sure the file extension is `.html`, not `.txt`.
+3. Open `example1.html` in the web browser to view the output.
+
+Similarly create `example2.html` for both the links to work correctly.
 
 ## 4. What is CSS
+
+CSS (Cascading Style Sheets) is used to add colors, backgrounds, fonts and layouts to a HTML page.
+
+```quote
+CSS is a property/value list of definitions on how HTML must appear according to specified colors, backgrounds, fonts and layouts.
+```
+
+Here is an example -
+```
+h1{
+	color: yellow;
+	background: black;
+}
+
+p{
+	color: white;
+	font-family: "arial";
+	font-size: 15px;
+}
+
+.special{
+	color: #000000;
+	background: #FFFFFF;
+}
+
+#main{
+	color: black;
+}
+```
+
+### 4.1 CSS Colors
+
+Colors are represented either by name of the color or by `hex color code`. Hex color codes are `RGB` values, representing `red`, `green`, `blue`.
+
+R or G or B value in RGB starts from `00` to `99`, then `AA` to `FF`. This is called hexadecimal representation. A set of three hex codes between `00` and `FF` together become an RGB color. 
+
+Here are a few examples
+
+```table with-header
+Name   |    #RGB ( #RRGGBB )
+Black  |    `#` `00` `00` `00` = `#000000`
+Silver |    `#` `C0` `C0` `C0` = `#C0C0C0`
+Gray   |    `#` `CC` `CC` `CC` = `#CCCCCC`
+White  |    `#` `FF` `FF` `FF` = `#FFFFFF`
+```
+
+Colors can be used either for text colors are text/box/layout backgrounds.
+
+### 4.2 CSS Fonts
+
+CSS font property can be used to define the font for a HTML text.
+
+```table with-header
+Type | font-family
+Serif | """Times New Roman""", Times, serif
+Serif | Georgia, serif
+Serif | Garamond, serif
+Sans-Serif | Arial, Helvetica, sans-serif
+Sans-Serif | Tahoma, Verdana, sans-serif
+Sans-Serif | """Trebuchet MS""", Helvetica, sans-serif
+Sans-Serif | Geneva, Verdana, sans-serif
+Monospace | """Courier New""", Courier, monospace
+Cursive | """Brush Script MT""", cursive
+```
+
+### 4.3 CSS Box Model
+
+### 4.4 CSS Layouts
 
 ## 5. PHP In-depth
 
@@ -268,9 +373,7 @@ Here is a complete example
 
 ### 7.3 Database Normalization
 
-### 7.4 Database Tasks
-
-### 7.5 MySQL and PHP
+### 7.4 MySQL and PHP
 
 ## 8. What is Javascript
 
