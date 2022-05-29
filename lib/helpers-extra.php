@@ -191,8 +191,14 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
                 $tabs = " class='tab-count-" . (strlen($matches[0]) - $tab_size_for_current_block) . "'";
             }
 
-            $_tag = _str_contains($line, '<hr/>') ? "div class='md-hr'" : 'p';
-            $line = strlen(trim($line)) == 0 ? p('', ['class'=>'md-br']) : "<$_tag$tabs>\n" . $line . "\n</$_tag>\n";
+            if(_str_contains($line, '<hr/>')){
+                $_tag = "div";
+                $tabs = $tabs ? str_replace("class='", "class='md-hr ", $tabs) : " class='md-hr'";
+            } else {
+                $_tag = 'p';
+            }
+
+            $line = strlen(trim($line)) == 0 ? p('', ['class'=>'md-br']) : "<$_tag$tabs>" . $line . "</$_tag>";
 
             $out .= $line;
         }
@@ -211,8 +217,8 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
     $index_html .= '</ul>';
 
     $out = preg_replace(
-        [ '/\[markdown-auto-index\]/', '/\[markdown-auto-index heading\=&quot;(.+)&quot;\]/' ],
-        [ $index_html, "<h2>$1</h2>$index_html" ],
+        [ '/<p>\[markdown-auto-index\]<\/p>/', '/<p>\[markdown-auto-index heading\=&quot;(.+)&quot;\]<\/p>/' ],
+        [ $index_html, "</div><div class='md-section md-auto-index-container'><h2>$1</h2>$index_html</div><div>" ],
         $out
     );
     // End Index

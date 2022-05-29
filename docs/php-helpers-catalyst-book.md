@@ -21,13 +21,7 @@ Dedicated to students looking for employment.
 
 About the author:
 20 years of experience working in a very large firm, programming applications with HTML, CSS, PHP and databases.
-
----
-
 [markdown-auto-index heading="Index"]
-
----
-
 ## 1. Introduction
 
 ```quote
@@ -48,7 +42,7 @@ Software applications are written in a computer programming language. Examples a
 ---
 
 ## 2. What is PHP
-PHP is one of the well known programming languages. It is designed specifically to be used with HTML, which is used for building graphical user interface (GUI) with XML (Extended Markup Language) like syntax.
+PHP is one of the many well known programming languages. It is designed specifically to be used with HTML, which is used for building graphical user interface (GUI) with XML (Extended Markup Language) like syntax.
 
 There are three languages related to PHP - 
 
@@ -60,12 +54,13 @@ There are three languages related to PHP -
 3. PHP itself - PHP: Hypertext Preprocessor
 	* Executable part of an application
 	* Connects to a database for example
+	* Interpreted programming language
 
-Before we study PHP, lets start with HTML, then CSS and finally PHP.
+Before we study PHP, lets start with `HTML`, then `CSS` and finally `PHP`.
 
 ---
 
-## 3. HTML
+## 3. What is HTML
 Hyper Text Markup Language is used to build graphical user interfaces for a web browser. 
 
 A web browser is often associated with accessing the internet, websites and web pages. Looking closely, internet is not a requirement for building graphical user interfaces with HTML. An example of this is saving a webpage to your computer. It gets saved as file - `website.html`.
@@ -233,7 +228,51 @@ Here is a complete example
 ```
 
 
+## 4. What is CSS
 
+## 5. PHP In-depth
+
+### 5.1 What is http
+
+#### 5.1.1 Apache Web Server
+
+#### 5.1.2 PHP Built-in Web Server
+
+#### 5.1.3 PHP CLI
+
+### 5.2 PHP Key Concepts
+
+#### 5.2.1 PHP Constants
+
+#### 5.2.2 PHP Variables
+
+#### 5.2.3 PHP Arrays
+
+#### 5.2.4 PHP Associative Arrays
+
+#### 5.2.5 PHP User-defined Functions
+
+#### 5.2.6 PHP Object Oriented Programming
+
+#### 5.2.7 PHP Templates
+
+### 5.3 PHP Built-in functions
+
+## 6. PHP Helpers Library
+
+## 7. What is RDBMS - Relational Database Management Systems
+
+### 7.1 SQL and MySQL
+
+### 7.2 Database Tables
+
+### 7.3 Database Normalization
+
+### 7.4 Database Tasks
+
+### 7.5 MySQL and PHP
+
+## 8. What is Javascript
 
 ---
 
@@ -242,7 +281,7 @@ Work in progress...
 ---
 
 
-## Exercises
+## 9. Exercises
 
 Here are a few exercise projects for practice. Choose three or more to gain more skill on HTML, CSS and PHP programming.
 
@@ -273,10 +312,6 @@ Here are a few exercise projects for practice. Choose three or more to gain more
 13. Color palettes
 	* Create a HTML or PHP page with a list of color names, hex color codes and `background-color` blocks.
 
-
-
-
-
 ---
 
 ## References
@@ -295,4 +330,3 @@ Here are a few exercise projects for practice. Choose three or more to gain more
 	- http://firefox.com
 6. Gedit
 	- http://wiki.gnome.org/Apps/Gedit
-

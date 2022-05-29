@@ -13,6 +13,7 @@
 	</ul>
 	<ul>
 		<li><?= linkto('/docs', [], 'Docs') ?></li>
+		<li><?= linkto('/docs/php', [], 'PHP Tutorial') ?></li>
 		<li><?= linkto('book', [], 'Book') ?></li>
 	</ul>
 </div>

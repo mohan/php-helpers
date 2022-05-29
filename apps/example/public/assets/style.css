@@ -159,7 +159,10 @@ pre{
 .markdown h4{ font-size: 1.0em; }
 .markdown h5{ font-size: 0.9em; }
 .markdown .md-heading a.md-hash-link{ text-decoration: none; color: inherit;}
-.markdown .md-auto-index{ padding: 0 20px; }
+.markdown .md-auto-index-container{ page-break-before: always; page-break-after: always; }
+.markdown .md-auto-index{ padding: 0 20px; line-height: 2.2em; }
+.markdown.section-pages .md-auto-index li{ border-bottom: 1px solid #eee; }
+.markdown .md-auto-index li a{ display: block; }
 
 .markdown.section-pages .md-section{
     background: #fafafa;
@@ -197,7 +200,7 @@ pre{
 
     .markdown.section-pages .md-section{
         background: transparent;
-        border: 1px solid #ccc;
+        border: 1px solid #eee;
     }
 
     .markdown.section-pages .md-highlight{
@@ -350,6 +353,7 @@ layouts
 
 	.layout-navbar #main, .layout-sidebar #main{
 		background: #fff;
-		width: 95%;
+		width: 100%;
+		padding: 0;
 	}
 }
