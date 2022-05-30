@@ -4,7 +4,7 @@ Book Title	|	PHP Helpers Catalyst
 Author		|	M
 Year		|	2020
 Language	|	English
-Version		|	0.0.1
+Version		|	Working Draft 0.0.1
 Format		|	Digital Text
 Price		|	Free (CCPL License - Creative Commons Attribution)
 Reading Age	|	21 years and up
@@ -294,6 +294,13 @@ p{
 #main{
 	color: black;
 }
+```
+
+CSS Selectors are used to select tags to apply styles.
+```table
+h1, p		|	Tag name selector		|	Apply specified styles to tag names
+.special	|	Class name selector		|	Apply to tags with `class` attribute with value `special`
+#main		|	Id/identifier selector	|	Apply to tag with `id` attribute with value `main`
 ```
 
 ### 4.1 CSS Colors
