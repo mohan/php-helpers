@@ -341,9 +341,123 @@ Monospace | """Courier New""", Courier, monospace
 Cursive | """Brush Script MT""", cursive
 ```
 
-##+ 4.3 CSS Box Model
+##+ 4.3 CSS Practice
 
-##+ 4.4 CSS Layouts
+This section combines what you learned about CSS and shows you how to write CSS styles on your computer.
+
+Tools you need - 
+1. Text editor like Gedit
+2. Web browser like Firefox
+
+Follow the below steps to create your first CSS styles -
+1. On your computer open the text editor and type the following CSS code.
+	```raw
+	h1{
+		color: yellow;
+		background: black;
+	}
+
+	p{
+		color: white;
+		font-family: "arial";
+		font-size: 15px;
+	}
+
+	.special{
+		color: #000000;
+		background: #FFFFFF;
+	}
+
+	#main{
+		color: black;
+	}
+	```
+2. Save the file as `styles.css`. Make sure the file extension is `.css`, not `.txt`.
+3. In `example1.html` file, within `<head>` tag
+	- Type the line `<link rel="stylesheet" type="text/css" href="styles.css">`.
+3. Open `example1.html` in the web browser to view the output.
+
+
+##+ 4.4 CSS Box Model
+
+In addition to colors and fonts, CSS supports margin, padding and border properties for a tag, on four sides. It is called the `CSS Box Model`.
+
+```table
+Margin  | Outside space around the text
+Border  | Border line around the text
+Padding | Inside space around the text
+```
+
+Here is an illustration -
+```textarea
+` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` `
+`   `   `   `     MARGIN      `   `   `   `
+`   `   `   ` ` ` ` ` ` ` ` ` `   `   `   `
+`   `   `   `     BORDER      `   `   `   `
+` M ` B ` P ` ` ` ` ` ` ` ` ` ` P ` B ` M `
+` A ` O ` A `     PADDING     ` A ` O ` A `
+` R ` R ` D ------------------- D ` R ` R `
+` G ` D ` D |      TEXT       | D ` D ` G `
+` I ` E ` I ------------------- I ` E ` I `
+` N ` R ` N `     PADDING     ` N ` R ` N `
+`   `   ` G ` ` ` ` ` ` ` ` ` ` G `   `   `
+`   `   `   `     BORDER      `   `   `   `
+`   `   `   ` ` ` ` ` ` ` ` ` `   `   `   `
+`   `   `   `     MARGIN      `   `   `   `
+` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` `
+```
+
+### CSS property names
+```table
+margin-left     | Margin to the left
+margin-right    | Margin to the right
+margin-top      | Margin on the top
+margin-bottom   | Margin at the bottom
+padding-left    | Padding to the left
+padding-right   | Padding to the right
+padding-top     | Padding on the top
+padding-bottom  | Padding at the bottom
+border-left     | Border to the left
+border-right    | Border to the right
+border-top      | Border on the top
+border-bottom   | Border at the bottom
+```
+
+Example
+```
+p{
+	margin-left: 10px;
+	padding-top: 20px;
+	border-right: 1px solid #000000;
+}
+```
+
+There is a `shorthand`(shortcut) for writing values for all four sides at once.
+```table
+margin  | TOPpx  RIGHTpx BOTTOMpx LEFTpx
+padding | TOPpx  RIGHTpx BOTTOMpx LEFTpx
+border  | BORDERpx BORDER-STYLE BORDER-COLOR
+```
+
+Example
+```
+p{
+	margin: 10px 10px 10px 10px;
+	padding: 10px 10px 10px 10px;
+	border: 1px solid #000000;
+}
+```
+
+Additionally, border property supports the below property names.
+```table
+border-width  |  WIDTHpx
+border-color  |  #RGB
+border-style  |  solid or dotted or dashed or ridged
+```
+
+##+ 4.5 CSS Layouts
+
+##+ 4.6 CSS Concepts
 
 #+ 5. PHP In-depth
 
