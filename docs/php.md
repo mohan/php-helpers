@@ -1,12 +1,13 @@
-[markdown-auto-index heading="Index"]
+#- Index
+[markdown-auto-index]
 
 ---
 
-# HTML
+#+ HTML
 
 HTML (Hyper Text Markup Language) is a computer language for writing formatted text on a computer.
 
-## Uses
+##+ Uses
 Websites are built using HTML.
 
 Example:
@@ -38,7 +39,7 @@ Example:
 3. Open `example.html` in a web browser to view the output.
 4. Similarly, create `example2.html` for the second link to work correctly.
 
-## Keywords
+##+ Keywords
 * Tags
 	- `<h1>` to `<h6>` heading tags
 	- Link (Anchor) - `<a>` tag
@@ -53,7 +54,7 @@ Example:
 ---
 
 
-# CSS
+#+ CSS
 
 CSS (Cascading Style Sheets) are used to add colors and layouts to a HTML page.
 
@@ -90,7 +91,7 @@ p{
 	- Type the line `<link rel="stylesheet" type="text/css" href="styles.css">`.
 3. Open `example.html` in a web browser to view the output with colors.
 
-## CSS Properties
+##+ CSS Properties
 
 ```table with-header
 Name		|	Description
@@ -101,7 +102,7 @@ font-size	|	Text size
 font-weight	|	font-weight: bold; for bold text
 ```
 
-## Keywords
+##+ Keywords
 
 * Property name - `color`
 * Property value - `green`
@@ -111,7 +112,7 @@ font-weight	|	font-weight: bold; for bold text
 * CSS ID selector -	`#poem`
 	- An identifier can be applied to only one HTML tag.
 
-### Font Family
+###+ Font Family
 
 ```table with-header
 Type | font-family
@@ -126,7 +127,7 @@ Monospace | """Courier New""", Courier, monospace
 Cursive | """Brush Script MT""", cursive
 ```
 
-### Color Names
+###+ Color Names
 
 ```table with-header
 Name   |    #RGB
@@ -281,7 +282,7 @@ yellowgreen|    #9acd32
 
 ---
 
-# PHP
+#+ PHP
 
 PHP is a scripting/templating computer programming language.
 
@@ -330,7 +331,7 @@ Use php include to include repeating HTML from a file.
 4. Run `php -S localhost:8000` in `command line`.
 5. Open `http://localhost:8000/example.php` in a web browser to view the output.
 
-## Uses
+##+ Uses
 
 * Websites (HTML/CSS - Information Technology)
 * Dynamic HTML Web Applications
@@ -339,7 +340,7 @@ Use php include to include repeating HTML from a file.
 * Payment forms
 * Database applications
 
-## Keywords
+##+ Keywords
 ```table with-header
 Name	|	Description
 Constants	|	Property values that don't change. - define('RADIUS', 100);
@@ -356,9 +357,9 @@ Functions	|	PHP Code that can be used to process variables. - array_sum($example
 
 ---
 
-# Handy Code Snippets
+#+ Handy Code Snippets
 
-## HTML Layout: Left sidebar
+##+ HTML Layout: Left sidebar
 ```php raw
 <html>
 <head>
@@ -413,7 +414,7 @@ Functions	|	PHP Code that can be used to process variables. - array_sum($example
 </html>
 ```
 
-## HTML Layout: Navigation Bar
+##+ HTML Layout: Navigation Bar
 ```php raw
 <html>
 <head>

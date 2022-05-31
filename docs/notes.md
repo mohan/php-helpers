@@ -1,10 +1,13 @@
-[markdown-auto-index heading="Index"]
-
 # Notes
 
-## Tips for php.ini 
+#- Index
+[markdown-auto-index]
 
-### Include path
+---
+
+#+ Tips for php.ini 
+
+##+ Include path
 
 Instead of copying `php-helpers`, set path to `php-helpers` parent directory using `set_include_path`.
 This can be done in `php.ini` as well. `include_path=".;c:\php\includes"`
@@ -17,7 +20,7 @@ set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 include 'php-helpers/lib/helpers.php';
 ```
 
-### Restrict PHP functions 
+##+ Restrict PHP functions 
 
 `disable_functions` directive in `php.ini` can be used to disable internal functions.
 
@@ -26,7 +29,7 @@ disable_functions = eval,mail,sendmail,symlink,exec,passthru,shell_exec,system,p
 popen,curl_exec,curl_multi_exec,parse_ini_file,show_source,fopen,file_put_contents,php_info
 ```
 
-### Other directive modifications
+##+ Other directive modifications
 
 These are some additional customizations to `php.ini`. `php.ini` contains comments about each of these.
 
@@ -45,7 +48,7 @@ allow_url_fopen	|	Off
 ```
 
 
-## Offline PHP Documentation
+#+ Offline PHP Documentation
 
 Download documentation from PHP website and extract it to a location.
 Save the below file with filename `php-docs` to path and `chmod +x`.
@@ -58,7 +61,7 @@ php -S 127.0.0.1:9000 -t path-to-docs/php-chunked-xhtml
 Files can be opened directly in the browser, without the web server. `chm` format is also available.
 
 
-## PHP built-in web server (for development environment only)
+#+ PHP built-in web server (for development environment only)
 
 ```dark
 php -S 127.0.0.1:8000
@@ -69,7 +72,7 @@ Options:
 -t <docroot>     Specify document root <docroot> for built-in web server.
 
 
-## PHP in command line
+#+ PHP in command line
 
 ```php
 // Run single lines

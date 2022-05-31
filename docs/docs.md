@@ -1,5 +1,3 @@
-[markdown-auto-index heading="Index"]
-
 # PHP Helpers
 
 23 functions for building PHP applications.
@@ -33,11 +31,15 @@ php -S localhost:8000
 ```
 
 
+#- Index
+[markdown-auto-index]
 
 
-# helpers.php
 
-## Function _php_helpers_init
+
+#+ helpers.php
+
+##+ Function _php_helpers_init
 
 Sets the below values
 ```table with-header
@@ -63,7 +65,7 @@ If you modified any REQUEST values, call this to reset above vars.
 
 
 
-## Function filter_rewrite_uri
+##+ Function filter_rewrite_uri
 
 Rewrite current $_SERVER['REQUEST_URI'] or PATH_INFO into $_GET variables, based on rewrite rules.
 It ignores ROOT_URL.
@@ -88,7 +90,7 @@ filter_rewrite_uri([
 
 
 
-## Function filter_permitted_params
+##+ Function filter_permitted_params
 
 Permitted GET, POST, cookie params, with strlen/regex check and typecasting
 
@@ -123,7 +125,7 @@ filter_permitted_params(
 ```
 
 
-## Function router
+##+ Function router
 
 Map action names to functions and call current action function.
 Action name function must be named METHODNAME_ACTIONNAME without special characters, ex: function get_list()
@@ -152,7 +154,7 @@ Notes:
 
 
 
-## Function render
+##+ Function render
 
 Renders a template from TEMPLATES_DIR. Accepts 1 or more arrays of arguments to render.
 
@@ -178,7 +180,7 @@ and layout by setting
 ```
 
 
-## Function render_partial
+##+ Function render_partial
 
 Same as render, but renders a partial from templates directory.
 Can be used to render a partial template from within a layout/template.
@@ -188,7 +190,7 @@ Example:
 <?= render('partials/sidebar.html.php') ?>
 ```
 
-## Function redirectto
+##+ Function redirectto
 
 Redirects to an action.
 
@@ -197,14 +199,14 @@ Example:
 redirectto('article', ['id'=>1]);
 ```
 
-## Function get_404
+##+ Function get_404
 
 Built-in 404 error action.
 Define CUSTOM_GET_404 to replace it with your own action.
 
 
 
-## Function urlto_public_dir
+##+ Function urlto_public_dir
 
 URL to an css/image/other asset in public directory.
 
@@ -216,55 +218,55 @@ Example:
 urlto_public_dir('assets/style.css');
 ```
 
-## Function urltoget
+##+ Function urltoget
 
 Returns URL to a GET action.
 
 
-## Function urltopost
+##+ Function urltopost
 
 Returns URL to a post action.
 
 
-## Function formto
+##+ Function formto
 
 Returns HTML for a form with fields.
 
 
-## Function form_field
+##+ Function form_field
 
 Returns HTML for a form field.
 
 
-## Function linkto
+##+ Function linkto
 
 Returns HTML for a link to a GET action.
 
 
-## Function tag
+##+ Function tag
 
 Returns HTML for a tag.
 
 It auto htmlentities for safe user input.
 
 
-## Function tag_table
+##+ Function tag_table
 
 Returns HTML for a table, for given headers and data.
 
 
-## Function flash_set
+##+ Function flash_set
 
 Sets flash cookie flash message.
 For post requests, or flash in current request, set $in_current_request to true.
 
 
-## Function flash_clear
+##+ Function flash_clear
 
 Clears flash message.
 
 
-## Function _filter_set_flash
+##+ Function _filter_set_flash
 
 Sets $_REQUEST['flash'] message set from previous request, and deletes the cookie.
 

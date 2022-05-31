@@ -10,7 +10,7 @@ Price		|	Free (CCPL License - Creative Commons Attribution)
 Reading Age	|	21 years and up
 ```
 
-# PHP Helpers Catalyst
+#- PHP Helpers Catalyst
 Book about programming computer applications with HTML, CSS and PHP.
 
 * Everything about HTML, CSS and PHP.
@@ -21,8 +21,10 @@ Dedicated to students looking for employment.
 
 About the author:
 20 years of experience working in a very large firm, programming applications with HTML, CSS, PHP and databases.
-[markdown-auto-index heading="Index"]
-## 1. Introduction
+
+#- Index
+[markdown-auto-index]
+#+ 1. Introduction
 
 ```quote
 Computer programming is about writing software applications for own use, for team use, or for use by everyone in your organization.
@@ -41,7 +43,7 @@ Software applications are written in a computer programming language. Examples a
 
 ---
 
-## 2. What is PHP
+#+ 2. What is PHP
 PHP is one of the many well known programming languages. It is designed specifically to be used with HTML, which is used for building `graphical user interface (GUI)` with XML (Extended Markup Language) like syntax.
 
 There are three languages related to PHP - 
@@ -60,7 +62,7 @@ Before we study PHP, lets start with `HTML`, then `CSS` and finally `PHP`.
 
 ---
 
-## 3. What is HTML
+#+ 3. What is HTML
 Hyper Text Markup Language is used to build graphical user interfaces for a web browser. 
 
 A web browser is often associated with accessing the internet, websites and web pages. Looking closely, internet is not a requirement for building graphical user interfaces with HTML. An example of this is saving a webpage to your computer. It gets saved as file - `website.html`.
@@ -87,7 +89,7 @@ Here is a sample HTML code
 
 ---
 
-### 3.1 What is a web browser
+##+ 3.1 What is a web browser
 
 A web browser is an application that is used to view web pages, it usually comes pre-installed on a computer. Web pages are built using HTML and CSS.
 
@@ -117,7 +119,7 @@ Internet is the networking component of a computer. Networking is of three kinds
 In this book we will focus on `localhost` PHP applications.
 
 ---
-### 3.2 HTML in-depth
+##+ 3.2 HTML in-depth
 
 HTML is a markup language. It is designed to write formatted text, tables, graphics and layouts, by surrounding text with something called a `tag`.
 
@@ -143,7 +145,7 @@ HTML mainly contains two keywords
 
 ---
 
-#### 3.2.1 HTML Tag
+###+ 3.2.1 HTML Tag
 A tag is one of the few pre-defined names specified by HTML specification, architectured by W3C - World Wide Web Consortium. It defines the formatting and specification of the enclosed text.
 
 ```table
@@ -202,7 +204,7 @@ A few tags don't need a `close tag`, as in `<img>` tag in the example. These tag
 
 ---
 
-#### 3.2.2 HTML Attributes
+###+ 3.2.2 HTML Attributes
 An attribute is one of the few pre-defined names/properties applied to a HTML tag. It is encosled within quotes within the start tag.
 
 Here is the list of most used tags in HTML. Not all attributes apply to all tags.
@@ -231,7 +233,7 @@ Here is a complete example
 </html>
 ```
 
-#### 3.2.3 HTML Practice
+###+ 3.2.3 HTML Practice
 
 This section combines everything you learned about HTML and shows you how to write a HTML page on your computer.
 
@@ -265,7 +267,7 @@ Follow the below steps to create your first HTML page -
 
 Similarly create `example2.html` for both the links to work correctly.
 
-## 4. What is CSS
+#+ 4. What is CSS
 
 CSS (Cascading Style Sheets) is used to add colors, backgrounds, fonts and layouts to a HTML page.
 
@@ -296,6 +298,7 @@ p{
 }
 ```
 
+## CSS Selectors
 CSS Selectors are used to select tags to apply styles.
 ```table
 h1, p		|	Tag name selector		|	Apply specified styles to tag names
@@ -303,7 +306,7 @@ h1, p		|	Tag name selector		|	Apply specified styles to tag names
 #main		|	Id/identifier selector	|	Apply to tag with `id` attribute with value `main`
 ```
 
-### 4.1 CSS Colors
+##+ 4.1 CSS Colors
 
 Colors are represented either by name of the color or by `hex color code`. Hex color codes are `RGB` values, representing `red`, `green`, `blue`.
 
@@ -321,7 +324,7 @@ White  |    `#` `FF` `FF` `FF` = `#FFFFFF`
 
 Colors can be used either for text colors are text/box/layout backgrounds.
 
-### 4.2 CSS Fonts
+##+ 4.2 CSS Fonts
 
 CSS font property can be used to define the font for a HTML text.
 
@@ -338,51 +341,51 @@ Monospace | """Courier New""", Courier, monospace
 Cursive | """Brush Script MT""", cursive
 ```
 
-### 4.3 CSS Box Model
+##+ 4.3 CSS Box Model
 
-### 4.4 CSS Layouts
+##+ 4.4 CSS Layouts
 
-## 5. PHP In-depth
+#+ 5. PHP In-depth
 
-### 5.1 What is http
+##+ 5.1 What is http
 
-#### 5.1.1 Apache Web Server
+###+ 5.1.1 Apache Web Server
 
-#### 5.1.2 PHP Built-in Web Server
+###+ 5.1.2 PHP Built-in Web Server
 
-#### 5.1.3 PHP CLI
+###+ 5.1.3 PHP CLI
 
-### 5.2 PHP Key Concepts
+##+ 5.2 PHP Key Concepts
 
-#### 5.2.1 PHP Constants
+###+ 5.2.1 PHP Constants
 
-#### 5.2.2 PHP Variables
+###+ 5.2.2 PHP Variables
 
-#### 5.2.3 PHP Arrays
+###+ 5.2.3 PHP Arrays
 
-#### 5.2.4 PHP Associative Arrays
+###+ 5.2.4 PHP Associative Arrays
 
-#### 5.2.5 PHP User-defined Functions
+###+ 5.2.5 PHP User-defined Functions
 
-#### 5.2.6 PHP Object Oriented Programming
+###+ 5.2.6 PHP Object Oriented Programming
 
-#### 5.2.7 PHP Templates
+###+ 5.2.7 PHP Templates
 
-### 5.3 PHP Built-in functions
+##+ 5.3 PHP Built-in functions
 
-## 6. PHP Helpers Library
+#+ 6. PHP Helpers Library
 
-## 7. What is RDBMS - Relational Database Management Systems
+#+ 7. What is RDBMS - Relational Database Management Systems
 
-### 7.1 SQL and MySQL
+##+ 7.1 SQL and MySQL
 
-### 7.2 Database Tables
+##+ 7.2 Database Tables
 
-### 7.3 Database Normalization
+##+ 7.3 Database Normalization
 
-### 7.4 MySQL and PHP
+##+ 7.4 MySQL and PHP
 
-## 8. What is Javascript
+#+ 8. What is Javascript
 
 ---
 
@@ -391,7 +394,7 @@ Work in progress...
 ---
 
 
-## 9. Exercises
+#+ 9. Exercises
 
 Here are a few exercise projects for practice. Choose three or more to gain more skill on HTML, CSS and PHP programming.
 
@@ -424,7 +427,7 @@ Here are a few exercise projects for practice. Choose three or more to gain more
 
 ---
 
-## References
+#+ 10. References
 1. World Wide Web Consortium (W3C)
 	- http://www.w3.org/html
 	- http://www.w3.org/css

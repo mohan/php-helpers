@@ -7,6 +7,14 @@
 ### Three is heading 3
 #### Four is heading 4
 
+## Headings index and sections
+
+The below internal shortcode, inserts a headings auto index list.
+[markdown-auto-index]
+
+Adding a + after the # adds it headings auto index.
+Adding a - after the # makes it a section, but excludes it from index.
+
 
 ## Text style
 

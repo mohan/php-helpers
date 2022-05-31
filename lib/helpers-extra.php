@@ -170,20 +170,30 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
         }
 
         // # Headings
-        if(preg_match("/^\t*(#{1,5})\s(.+)$/", $line, $matches)){
+        if(preg_match("/^\t*(#{1,10})([+-]?)\s(.+)$/", $line, $matches)){
             $_level = strlen($matches[1]);
-            $_tag = 'h' . $_level;
-            $_text = $matches[2];
+            $_section_flag = $matches[2];
+            $_include_in_index = $_section_flag == '+';
+            $_text = $matches[3];
             $_id =  strtolower(preg_replace("/[^a-zA-Z\d]/", '-', trim($_text)));
             if(array_key_exists($_id, $index)) $_id .= '-' . sizeof($index);
 
-            $index[$_id] = [
-                'level' => $_level,
-                'text'  => $_text,
-                'id'    => $_id
-            ];
+            if($_include_in_index){
+                $index[] = [
+                    'level' => $_level,
+                    'text'  => $_text,
+                    'id'    => $_id
+                ];
+            }
 
-            $out .= "</div><div id='md-section-$_id' class='md-section'><$_tag id='$_id' class='md-heading'><a class='md-hash-link' href='#$_id'>\n" . htmlentities($_text) . "\n</a></$_tag>\n";
+            if($_section_flag != ''){
+                $out .= "</div>";
+                $out .= "<div id='$_id-md-section' class='md-section md-section-level-$_level'>";
+            }
+
+            $out .= "<h$_level id='$_id' class='md-heading'>";
+            $out .= "<a class='md-hash-link' href='#$_id'>\n" . htmlentities($_text) . "\n</a>";
+            $out .= "</h$_level>\n";
         } else {
             // Paragraphs
             $tabs = '';
@@ -205,20 +215,18 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
     }
 
     // Heading div proper enclosure
-    if(sizeof($index) > 0){
-        $out = "<div>$out</div>";
-    }
+    $out = "<div>$out</div>";
 
     // Index
     $index_html = "<ul class='md-auto-index'>";
     foreach ($index as $h) {
-        $index_html .= "<li class='tab-count-" . ($h['level'] - 1) . "'><a href='#md-section-{$h['id']}'>{$h['text']}</a></li>\n";
+        $index_html .= "<li class='tab-count-" . ($h['level'] - 1) . "'><a href='#{$h['id']}-md-section'>{$h['text']}</a></li>\n";
     }
     $index_html .= '</ul>';
 
     $out = preg_replace(
-        [ '/<p>\[markdown-auto-index\]<\/p>/', '/<p>\[markdown-auto-index heading\=&quot;(.+)&quot;\]<\/p>/' ],
-        [ $index_html, "</div><div class='md-section md-auto-index-container'><h2>$1</h2>$index_html</div><div>" ],
+        [ '/<p>\[markdown-auto-index\]<\/p>/' ],
+        [ $index_html ],
         $out
     );
     // End Index

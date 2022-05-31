@@ -160,7 +160,8 @@ pre{
 .markdown h5{ font-size: 0.9em; }
 .markdown .md-heading a.md-hash-link{ text-decoration: none; color: inherit;}
 .markdown .md-auto-index-container{ page-break-before: always; page-break-after: always; }
-.markdown .md-auto-index{ padding: 0 20px; line-height: 2.2em; }
+.markdown .md-auto-index-container h2{ margin: 0; }
+.markdown .md-auto-index{ padding: 0 20px; line-height: 2.15em; }
 .markdown.section-pages .md-auto-index li{ border-bottom: 1px solid #eee; }
 .markdown .md-auto-index li a{ display: block; }
 
@@ -199,7 +200,7 @@ pre{
 	}
 
     .markdown.section-pages .md-section{
-        background: transparent;
+        background: #FFFFFF;
         border: 1px solid #eee;
     }
 
