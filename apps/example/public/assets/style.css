@@ -171,8 +171,20 @@ pre{
     padding: 20px 2% 20px 3%;
 }
 
+.markdown.section-pages .md-block{
+	background: #eee;
+}
+
+.markdown.section-pages .md-block-quote{
+	background: transparent;
+}
+
+.markdown.section-pages .md-block-table{
+	background: transparent;
+}
+
 .markdown.section-pages .md-highlight{
-    background: #cecece;
+    background: #dfdfdf;
 }
 
 .markdown.section-pages .md-hr{

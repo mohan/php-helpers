@@ -377,7 +377,7 @@ Follow the below steps to create your first CSS styles -
 
 ##+ 4.4 CSS Box Model
 
-In addition to colors and fonts, CSS supports margin, padding and border properties for a tag, on four sides. It is called the `CSS Box Model`.
+In addition to colors and fonts, CSS supports margin, padding and border properties for every tag, on four sides. It is called the `CSS Box Model`.
 
 ```table
 Margin  | Outside space around the text

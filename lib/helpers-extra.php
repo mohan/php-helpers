@@ -110,15 +110,11 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
                     $data_table_header = [];
                     $data_table = [];
                     $data_table_i = 0;
-                }
-
-                if(_str_contains($block_attr, 'textarea')){
+                } else if(_str_contains($block_attr, 'textarea')){
                     $out .= textarea($block_data, [ 'readonly'=>true, 'rows' => substr_count($block_data, "\n") + 1 ]);
-                }
-
-                if(_str_contains($block_attr, 'html')){
-                    // Works, but bad way to remove onclick etc attrs js
-                    $out .= preg_replace("/on[a-z0-9-_]=/", "false=", strip_tags($block_data, '<p><div><strong><em><a><textarea>'));
+                } else if(_str_contains($block_attr, 'html')){
+                    // Works, but bad way to remove onclick etc js attrs, unsafe user generated html
+                    $out .= preg_replace("/on[a-z0-9-_]+=/i", "false=", strip_tags($block_data, '<p><div><strong><em><a><textarea>'));
                 }
 
                 $block_data = '';
