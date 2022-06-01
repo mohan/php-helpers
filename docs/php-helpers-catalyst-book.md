@@ -107,14 +107,11 @@ Steps a web browser follows
 	- Which creates a flow from one HTML GUI screen to another.
 
 Internet is the networking component of a computer. Networking is of three kinds -
-1. Internet - World Wide Web (WWW)
-	- Examples are internet websites and internet email
-2. LAN - Local area network
-	- Network that is within the `organization`, and not connected to the internet.
-	- Examples are organization websites and web applications, organization email.
-3. localhost - Network that is internal to the computer, without needing a real network connection
-	- Network that works only in the computer, not outside the computer.
-	- Examples are localhost web applications
+```table
+**Internet** | WWW | World Wide Web | Examples are internet websites and internet email
+**LAN** | Local area network | Network that is within the `organization`, and not connected to the internet. | Examples are organization websites and web applications, organization email.
+**localhost** | Network that is internal to the computer, without needing a real network connection | Network that works only in the computer, not outside the computer. | Examples are localhost web applications
+```
 
 In this book we will focus on `localhost` PHP applications.
 
@@ -389,22 +386,21 @@ Padding | Inside space around the text
 ```
 
 Here is an illustration -
-```textarea
-` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` `
-`   `   `   `     MARGIN      `   `   `   `
-`   `   `   ` ` ` ` ` ` ` ` ` `   `   `   `
-`   `   `   `     BORDER      `   `   `   `
-` M ` B ` P ` ` ` ` ` ` ` ` ` ` P ` B ` M `
-` A ` O ` A `     PADDING     ` A ` O ` A `
-` R ` R ` D ------------------- D ` R ` R `
-` G ` D ` D |      TEXT       | D ` D ` G `
-` I ` E ` I ------------------- I ` E ` I `
-` N ` R ` N `     PADDING     ` N ` R ` N `
-`   `   ` G ` ` ` ` ` ` ` ` ` ` G `   `   `
-`   `   `   `     BORDER      `   `   `   `
-`   `   `   ` ` ` ` ` ` ` ` ` `   `   `   `
-`   `   `   `     MARGIN      `   `   `   `
-` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` ` `
+```html
+<div style="width:600px;">
+	<div style="border:1px dashed #000; padding: 0 60px 40px 60px;">
+		<p style="padding:0 0 10px 0;">Margin</p>
+		<div style="border:1px solid #000; padding: 0 60px 40px 60px;">
+			<p style="padding:0 0 10px 0;">Border</p>
+			<div style="border:1px dashed #000; padding: 0 60px 40px 60px;">
+				<p style="padding:0 0 10px 0;">Padding</p>
+				<div style="border:1px dotted #000; padding: 20px 0px; text-align:center; font-weight:bold;">
+					<p style="margin:0;">Text/image/content</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 ```
 
 ### CSS property names

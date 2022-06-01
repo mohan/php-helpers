@@ -56,8 +56,8 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
     $patterns = [[
         "/^(\t*)---$/",                                                 // hr
         "/\*\*\*([^*]+)\*\*\*/",                                        // bold italic
-        "/\*\*([^*]+)\*\*/",                                            // italic
-        "/([^*\t])\*([^*]+)\*/",                                        // bold
+        "/\*\*([^*]+)\*\*/",                                            // bold
+        "/\*([^*]+)\*/",                                                // italic
         "/~~([^~]+)~~/",                                                // strikethrough
         "/\[([^\]]+)\]\((\/|#|\?|[a-z]+:\/\/)([^\)]*)\)/",              // link with text
         "/\((\/|#|\?|[a-z]+:\/\/)([^\)]*)\)/",                          // link without text
@@ -72,8 +72,8 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
     ],[
         "$1<hr/>",
         "<strong><em>$1</em></strong>",
+        "<strong>$1</strong>",
         "<em>$1</em>",
-        "$1<strong>$2</strong>",
         "<strike>$1</strike>",
         "<a href='$2$3'>$1</a>",
         "<a href='$1$2'>$1$2</a>",
@@ -116,6 +116,12 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
                     $out .= textarea($block_data, [ 'readonly'=>true, 'rows' => substr_count($block_data, "\n") + 1 ]);
                 }
 
+                if(_str_contains($block_attr, 'html')){
+                    // Works, but bad way to remove onclick etc attrs js
+                    $out .= preg_replace("/on[a-z0-9-_]=/", "false=", strip_tags($block_data, '<p><div><strong><em><a><textarea>'));
+                }
+
+                $block_data = '';
                 $is_block = false;
                 $tab_size_for_current_block = 0;
                 $block_attr = 'raw';
@@ -151,7 +157,7 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 
                 $data_table_i++;
                 continue;
-            } else if(_str_contains($block_attr, 'textarea')) {
+            } else if(_str_contains($block_attr, 'textarea', 'html')) {
                 $block_data .= "$line\n";
                 continue;
             }
