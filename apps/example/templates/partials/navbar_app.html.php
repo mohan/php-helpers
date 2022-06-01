@@ -3,6 +3,7 @@
 	<ul>
 		<li><?= linkto('root', [], 'Home') ?></li>
 		<li><?= linkto('/dashboard', [], 'Dashboard') ?></li>
+		<li><?= linkto('/html-playground.php', [], 'Playground', ['target'=>'_blank']) ?></li>
 		<li><?= linkto('404', [], '404') ?></li>
 	</ul>
 	<ul>
