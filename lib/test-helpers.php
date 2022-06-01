@@ -11,7 +11,7 @@ define('APP_ENV_IS_TEST', true);
 
 
 if(PHP_SAPI != 'cli') {
-	exit;
+	exit(1);
 }
 
 
@@ -61,7 +61,7 @@ function t($test_name, $result)
 	if($result === false || $result == NULL || !$result) {
 		echo "  - Fail: " . $test_name . $_debug_line_number . "\n\n";
 		debug_print_backtrace();
-		exit;
+		exit(1);
 	} else {
 		echo "  + Pass: " . $test_name . $_debug_line_number;
 	}
@@ -102,7 +102,7 @@ function is_flash($expected_message, $response)
 
 function contains($response, ...$expected_html_substrs)
 {
-	if(!_str_contains($response['body'], ...$expected_html_substrs)){
+	if(!_contains($response['body'], ...$expected_html_substrs)){
 		// var_dump($response);
 		return false;
 	}
@@ -112,7 +112,7 @@ function contains($response, ...$expected_html_substrs)
 
 function pagetitle_is($str, $response)
 {
-	if(!_str_contains($response['body'], $str)){
+	if(!_contains($response['body'], $str)){
 		// var_dump($response);
 		return false;
 	}

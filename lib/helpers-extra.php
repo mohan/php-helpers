@@ -105,14 +105,14 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
         if(preg_match("/^(\t*)```([[:alnum:]\s-]*)$/", $line, $matches)){
             // If close of block
             if($is_block){
-                if(_str_contains($block_attr, 'table')){
+                if(_contains($block_attr, 'table')){
                     $out .= tag_table($data_table_header, $data_table, [], false, false);
                     $data_table_header = [];
                     $data_table = [];
                     $data_table_i = 0;
-                } else if(_str_contains($block_attr, 'textarea')){
+                } else if(_contains($block_attr, 'textarea')){
                     $out .= textarea($block_data, [ 'readonly'=>true, 'rows' => substr_count($block_data, "\n") + 1 ]);
-                } else if(_str_contains($block_attr, 'html')){
+                } else if(_contains($block_attr, 'html')){
                     // Works, but bad way to remove onclick etc js attrs, unsafe user generated html
                     $out .= preg_replace("/on[a-z0-9-_]+=/i", "false=", strip_tags($block_data, '<p><div><strong><em><a><textarea>'));
                 }
@@ -136,8 +136,8 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 
         // Collect everything between blocks
         if($is_block){
-            if(_str_contains($block_attr, 'table')) {
-                if($data_table_i == 0 && _str_contains($block_attr, 'with-header')){
+            if(_contains($block_attr, 'table')) {
+                if($data_table_i == 0 && _contains($block_attr, 'with-header')){
                     $data_table_header = str_getcsv(trim($line), '|');
                     foreach ($data_table_header as $key => $value) {
                         $data_table_header[$key] = preg_replace($patterns[0], $patterns[1], htmlentities($value));
@@ -153,7 +153,7 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
 
                 $data_table_i++;
                 continue;
-            } else if(_str_contains($block_attr, 'textarea', 'html')) {
+            } else if(_contains($block_attr, 'textarea', 'html')) {
                 $block_data .= "$line\n";
                 continue;
             }
@@ -161,7 +161,7 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
             $line = htmlentities($line);
 
             // If block does not contain raw attr, apply formatting
-            if(!_str_contains($block_attr, 'raw')){
+            if(!_contains($block_attr, 'raw')){
                 $line = preg_replace($patterns[0], $patterns[1], $line);
             }
         } else if($enable_shortcodes && $shortcode_line = process_shortcodes($line)){
@@ -203,7 +203,7 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
                 $tabs = " class='tab-count-" . (strlen($matches[0]) - $tab_size_for_current_block) . "'";
             }
 
-            if(_str_contains($line, '<hr/>')){
+            if(_contains($line, '<hr/>')){
                 $_tag = "div";
                 $tabs = $tabs ? str_replace("class='", "class='md-hr ", $tabs) : " class='md-hr'";
             } else {
@@ -282,7 +282,7 @@ function process_shortcodes($text)
         $args_str = $matches[2][$key];
         
         $args = [];
-        if(_str_contains($args_str, '=')){
+        if(_contains($args_str, '=')){
             $args[0] = $args_str;
         } else {
             if(preg_match_all('/([a-z]+)="?([^"]+)"?/', $args_str, $args_matches)){
