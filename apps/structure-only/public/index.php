@@ -5,7 +5,7 @@
 
 if(!isset($_GET['a'])) $_GET['a'] = NULL;
 
-if(isset($_GET['post_action'])){
+if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['post_action'])){
     switch($_GET['post_action']){
         case 'login':
             post_password();
