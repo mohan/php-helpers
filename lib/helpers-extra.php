@@ -57,7 +57,7 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
         "/^(\t*)---$/",                                                 // hr
         "/\*\*\*([^*]+)\*\*\*/",                                        // bold italic
         "/\*\*([^*]+)\*\*/",                                            // bold
-        "/\*([^*]+)\*/",                                                // italic
+        "/\*([^\s][^*]+)\*/",                                           // italic
         "/~~([^~]+)~~/",                                                // strikethrough
         "/\[([^\]]+)\]\((\/|#|\?|[a-z]+:\/\/)([^\)]*)\)/",              // link with text
         "/\((\/|#|\?|[a-z]+:\/\/)([^\)]*)\)/",                          // link without text

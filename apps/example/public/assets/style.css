@@ -160,6 +160,7 @@ pre{
 .markdown h5{ font-size: 0.9em; }
 .markdown .md-heading a.md-hash-link{ text-decoration: none; color: inherit;}
 .markdown #index-md-section{ page-break-before: always; page-break-after: always; }
+.markdown #index-md-section h1{ margin: 5px 0 0 0; }
 .markdown .md-auto-index{ padding: 0 20px; line-height: 2.15em; }
 .markdown.section-pages .md-auto-index li{ border-bottom: 1px solid #eee; }
 .markdown .md-auto-index li a{ display: block; }
@@ -213,6 +214,10 @@ pre{
     .markdown.section-pages .md-section{
         background: #FFFFFF;
         border: 1px solid #eee;
+    }
+
+    .markdown #index-md-section{
+    	padding: 0px 2% 0px 3%;
     }
 
     .markdown.section-pages .md-highlight{

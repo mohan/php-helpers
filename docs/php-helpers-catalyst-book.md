@@ -264,6 +264,62 @@ Follow the below steps to create your first HTML page -
 
 Similarly create `example2.html` for both the links to work correctly.
 
+###+ 3.2.4 HTML Table, Form and other tags
+
+#### HTML Table
+
+HTML table tag is used to display data or information in table form.
+
+Here are the tags related to the table tag -
+```table
+<table>	|	Main table tag
+<thead>	|	Table header tag, for header row (optional)
+<th>	|	Table header value (optional)
+<tbody>	|	Table body tag, for table information
+<tr>	|	Table row tag, for table row
+<td>	|	Table data cell tag, for table value
+```
+
+Here is an example -
+```
+<table border="1">
+	<thead>
+		<tr>
+			<th>Column 1</th>
+			<th>Column 2</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Row 1 value 1</td>
+			<td>Row 1 value 2</td>
+		</tr>
+		<tr>
+			<td>Row 2 value 1</td>
+			<td>Row 2 value 2</td>
+		</tr>
+	</tbody>
+</table>
+```
+
+#### br tag
+
+`br` tag is used to insert a line break.
+
+Example:
+```
+<br />
+```
+
+#### hr tag
+
+`hr` tag is used to insert a horizontal ruler line.
+
+Example:
+```
+<hr />
+```
+
 #+ 4. What is CSS
 
 CSS (Cascading Style Sheets) is used to add colors, backgrounds, fonts and layouts to a HTML page.

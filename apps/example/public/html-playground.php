@@ -73,12 +73,10 @@ iframe{
 &lt;/head&gt;
 &lt;body&gt;
  &lt;h1&gt;Hello from HTML Playground!&lt;/h1&gt;
- &lt;p&gt;Type you HTML and CSS here and click run to view output below.&lt;/p&gt;
+ &lt;p&gt;Type your HTML and CSS here, and click run to view the output below.&lt;/p&gt;
 &lt;/body&gt;
-&lt;/html&gt;
-<?php endif; ?>
-</textarea>
-<input type='submit' value='Run' />
+&lt;/html&gt;<?php endif; ?></textarea>
+<input type='submit' value='Run' style="display:block; width:100%;" />
 </form>
 </div>
 <iframe name='output' src=''></iframe>
