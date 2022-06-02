@@ -312,10 +312,10 @@ function urltoget($action, $args=[], $arg_separator='&', $skip_action_arg=false)
 
     if(!$args) $args = [];
     if(isset($args['ROOT_URL'])){
-        $root_url = $args['ROOT_URL'] . (_contains($args['ROOT_URL'], '?') ? '' : '?');
+        $root_url = $args['ROOT_URL'] . (_strstr($args['ROOT_URL'], '?') ? '' : '?');
         unset($args['ROOT_URL']);
     } else {
-        $root_url = ROOT_URL . (_contains(ROOT_URL, '?') ? '' : '?');
+        $root_url = ROOT_URL . (_strstr(ROOT_URL, '?') ? '' : '?');
     }
 
 
@@ -806,24 +806,34 @@ function _arr_validate(&$input, $validations, $must_contain_all_keys=true)
 }
 
 
+// Checks if an array has a value. Accepts multiple strings.
+function _arr_has($arr, ...$values)
+{
+    if(is_array($arr)){
+        foreach ($values as $value) {
+            if(array_search($value, $arr) !== false) return true;
+        }
+    }
 
-// Checks if substr is in string. Accepts multiple substrings.
+    return false;
+}
+
+
+
+// Checks if a string contains a substr. Accepts multiple substrings.
 // Returns true if atleast str contains one substring.
-function _contains($str, ...$substrs)
+function _strstr($str, ...$substrs)
 {
     if(is_string($str)){
         foreach ($substrs as $substr) {
             if(is_string($substr) && strlen($substr) == 0) return true;
             if(strpos($str, $substr) !== false) return true;
         }
-    } else if(is_array($str)){
-        foreach ($substrs as $substr) {
-            if(array_search($substr, $str) !== false) return true;
-        }
     }
 
     return false;
 }
+
 
 
 // 

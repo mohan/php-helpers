@@ -29,7 +29,7 @@ function call_tests_for(...$function_names)
 
 	echo str_repeat('-', 60);
 	foreach ($function_names as $name) {
-		if($GLOBALS['argc'] >= 2 && array_search($name, $GLOBALS['argv']) === false) continue;
+		if($GLOBALS['argc'] >= 2 && !_arr_has($GLOBALS['argv'], $name)) continue;
 
 		$test_name = "test_$name";
 		if(function_exists($test_name)) {
@@ -70,7 +70,7 @@ function t($test_name, $result)
 
 function is_redirect($expected_redirect_url, $response)
 {
-	if(array_search("Location: $expected_redirect_url", $response['headers']) === false){
+	if(!_arr_has($response['headers'], "Location: $expected_redirect_url")){
 		// var_dump($response);
 		return false;
 	}
@@ -102,7 +102,7 @@ function is_flash($expected_message, $response)
 
 function contains($response, ...$expected_html_substrs)
 {
-	if(!_contains($response['body'], ...$expected_html_substrs)){
+	if(!_strstr($response['body'], ...$expected_html_substrs)){
 		// var_dump($response);
 		return false;
 	}
@@ -112,7 +112,7 @@ function contains($response, ...$expected_html_substrs)
 
 function pagetitle_is($str, $response)
 {
-	if(!_contains($response['body'], $str)){
+	if(!_strstr($response['body'], $str)){
 		// var_dump($response);
 		return false;
 	}
