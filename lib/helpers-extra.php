@@ -36,11 +36,30 @@ function img            ( $src,  $attrs=[] )       {   return tag( $src,  $attrs
 function iframe         ( $src,  $attrs=[] )       {   return tag( $src,  $attrs, 'iframe',       true  );   }
 function li             ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'li',           true  );   }
 function li_            ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'li',           false );   }
-function input          ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'input',        true  );   }
-function textarea       ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'textarea',     true  );   }
 function label          ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'label',        true  );   }
 function label_         ( $html, $attrs=[] )       {   return tag( $html, $attrs, 'label',        false );   }
 
+function input($html, $attrs=[]){
+    if(_arr_has($attrs, '_no-auto')) {
+        unset($attrs['_no-auto']);
+        $attrs['autocomplete']  = 'off';
+        $attrs['autocorrect']   = 'off';
+        $attrs['spellcheck']    = 'false';
+    }
+    return tag($html, $attrs, 'input', true);
+}
+
+function textarea($html, $attrs=[]){
+    if(_arr_has($attrs, '_no-auto')) {
+        unset($attrs['_no-auto']);
+        $attrs['autocomplete']  = 'off';
+        $attrs['autocorrect']   = 'off';
+        $attrs['spellcheck']    = 'false';
+        $attrs['wrap']          = 'off';
+    }
+
+    return tag($html, $attrs, 'textarea', true);
+}
 
 
 

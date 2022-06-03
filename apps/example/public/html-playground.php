@@ -13,6 +13,7 @@ if(isset($_POST['code']) && $_POST['code']){
 <html>
 <head>
 <title>HTML Playground</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <style type="text/css">
 body{
     padding: 0;

@@ -268,15 +268,15 @@ $colors = [
 <p>Hex and RGB (Red Green Blue).</p>
 
 <ul>
-	<li><a href='#random'>Random Palette</a></li>
-	<li><a href='#websafe'>Web Safe Palette</a></li>
-	<li><a href='#grey'>Grey Scale Palette</a></li>
+    <li><a href='#random'>Random Palette</a></li>
+    <li><a href='#websafe'>Web Safe Palette</a></li>
+    <li><a href='#grey'>Grey Scale Palette</a></li>
 </ul>
 
 <h2 id='random'>Random Palette</h2>
 <?php
 for ($i=0; $i < 10; $i++) {
-	render_partial('partials/color.html.php', ['color'=>$colors[rand(0, sizeof($colors) - 1)]]);
+    render_partial('partials/color.html.php', ['color'=>$colors[rand(0, sizeof($colors) - 1)]]);
 }
 ?>
 
@@ -284,7 +284,7 @@ for ($i=0; $i < 10; $i++) {
 <p>Colors that appear correctly on all platforms and monitors.</p>
 <?php
 for ($i=0; $i < sizeof($colors); $i++) {
-	render_partial('partials/color.html.php', ['color'=>$colors[$i]]);
+    render_partial('partials/color.html.php', ['color'=>$colors[$i]]);
 }
 ?>
 
@@ -292,6 +292,6 @@ for ($i=0; $i < sizeof($colors); $i++) {
 <h2 id='grey'><?= sizeof($colors_greyscale) ?> Grey Scale Palette</h2>
 <?php
 for ($i=0; $i < sizeof($colors_greyscale); $i++) {
-	render_partial('partials/color.html.php', ['color'=>$colors_greyscale[$i]]);
+    render_partial('partials/color.html.php', ['color'=>$colors_greyscale[$i]]);
 }
 ?>

@@ -7,10 +7,15 @@
 		<li><?= linkto('/docs/docs', [], 'Docs') ?></li>
 		<li><?= linkto('/docs/database-layer', [], 'Database Layer') ?></li>
 		<li><?= linkto('/docs/markdown', ['raw'=>true], 'Markdown') ?></li>
-		<li><?= linkto('/docs/colors', [], 'Colors') ?></li>
 		<li><?= linkto('/docs/notes', [], 'Notes') ?></li>
 		<li><?= linkto('/docs/php', [], 'PHP Tutorial') ?></li>
 		<li><?= linkto('/docs/project-management', [], 'Project Management Tips') ?></li>
+	</ul>
+
+	<h3>Tools</h3>
+	<ul>
+		<li><?= linkto('tools', ['tool'=>'chars'], '256 Character Set') ?></li>
+		<li><?= linkto('tools', ['tool'=>'colors'], 'Colors') ?></li>
 	</ul>
 
 	<h3>Sourcecode</h3>

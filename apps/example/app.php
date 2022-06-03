@@ -15,13 +15,14 @@ function initialize(){
     if(!filter_permitted_params(
         // GET params with regex
         [
-            'a'             =>  '/^(root|docs|docs\/view|book|posts|new-post|post|search|src|example_redirect)$/',
+            'a'             =>  '/^(root|docs|docs\/view|book|posts|new-post|post|search|src|tools)$/',
             'post_action'   =>  '/^(create-post)$/',
             'id'            =>  '/^\d+$/',
-            'path'          =>  '/^(markdown|specification|database-layer|notes|colors|docs|php|project-management)$/',
+            'path'          =>  '/^(markdown|specification|database-layer|notes|docs|php|project-management)$/',
             'src_path'      =>  '/^(helpers|helpers-extra|test-helpers|utils|partials\/_debugpanel.html|' .
                                 'partials\/layout-404.html|partials\/layout-blank.html|partials\/layout-navbar.html|' .
                                 'partials\/layout-sidebar.html)\.php$/',
+            'tool'          =>  '/^(colors|chars)$/',
             'title'         =>  1024,
             'body'          =>  1024,
             'query'         =>  1024,
@@ -54,7 +55,8 @@ function initialize(){
             'docs/view' => ['path'],
             'book'      => 'app/book.html.php',
             'src'       => ['src_path'],
-            'search'    => []
+            'search'    => [],
+            'tools'     => ['tool']
         ],
         // Post action, with required params from $_GET, $_POST
         [
@@ -148,14 +150,6 @@ function get_docs_view()
 {
     extract(_arr_get($_GET, ['path'=>false, 'raw'=>false]));
 
-    if($path == 'colors'){
-        return render([
-            '_layout'       =>  'layouts/docs.html.php',
-            '_template'     =>  'app/colors.html.php',
-            '_pagetitle'    =>  ucfirst($path)
-        ]);
-    }
-
     return render([
         '_body_class'   =>  _to_id($path),
         '_layout'       =>  'layouts/docs.html.php',
@@ -192,6 +186,18 @@ function get_src()
         '_pagetitle'                =>  $src_path,
         'text'                      =>  highlight_string($text, true),
         'raw'                       =>  false
+    ]);
+}
+
+
+function get_tools()
+{
+    extract(_arr_get($_GET, ['tool']));
+
+    return render([
+        '_layout'   => 'layouts/docs.html.php',
+        '_template' =>  "tools/$tool.html.php",
+        '_pagetitle'=>  ucfirst($tool)
     ]);
 }
 
