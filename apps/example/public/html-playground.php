@@ -1,8 +1,13 @@
 <?php
-    if(isset($_POST['code']) && $_POST['code']){
-        echo $_POST['code'];
-        exit;
-    }
+// php-helpers
+// 23 functions for building a PHP application.
+// License: GPL
+// Status: Work in progress
+
+if(isset($_POST['code']) && $_POST['code']){
+    echo $_POST['code'];
+    exit;
+}
 ?>
 
 <html>
