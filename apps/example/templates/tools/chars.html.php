@@ -17,7 +17,7 @@
             <?= $i ?>
         </td>
         <td>
-            <?= input(utf8_encode(chr($i)), ['_no-auto'=>true]) ?>
+            <?= input(utf8_encode(chr($i)), ['readonly'=>true, '_no-auto'=>true]) ?>
         </td>
         <td>
             <?= input(htmlentities(utf8_encode(chr($i))), ['readonly'=>true, '_no-auto'=>true]) ?>
