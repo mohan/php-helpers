@@ -93,6 +93,18 @@ Here is a sample HTML code
 
 A web browser is an application that is used to view web pages, it usually comes pre-installed on a computer. Web pages are built using HTML and CSS.
 
+```html
+<div style="border:1px solid #000;">
+	<div style="border-bottom:1px solid #000; border-left:35px solid #444; padding: 5px 10px; background: #888; color: #fff;">
+		http://localhost/hello.html
+	</div>
+
+	<div style='padding:20px; background:#fff; padding-bottom:100px;'>
+		Hello from HTML Web Browser!
+	</div>
+</div>
+```
+
 ```quote
 A web browser is the display canvas that renders graphical user interfaces built using HTML and CSS.
 ```
@@ -113,7 +125,9 @@ Internet is the networking component of a computer. Networking is of three kinds
 **localhost** | Network that is internal to the computer, without needing a real network connection | Network that works only in the computer, not outside the computer. | Examples are localhost web applications
 ```
 
-In this book we will focus on `localhost` PHP applications.
+`http` (Hyper Text Trasnfer Protocol) is the protocol used for communication between a web server and the web browser.
+
+As in the illustration above, in this book we will focus on `http://localhost` PHP applications.
 
 ---
 ##+ 3.2 HTML in-depth
