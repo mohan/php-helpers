@@ -1,3 +1,39 @@
+```html no-box
+<div class='md-section' style='page-break-after: always;'>
+	<div style='background:#4F5B93; color:#fff; width:600px; margin: 0 auto; border: 1px solid #000; border-left-width: 5px;'>
+		<div style='padding:20px 50px 30px 50px;'>
+			<h1 style='font-size:55px; line-height: 60px; border-bottom:2px solid #8892BF; padding-bottom: 30px;'>PHP Helpers Catalyst</h1>
+			<p>Book about programming computer applications with HTML, CSS and PHP.</p>
+
+			<div style="border:1px solid #000; color:#000; font-size: 10px; width: 350px; margin: 40px auto 20px auto;">
+				<div style="border-bottom:1px solid #FFCC00; border-left:35px solid #FFCC00; padding: 5px 10px; background: #888; color: #fff;">
+					http://localhost/hello.php
+				</div>
+
+				<div style='padding:20px; background:#ccc; padding-bottom:40px;'>
+					Hello from HTML Web Browser!
+				</div>
+			</div>
+		</div>
+
+		<div style='background:#8892BF; padding: 40px 20px;'>
+			<ul>
+				<li>Everything about HTML, CSS and PHP.</li>
+				<li>An introduction to Relational Database Management Systems (RDBMS).</li>
+				<li>A short introduction to Dynamic HTML with Javascript (DHTML).</li>
+			</ul>
+		</div>
+
+		<div style='background:#aab6f1; padding: 40px 20px 50px 40px; color:#000;'>
+			<p>Dedicated to students looking for employment.</p>
+
+			<h4 style='margin: 20px 0 0 0;'>About the author</h4>
+			<p>20 years of experience working in a very large firm, programming applications with HTML, CSS, PHP and databases.</p>
+		</div>
+	</div>
+</div>
+```
+
 ```table with-header
 Property	|	Value
 Book Title	|	PHP Helpers Catalyst
@@ -9,18 +45,6 @@ Format		|	Digital Text
 Price		|	Free (CCPL License - Creative Commons Attribution)
 Reading Age	|	21 years and up
 ```
-
-#- PHP Helpers Catalyst
-Book about programming computer applications with HTML, CSS and PHP.
-
-* Everything about HTML, CSS and PHP.
-* An introduction to Relational Database Management Systems (RDBMS).
-* A short introduction to Dynamic HTML with Javascript (DHTML).
-
-Dedicated to students looking for employment.
-
-About the author:
-20 years of experience working in a very large firm, programming applications with HTML, CSS, PHP and databases.
 
 #- Index
 [markdown-auto-index]

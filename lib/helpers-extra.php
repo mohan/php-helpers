@@ -133,7 +133,7 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
                     $out .= textarea($block_data, [ 'readonly'=>true, 'rows' => substr_count($block_data, "\n") + 1 ]);
                 } else if(_strstr($block_attr, 'html')){
                     // Works, but bad way to remove onclick etc js attrs, unsafe user generated html
-                    $out .= preg_replace("/on[a-z0-9-_]+=/i", "false=", strip_tags($block_data, '<p><div><strong><em><a><textarea>'));
+                    $out .= preg_replace("/on[a-z0-9-_]+=/i", "false=", strip_tags($block_data, '<p><div><strong><em><a><textarea><h1><h2><h3><h4><h5><ul><ol><li><hr><br>'));
                 }
 
                 $block_data = '';
@@ -246,8 +246,8 @@ function render_markdown($text, $attrs=[], $enable_shortcodes=false)
     $index_html .= '</ul>';
 
     $out = preg_replace(
-        [ '/<p>\[markdown-auto-index\]<\/p>/' ],
-        [ $index_html ],
+        '/<p>\[markdown-auto-index\]<\/p>/',
+        $index_html,
         $out
     );
     // End Index
