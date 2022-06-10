@@ -33,7 +33,6 @@
 	</div>
 </div>
 ```
-
 ```table with-header
 Property	|	Value
 Book Title	|	PHP Helpers Catalyst
@@ -203,6 +202,40 @@ Here is an example
 		<`img` src="graphic.jpg" />
 	<`/body`>
 <`/html`>
+```
+
+Here is an illustration - 
+```html
+<p>Window</p>
+<div style="border:1px solid #000;">
+	<p style='text-align:center; margin:0;'>Page Title</p>
+	<div style="border:1px solid #000;">
+		<div style="border-bottom:1px solid #000; border-left:35px solid #444; padding: 5px 10px; background: #888; color: #fff;">
+			http://localhost/sample.html
+		</div>
+
+		<div style='background:#fff; padding: 5px;'>
+			<div style='margin: 0px; padding:5px; background: #eee;'>
+				Document
+				<div style='margin: 5px; padding:5px; border: 1px solid #000; background: #ddd;'>
+					Body Tag
+					<div style='margin: 15px 5px; padding:5px; border: 1px solid #000; background: #ccc;'>
+						Element (Tag)
+					</div>
+					<div style='margin: 15px 5px; padding:5px; border: 1px solid #000; background: #ccc;'>
+						Element (Tag)
+						<div style='margin: 15px 5px; padding:5px; border: 1px solid #000; background: #bbb;'>
+							Element (Tag)
+						</div>
+						<div style='margin: 15px 5px; padding:5px; border: 1px solid #000; background: #bbb;'>
+							Element (Tag)
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 ```
 
 Here is the list of most used tags in HTML.
